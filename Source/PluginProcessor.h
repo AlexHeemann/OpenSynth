@@ -18,6 +18,7 @@ typedef enum
 	WaveformSine,
 	WaveformSquare,
 	WaveformSawtooth,
+    WaveformTriangle,
 } Waveform;
 
 

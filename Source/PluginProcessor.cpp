@@ -12,6 +12,7 @@
 #include "PluginEditor.h"
 #include "SquareWaveSound.h"
 #include "SawtoothWave.h"
+#include "TriangleWave.h"
 
 //==============================================================================
 /** A demo synth sound that's just a basic sine wave.. */
@@ -190,6 +191,9 @@ void NoisemakerAudioProcessor::initialiseSynthForWaveform(const Waveform wavefor
 		case WaveformSawtooth:
 			synth.addVoice(new SawtoothWaveVoice());
 			break;
+        case WaveformTriangle:
+            synth.addVoice(new TriangleWaveVoice());
+            break;
 		default:
 			synth.addVoice(new SineWaveVoice());
 		}
@@ -207,6 +211,9 @@ void NoisemakerAudioProcessor::initialiseSynthForWaveform(const Waveform wavefor
 	case WaveformSawtooth:
 		synth.addSound(new SawtoothWaveSound());
 		break;
+    case WaveformTriangle:
+        synth.addSound(new TriangleWaveSound());
+        break;
 	default:
 		synth.addSound(new SineWaveSound());
 	}

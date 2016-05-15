@@ -91,6 +91,7 @@ NoisemakerAudioProcessorEditor::NoisemakerAudioProcessorEditor (NoisemakerAudioP
 	waveformBox->addItem("Sine", 1);
 	waveformBox->addItem("Square", 2);
 	waveformBox->addItem("Sawtooth", 3);
+    waveformBox->addItem("Triangle", 4);
 
 	waveformBox->addListener(this);
 	addAndMakeVisible(waveformBox);
