@@ -12,6 +12,7 @@
 #define PLUGINPROCESSOR_H_INCLUDED
 
 #include "../JuceLibraryCode/JuceHeader.h"
+#include "EnvelopeGenerator.h"
 
 typedef enum 
 {
@@ -21,11 +22,10 @@ typedef enum
     WaveformTriangle,
 } Waveform;
 
-
 //==============================================================================
 /**
 */
-class NoisemakerAudioProcessor  : public AudioProcessor
+class NoisemakerAudioProcessor  : public AudioProcessor, private MidiKeyboardStateListener
 {
 public:
     //==============================================================================
@@ -113,12 +113,18 @@ private:
 	double currentSampleRate = 0;
 
 	Synthesiser synth;
+	EnvelopeGenerator envelope;
 	// Contains filters for left and right channel
 	std::vector<IIRFilter> filters;
 
 	void initialiseSynthForWaveform(const Waveform waveform, const int numVoices);
 	void initialiseLowPassFilter();
 	void updateCurrentTimeInfoFromHost();
+
+	virtual void handleNoteOn(MidiKeyboardState* source,
+		int midiChannel, int midiNoteNumber, float velocity);
+	virtual void handleNoteOff(MidiKeyboardState* source,
+		int midiChannel, int midiNoteNumber, float velocity);
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (NoisemakerAudioProcessor)
 };

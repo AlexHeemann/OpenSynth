@@ -166,6 +166,7 @@ NoisemakerAudioProcessor::NoisemakerAudioProcessor() :
 	filters.push_back(IIRFilter());
 
 	initialiseSynthForWaveform(WaveformSine, 8);
+	keyboardState.addListener(this);
 }
 
 NoisemakerAudioProcessor::~NoisemakerAudioProcessor()
@@ -287,6 +288,9 @@ void NoisemakerAudioProcessor::prepareToPlay (double sampleRate, int samplesPerB
     // Use this method as the place to do any pre-playback
     // initialisation that you need..
 	synth.setCurrentPlaybackSampleRate(sampleRate);
+	envelope.setSampleRate(sampleRate);
+	envelope.setPeakAmp(1.0);
+	envelope.resetEnvelope();
 	currentSampleRate = sampleRate;
 	keyboardState.reset();
 	initialiseLowPassFilter();
@@ -364,6 +368,8 @@ void NoisemakerAudioProcessor::process(AudioBuffer<FloatType>& buffer,
 	// add messages to the buffer if the user is clicking on the on-screen keys
 	keyboardState.processNextMidiBuffer(midiMessages, 0, numSamples, true);
 
+	envelope.calculateEnvelopeBuffer(numSamples);
+
 	// and now get our synth to process these midi events and generate its output.
 	synth.renderNextBlock(buffer, midiMessages, 0, numSamples);
 
@@ -378,6 +384,8 @@ void NoisemakerAudioProcessor::process(AudioBuffer<FloatType>& buffer,
 
 	// Now ask the host for the current time so we can store it to be displayed later...
 	updateCurrentTimeInfoFromHost();
+
+	envelope.setCurrentStartingSample(envelope.getCurrentStartingSample() + numSamples);
 }
 
 template <typename FloatType>
@@ -391,7 +399,7 @@ void NoisemakerAudioProcessor::applyGain(AudioBuffer<FloatType>& buffer, AudioBu
 		FloatType* const channelData = buffer.getWritePointer(channel);
 		for (int sample = 0; sample < buffer.getNumSamples(); sample++)
 		{
-			channelData[sample] *= gainLevel;
+			channelData[sample] *= (gainLevel * envelope.envelopeBuffer[sample]);
 		}
 	}
 }
@@ -520,4 +528,16 @@ void NoisemakerAudioProcessor::setWaveform(Waveform waveform)
 AudioProcessor* JUCE_CALLTYPE createPluginFilter()
 {
     return new NoisemakerAudioProcessor();
+}
+
+//==============================================================================
+// MidiKeyboardStateListener
+void NoisemakerAudioProcessor::handleNoteOn(MidiKeyboardState* source,
+	int midiChannel, int midiNoteNumber, float velocity)
+{
+	envelope.resetEnvelope();
+}
+
+void NoisemakerAudioProcessor::handleNoteOff(MidiKeyboardState * source, int midiChannel, int midiNoteNumber, float velocity)
+{
 }
