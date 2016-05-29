@@ -384,8 +384,6 @@ void NoisemakerAudioProcessor::process(AudioBuffer<FloatType>& buffer,
 
 	// Now ask the host for the current time so we can store it to be displayed later...
 	updateCurrentTimeInfoFromHost();
-
-	envelope.setCurrentStartingSample(envelope.getCurrentStartingSample() + numSamples);
 }
 
 template <typename FloatType>

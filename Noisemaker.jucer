@@ -12,6 +12,10 @@
               companyName="Alexander Heemann">
   <MAINGROUP id="A4iQ36" name="Noisemaker">
     <GROUP id="{115CB73A-FD2A-ACC8-26C7-8F73C7C67676}" name="Source">
+      <FILE id="IqTyxp" name="EnvelopeSegment.cpp" compile="1" resource="0"
+            file="Source/EnvelopeSegment.cpp"/>
+      <FILE id="l2sWEB" name="EnvelopeSegment.h" compile="0" resource="0"
+            file="Source/EnvelopeSegment.h"/>
       <FILE id="wE0abi" name="EnvelopeGenerator.cpp" compile="1" resource="0"
             file="Source/EnvelopeGenerator.cpp"/>
       <FILE id="zCNqUP" name="EnvelopeGenerator.h" compile="0" resource="0"

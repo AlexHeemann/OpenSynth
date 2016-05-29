@@ -113,11 +113,6 @@ void EnvelopeGenerator::setSampleRate(int sampleRate)
 	calculateDurations();
 }
 
-void EnvelopeGenerator::setCurrentStartingSample(int currentStartingSample)
-{
-	this->currentStartingSample = currentStartingSample;
-}
-
 void EnvelopeGenerator::setDurationInSec(double durationInSec)
 {
 	this->durationInSec = durationInSec;
