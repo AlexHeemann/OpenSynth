@@ -11,17 +11,11 @@
 #ifndef ENVELOPESEGMENT_H_INCLUDED
 #define ENVELOPESEGMENT_H_INCLUDED
 
+#include <cmath.>
+
 class EnvelopeSegment
 {
 public:
-	typedef enum
-	{
-		EnvelopeSegmentTypeAttack,
-		EnvelopeSegmentTypeDecay,
-		EnvelopeSegmentTypeSustain,
-		EnvelopeSegmentTypeRelease,
-	} EnvelopeSegmentType;
-
 	typedef enum
 	{
 		EnvelopeCurvatureLinear,
@@ -56,11 +50,7 @@ public:
 		this->durationInSamples = durationInSamples;
 		resetSegment();
 	}
-	void setType(EnvelopeSegmentType type)
-	{
-		this->type = type;
-		resetSegment();
-	}
+	
 	void setCurvature(EnvelopeCurvature curvature) { this->curvature = curvature; }
 
 	virtual void resetSegment()
@@ -72,20 +62,6 @@ public:
 		}
 		range = finalAmp - startAmp;
 		envInc = range / durationInSamples;
-
-		if (type == EnvelopeSegmentTypeAttack)
-		{
-			offset = startAmp;
-			expNow = expMin;
-			expMul = std::pow((expMin + 1.0) / expMin, 1.0 / durationInSamples);
-		}
-		else if (type == EnvelopeSegmentTypeDecay)
-		{
-			offset = finalAmp;
-			expNow = 1.0 + expMin;
-			range *= (-1);
-			expMul = std::pow(expMin / (1.0 + expMin), 1.0 / durationInSamples);
-		}
 	}
 
 	void calculateNextAmp()
@@ -100,6 +76,14 @@ public:
 			currentAmp = ((expNow - expMin) * range) + offset;
 		}
 	}
+
+	void setExpMin(double expMin) 
+	{ 
+		this->expMin = expMin; 
+		resetSegment();
+	}
+	double getExpMin() { return this->expMin; }
+
 
 protected:
 	EnvelopeCurvature curvature;
