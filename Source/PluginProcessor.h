@@ -14,6 +14,7 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "EnvelopeGenerator.h"
 #include "IIRFilterDouble.h"
+#include "DspFilters/Dsp.h"
 
 typedef enum 
 {
@@ -145,7 +146,7 @@ private:
 	HashMap<int, EnvelopeGenerator*> modulatorsById;
 	std::vector<uint32> modulatorIDs;
 	// Contains filters for left and right channel
-	std::vector<IIRFilterDouble> filters;
+	std::vector<Dsp::SmoothedFilterDesign<Dsp::RBJ::Design::LowPass, 1>> filters;
 
 	void initialiseSynthForWaveform(const Waveform waveform, const int numVoices);
 	void initialiseLowPassFilter();

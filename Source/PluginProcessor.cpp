@@ -164,16 +164,21 @@ NoisemakerAudioProcessor::NoisemakerAudioProcessor() :
 	addParameter(envAttackParam = new AudioParameterFloat("attack", "Envelope Attack", 0.0f, 3.0f, 1.0f));
 	addParameter(envDecayParam = new AudioParameterFloat("decay", "Envelope Decay", 0.0f, 3.0f, 1.0f));
 
-	filters.push_back(IIRFilterDouble());
-	filters.push_back(IIRFilterDouble());
+	ModulationParameter modParamFilter;
+	modParamFilter.isModulated = false;
+	modParamFilter.start = 0.0;
+	modParamFilter.end = 1.0;
+	modParamFilter.modulatorId = 1;
+	modulationMatrix.set(ParameterTypeFilterFrequency, modParamFilter);
 
-	ModulationParameter modParam;
-	modParam.isModulated = true;
-	modParam.start = 0.0;
-	modParam.end = 1.0;
-	modParam.modulatorId = 1;
-	modulationMatrix.set(ParameterTypeGain, modParam);
+	ModulationParameter modParamGain;
+	modParamGain.isModulated = false;
+	modParamGain.start = 0.0;
+	modParamGain.end = 1.0;
+	modParamGain.modulatorId = 1;
+	modulationMatrix.set(ParameterTypeGain, modParamGain);
 
+	initialiseLowPassFilter();
 	initialiseSynthForWaveform(WaveformSine, 8);
 	keyboardState.addListener(this);
 }
@@ -237,10 +242,16 @@ void NoisemakerAudioProcessor::initialiseLowPassFilter()
 
 void NoisemakerAudioProcessor::initialiseLowPassFilter(double frequency)
 {
-	IIRCoefficientsDouble coefficients = IIRCoefficientsDouble::makeLowPass(currentSampleRate, std::fmax(frequency, 1));
-	for (int filter = 0; filter < filters.size(); filter++)
-	{
-		filters[filter].setCoefficients(coefficients);
+	filters.clear();
+	for (int filter = 0; filter < 2; filter++)
+	{ 
+		Dsp::SmoothedFilterDesign <Dsp::RBJ::Design::LowPass, 1> f(1024);
+		Dsp::Params params;
+		params[0] = 44100; // sample rate
+		params[1] = 500; // cutoff frequency
+		params[2] = 1.25; // Q
+		f.setParams(params);
+		filters.push_back(f);
 	}
 };
 
@@ -384,7 +395,25 @@ void NoisemakerAudioProcessor::process(AudioBuffer<FloatType>& buffer,
 		env->calculateEnvelopeBuffer(numSamples);
 	}
 
-	initialiseLowPassFilter(filterFrequencyParam->get());
+	// Update filter frequency
+	for (int filterId = 0; filterId < filters.size(); ++filterId)
+	{
+		double filterModulation = 1.0;
+		ModulationParameter modParam = modulationMatrix[ParameterTypeFilterFrequency];
+		uint32 modId = modParam.modulatorId;
+		EnvelopeGenerator* envGenerator = nullptr;
+		if (modulatorsById.contains(modId))
+		{
+			envGenerator = modulatorsById[modId];
+		}
+
+		bool isModulated = modParam.isModulated && envGenerator != nullptr;
+		if (isModulated)
+		{
+			filterModulation = envGenerator->envelopeBuffer[0];
+		}
+		filters[filterId].setParam(Dsp::ParamID::idFrequency, filterFrequencyParam->get() * filterModulation);
+	}
 
 	// and now get our synth to process these midi events and generate its output.
 	synth.renderNextBlock(buffer, midiMessages, 0, numSamples);
@@ -463,7 +492,9 @@ void NoisemakerAudioProcessor::applyFilter(AudioBuffer<FloatType>& buffer, Audio
 	for (int channel = 0; channel < buffer.getNumChannels(); channel++)
 	{
 		FloatType* writePointer = buffer.getWritePointer(channel);
-		filters[channel].processSamples(writePointer, buffer.getNumSamples());
+		FloatType* audioData[1];
+		audioData[0] = writePointer;
+		filters[channel].process(buffer.getNumSamples(), audioData);
 	}
 }
 
