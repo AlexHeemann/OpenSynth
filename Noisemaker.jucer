@@ -12,6 +12,51 @@
               companyName="Alexander Heemann">
   <MAINGROUP id="A4iQ36" name="Noisemaker">
     <GROUP id="{115CB73A-FD2A-ACC8-26C7-8F73C7C67676}" name="Source">
+      <GROUP id="{01DF704A-2EAA-FA7C-AB9F-596ED2D32280}" name="DspFilters">
+        <FILE id="d9Mzep" name="Bessel.cpp" compile="1" resource="0" file="Source/DspFilters/Bessel.cpp"/>
+        <FILE id="OeBMWs" name="Bessel.h" compile="0" resource="0" file="Source/DspFilters/Bessel.h"/>
+        <FILE id="Kxsk1u" name="Biquad.cpp" compile="1" resource="0" file="Source/DspFilters/Biquad.cpp"/>
+        <FILE id="RYeHyq" name="Biquad.h" compile="0" resource="0" file="Source/DspFilters/Biquad.h"/>
+        <FILE id="mPSXHm" name="Butterworth.cpp" compile="1" resource="0" file="Source/DspFilters/Butterworth.cpp"/>
+        <FILE id="KUhXxw" name="Butterworth.h" compile="0" resource="0" file="Source/DspFilters/Butterworth.h"/>
+        <FILE id="ExUJgQ" name="Cascade.cpp" compile="1" resource="0" file="Source/DspFilters/Cascade.cpp"/>
+        <FILE id="mVy6vn" name="Cascade.h" compile="0" resource="0" file="Source/DspFilters/Cascade.h"/>
+        <FILE id="Yi3DhO" name="ChebyshevI.cpp" compile="1" resource="0" file="Source/DspFilters/ChebyshevI.cpp"/>
+        <FILE id="AV4Qgm" name="ChebyshevI.h" compile="0" resource="0" file="Source/DspFilters/ChebyshevI.h"/>
+        <FILE id="xktYJu" name="ChebyshevII.cpp" compile="1" resource="0" file="Source/DspFilters/ChebyshevII.cpp"/>
+        <FILE id="x7NW2q" name="ChebyshevII.h" compile="0" resource="0" file="Source/DspFilters/ChebyshevII.h"/>
+        <FILE id="xG8Ws8" name="Common.h" compile="0" resource="0" file="Source/DspFilters/Common.h"/>
+        <FILE id="kGBu8w" name="Custom.cpp" compile="1" resource="0" file="Source/DspFilters/Custom.cpp"/>
+        <FILE id="zMnQXR" name="Custom.h" compile="0" resource="0" file="Source/DspFilters/Custom.h"/>
+        <FILE id="MP6rch" name="Design.cpp" compile="1" resource="0" file="Source/DspFilters/Design.cpp"/>
+        <FILE id="a8eW6U" name="Design.h" compile="0" resource="0" file="Source/DspFilters/Design.h"/>
+        <FILE id="mADCRh" name="Documentation.cpp" compile="1" resource="0"
+              file="Source/DspFilters/Documentation.cpp"/>
+        <FILE id="HMYnZl" name="Dsp.h" compile="0" resource="0" file="Source/DspFilters/Dsp.h"/>
+        <FILE id="gVNGrb" name="Elliptic.cpp" compile="1" resource="0" file="Source/DspFilters/Elliptic.cpp"/>
+        <FILE id="bHM1YH" name="Elliptic.h" compile="0" resource="0" file="Source/DspFilters/Elliptic.h"/>
+        <FILE id="XYIoN8" name="Filter.cpp" compile="1" resource="0" file="Source/DspFilters/Filter.cpp"/>
+        <FILE id="AUBB4C" name="Filter.h" compile="0" resource="0" file="Source/DspFilters/Filter.h"/>
+        <FILE id="o6MTzm" name="Layout.h" compile="0" resource="0" file="Source/DspFilters/Layout.h"/>
+        <FILE id="Qlp9WA" name="Legendre.cpp" compile="1" resource="0" file="Source/DspFilters/Legendre.cpp"/>
+        <FILE id="y9HB2c" name="Legendre.h" compile="0" resource="0" file="Source/DspFilters/Legendre.h"/>
+        <FILE id="WH9dlO" name="MathSupplement.h" compile="0" resource="0"
+              file="Source/DspFilters/MathSupplement.h"/>
+        <FILE id="pbOOVa" name="Param.cpp" compile="1" resource="0" file="Source/DspFilters/Param.cpp"/>
+        <FILE id="xvUFgf" name="Params.h" compile="0" resource="0" file="Source/DspFilters/Params.h"/>
+        <FILE id="gbnWXd" name="PoleFilter.cpp" compile="1" resource="0" file="Source/DspFilters/PoleFilter.cpp"/>
+        <FILE id="GvowQ9" name="PoleFilter.h" compile="0" resource="0" file="Source/DspFilters/PoleFilter.h"/>
+        <FILE id="xQKjya" name="RBJ.cpp" compile="1" resource="0" file="Source/DspFilters/RBJ.cpp"/>
+        <FILE id="PCkFOi" name="RBJ.h" compile="0" resource="0" file="Source/DspFilters/RBJ.h"/>
+        <FILE id="ncLa32" name="RootFinder.cpp" compile="1" resource="0" file="Source/DspFilters/RootFinder.cpp"/>
+        <FILE id="uLIT2J" name="RootFinder.h" compile="0" resource="0" file="Source/DspFilters/RootFinder.h"/>
+        <FILE id="cW3NQN" name="SmoothedFilter.h" compile="0" resource="0"
+              file="Source/DspFilters/SmoothedFilter.h"/>
+        <FILE id="lLUERC" name="State.cpp" compile="1" resource="0" file="Source/DspFilters/State.cpp"/>
+        <FILE id="JXOVbZ" name="State.h" compile="0" resource="0" file="Source/DspFilters/State.h"/>
+        <FILE id="NsV9mq" name="Types.h" compile="0" resource="0" file="Source/DspFilters/Types.h"/>
+        <FILE id="WuIpPA" name="Utilities.h" compile="0" resource="0" file="Source/DspFilters/Utilities.h"/>
+      </GROUP>
       <FILE id="LYWfYU" name="IIRFilterDouble.cpp" compile="1" resource="0"
             file="Source/IIRFilterDouble.cpp"/>
       <FILE id="MxmRBu" name="IIRFilterDouble.h" compile="0" resource="0"
