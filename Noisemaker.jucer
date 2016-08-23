@@ -8,10 +8,18 @@
               pluginCode="Nois" pluginChannelConfigs="" pluginIsSynth="1" pluginWantsMidiIn="1"
               pluginProducesMidiOut="1" pluginIsMidiEffectPlugin="0" pluginEditorRequiresKeys="1"
               pluginAUExportPrefix="NoisemakerAU" pluginRTASCategory="" aaxIdentifier="com.yourcompany.Noisemaker"
-              pluginAAXCategory="AAX_ePlugInCategory_Dynamics" jucerVersion="4.2.1"
+              pluginAAXCategory="AAX_ePlugInCategory_Dynamics" jucerVersion="4.2.3"
               companyName="Alexander Heemann">
   <MAINGROUP id="A4iQ36" name="Noisemaker">
     <GROUP id="{115CB73A-FD2A-ACC8-26C7-8F73C7C67676}" name="Source">
+      <FILE id="LYWfYU" name="IIRFilterDouble.cpp" compile="1" resource="0"
+            file="Source/IIRFilterDouble.cpp"/>
+      <FILE id="MxmRBu" name="IIRFilterDouble.h" compile="0" resource="0"
+            file="Source/IIRFilterDouble.h"/>
+      <FILE id="d1Pn0I" name="ModulationConnector.cpp" compile="1" resource="0"
+            file="Source/ModulationConnector.cpp"/>
+      <FILE id="YGMF9X" name="ModulationConnector.h" compile="0" resource="0"
+            file="Source/ModulationConnector.h"/>
       <FILE id="IqTyxp" name="EnvelopeSegment.cpp" compile="1" resource="0"
             file="Source/EnvelopeSegment.cpp"/>
       <FILE id="l2sWEB" name="EnvelopeSegment.h" compile="0" resource="0"
@@ -34,7 +42,7 @@
     </GROUP>
   </MAINGROUP>
   <EXPORTFORMATS>
-    <XCODE_MAC targetFolder="Builds/MacOSX">
+    <XCODE_MAC targetFolder="Builds/MacOSX" vstFolder="" vst3Folder="">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="Noisemaker"/>
         <CONFIGURATION name="Release" isDebug="0" optimisation="3" targetName="Noisemaker"/>
@@ -103,4 +111,7 @@
     <MODULE id="juce_video" showAllCode="1" useLocalCopy="0"/>
   </MODULES>
   <JUCEOPTIONS JUCE_QUICKTIME="disabled"/>
+  <LIVE_SETTINGS>
+    <WINDOWS/>
+  </LIVE_SETTINGS>
 </JUCERPROJECT>
