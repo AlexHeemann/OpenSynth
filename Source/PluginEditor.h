@@ -13,12 +13,13 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "PluginProcessor.h"
+#include "ModulationConnector.h"
 
 
 //==============================================================================
 /**
 */
-class NoisemakerAudioProcessorEditor  : public AudioProcessorEditor, private Timer, private ComboBox::Listener
+class NoisemakerAudioProcessorEditor  : public AudioProcessorEditor, public DragAndDropContainer, private Timer, private ComboBox::Listener
 {
 public:
     NoisemakerAudioProcessorEditor (NoisemakerAudioProcessor&);
@@ -29,6 +30,9 @@ public:
     void resized() override;
 	void timerCallback() override;
 
+	virtual void dragOperationStarted();
+	virtual void dragOperationEnded();
+
 private:
     // This reference is provided as a quick way for your editor to
     // access the processor object that created it.
@@ -37,10 +41,11 @@ private:
     NoisemakerAudioProcessor& processor;
 	MidiKeyboardComponent keyboardComponent;
 
-	Label timecodeDisplayLabel, gainLabel, delayLabel, filterLabel;
-	ScopedPointer<ParameterSlider> gainSlider, delaySlider, filterSlider;
+	Label timecodeDisplayLabel, gainLabel, delayLabel, filterLabel, envAttackLabel, envDecayLabel;
+	ScopedPointer<ParameterSlider> gainSlider, delaySlider, filterSlider, envAttackSlider, envDecaySlider;
 	ScopedPointer<ResizableCornerComponent> resizer;
 	ScopedPointer<ComboBox> waveformBox;
+	ScopedPointer<ModulationConnector> envelopeConnector;
 	ComponentBoundsConstrainer resizeLimits;
 
 	AudioPlayHead::CurrentPositionInfo lastDisplayedPosition;

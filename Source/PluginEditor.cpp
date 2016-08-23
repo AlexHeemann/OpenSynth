@@ -14,7 +14,7 @@
 //==============================================================================
 // This is a handy slider subclass that controls an AudioProcessorParameter
 // (may move this class into the library itself at some point in the future..)
-class NoisemakerAudioProcessorEditor::ParameterSlider : public Slider,
+class NoisemakerAudioProcessorEditor::ParameterSlider : public Slider, public DragAndDropTarget,
 	private Timer
 {
 public:
@@ -47,9 +47,40 @@ public:
 			Slider::setValue(newValue);
 	}
 
+	virtual void itemDragEnter(const SourceDetails& dragSourceDetails)
+	{
+		originalSliderFillColour = findColour(rotarySliderFillColourId);
+		setColour(rotarySliderFillColourId, Colour(0, 200, 23));
+	}
+
+	virtual void itemDragExit(const SourceDetails& dragSourceDetails)
+	{
+		setColour(rotarySliderFillColourId, originalSliderFillColour);
+	}
+
+	virtual bool isInterestedInDragSource(const SourceDetails& dragSourceDetails)
+	{
+		return dragSourceDetails.description.equals(1) && (parameterType == ParameterTypeGain || parameterType == ParameterTypeFilterFrequency);
+	}
+
+	virtual void itemDropped(const SourceDetails& dragSourceDetails)
+	{
+		setColour(rotarySliderFillColourId, originalSliderFillColour);
+		ModulationParameter modParam;
+		modParam.isModulated = true;
+		modParam.modulatorId = static_cast<uint32>(int(dragSourceDetails.description));
+		modulationMatrix->set(parameterType, modParam);
+	}
+
 	AudioProcessorParameter& param;
+	ParameterType parameterType;
+	HashMap<int, ModulationParameter>* modulationMatrix;
+
+private:
+	Colour originalSliderFillColour;
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ParameterSlider)
+
 };
 
 //==============================================================================
@@ -59,19 +90,31 @@ NoisemakerAudioProcessorEditor::NoisemakerAudioProcessorEditor (NoisemakerAudioP
 	timecodeDisplayLabel(String::empty),
 	gainLabel(String::empty, "Gain:"),
 	delayLabel(String::empty, "Delay:"),
-	filterLabel(String::empty, "Filter:")
+	filterLabel(String::empty, "Filter:"),
+	envAttackLabel(String::empty, "Attack:"),
+	envDecayLabel(String::empty, "Decay:")
 {
     // Make sure that before the constructor has finished, you've set the
     // editor's size to whatever you need it to be.
 	// add some sliders..
 	addAndMakeVisible(gainSlider = new ParameterSlider(*owner.gainParam));
 	gainSlider->setSliderStyle(Slider::Rotary);
+	gainSlider->parameterType = ParameterTypeGain;
+	gainSlider->modulationMatrix = &processor.modulationMatrix;
 
 	addAndMakeVisible(delaySlider = new ParameterSlider(*owner.delayParam));
 	delaySlider->setSliderStyle(Slider::Rotary);
 
 	addAndMakeVisible(filterSlider = new ParameterSlider(*owner.filterFrequencyParam));
 	filterSlider->setSliderStyle(Slider::Rotary);
+	filterSlider->parameterType = ParameterTypeFilterFrequency;
+	filterSlider->modulationMatrix = &processor.modulationMatrix;
+
+	addAndMakeVisible(envAttackSlider = new ParameterSlider(*owner.envAttackParam));
+	envAttackSlider->setSliderStyle(Slider::LinearVertical);
+
+	addAndMakeVisible(envDecaySlider = new ParameterSlider(*owner.envDecayParam));
+	envDecaySlider->setSliderStyle(Slider::LinearVertical);
 
 	// add some labels for the sliders..
 	gainLabel.attachToComponent(gainSlider, false);
@@ -82,6 +125,12 @@ NoisemakerAudioProcessorEditor::NoisemakerAudioProcessorEditor (NoisemakerAudioP
 
 	filterLabel.attachToComponent(filterSlider, false);
 	filterLabel.setFont(Font(11.0f));
+
+	envAttackLabel.attachToComponent(envAttackSlider, false);
+	envAttackLabel.setFont(Font(11.0f));
+
+	envDecayLabel.attachToComponent(envDecaySlider, false);
+	envDecayLabel.setFont(Font(11.0f));
 
 	// add the midi keyboard component..
 	addAndMakeVisible(keyboardComponent);
@@ -96,6 +145,11 @@ NoisemakerAudioProcessorEditor::NoisemakerAudioProcessorEditor (NoisemakerAudioP
 	waveformBox->addListener(this);
 	addAndMakeVisible(waveformBox);
 
+	envelopeConnector = new ModulationConnector();
+	envelopeConnector->setModulationId(1);
+	addAndMakeVisible(envelopeConnector);
+
+	processor.addModulatorWithId(ModulatorTypeEnvelope, 1);
 
 	// add the triangular resizer component for the bottom-right of the UI
 	addAndMakeVisible(resizer = new ResizableCornerComponent(this, &resizeLimits));
@@ -136,6 +190,12 @@ void NoisemakerAudioProcessorEditor::resized()
 	delaySlider->setBounds(sliderArea.removeFromLeft(jmin(180, sliderArea.getWidth())));
 	filterSlider->setBounds(sliderArea.removeFromLeft(jmin(180, sliderArea.getWidth())));
 
+	r.removeFromTop(10);
+	Rectangle<int> sliderArea2(r.removeFromTop(50));
+	envAttackSlider->setBounds(sliderArea2.removeFromLeft(jmin(180, sliderArea2.getWidth() / 2)));
+	envDecaySlider->setBounds(sliderArea2.removeFromLeft(jmin(180, sliderArea2.getWidth())));
+	envelopeConnector->setBounds(sliderArea2.removeFromLeft(20));
+
 	resizer->setBounds(getWidth() - 16, getHeight() - 16, 16, 16);
 
 	getProcessor().lastUIWidth = getWidth();
@@ -146,6 +206,14 @@ void NoisemakerAudioProcessorEditor::resized()
 void NoisemakerAudioProcessorEditor::timerCallback()
 {
 	updateTimecodeDisplay(getProcessor().lastPosInfo);
+}
+
+void NoisemakerAudioProcessorEditor::dragOperationStarted()
+{
+}
+
+void NoisemakerAudioProcessorEditor::dragOperationEnded()
+{
 }
 
 //==============================================================================
@@ -210,4 +278,5 @@ void NoisemakerAudioProcessorEditor::comboBoxChanged(ComboBox* comboBoxThatHasCh
 {
 	processor.setWaveform((Waveform)(comboBoxThatHasChanged->getSelectedId() - 1));
 }
+
 
