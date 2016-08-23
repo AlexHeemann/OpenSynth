@@ -14,6 +14,18 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "EnvelopeSegment.h"
 
+// Abstract base class for all things modulating
+class Modulator
+{
+public:
+	Modulator() {};
+	virtual ~Modulator() {};
+
+	virtual std::vector<double> getModulationBuffer() = 0;
+	virtual void calculateModulationBuffer(int numSamples) = 0;
+
+};
+
 class EnvelopeGenerator
 {
 public:
@@ -25,9 +37,8 @@ public:
 		EnvelopeStateRelease
 	} EnvelopeState;
 
-	EnvelopeGenerator(int sampleRate);
 	EnvelopeGenerator();
-	~EnvelopeGenerator();
+	virtual ~EnvelopeGenerator();
 	// Contains the values for the current buffer
 	std::vector<double> envelopeBuffer;
 
@@ -36,12 +47,11 @@ public:
 
 	void setAttackRate(double attackRate);
 	void setDecayRate(double decayRate);
-	void setPeakAmp(double peakAmp);
 	void setSampleRate(int sampleRate);
 	void setDurationInSec(double durationInSec);
 	void setStartingAmp(double startingAmp);
-
-	int getCurrentStartingSample();
+	void setAttackLevel(double attackLevel);
+	void setDecayLevel(double decayLevel);
 
 private:
 	double currentAmp = 0;
@@ -55,12 +65,14 @@ private:
 	int decayDuration;
 	int decayStart;
 	EnvelopeState state = EnvelopeStateAttack;
-	EnvelopeSegment attackSegment;
-	EnvelopeSegment decaySegment;
+	EnvelopeSegmentAttack attackSegment;
+	EnvelopeSegmentDecay decaySegment;
 
+	// Modifiable from the outside
 	double attackRate;
 	double decayRate;
-	double peakAmp;
+	double attackLevel;
+	double decayLevel;
 
 	double envInc;
 	double envCount;
