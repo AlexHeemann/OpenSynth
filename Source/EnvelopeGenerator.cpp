@@ -10,17 +10,13 @@
 
 #include "EnvelopeGenerator.h"
 
-EnvelopeGenerator::EnvelopeGenerator(int sampleRate) : sampleRate(sampleRate), attackRate(1.0), peakAmp(1.0), decayRate(1.0), currentAmp(0.0), currentStartingSample(0), durationInSec(2.0), envInc(0)
+EnvelopeGenerator::EnvelopeGenerator() : sampleRate(0.0), attackRate(1.0), decayRate(1.0), currentAmp(0.0), durationInSec(2.0), envInc(0.0)
 {
-	calculateDurations();
-}
-
-EnvelopeGenerator::EnvelopeGenerator() : sampleRate(0.0), attackRate(1.0), decayRate(1.0), peakAmp(1.0), currentAmp(0.0), currentStartingSample(0), durationInSec(2.0), envInc(0.0)
-{
+	setAttackLevel(1.0);
+	setDecayLevel(0.0);
+	setStartingAmp(0.0);
 	calculateDurations();
 	resetEnvelope();
-	attackSegment.setType(EnvelopeSegment::EnvelopeSegmentTypeAttack);
-	decaySegment.setType(EnvelopeSegment::EnvelopeSegmentTypeDecay);
 	attackSegment.setCurvature(EnvelopeSegment::EnvelopeCurvatureExponential);
 	decaySegment.setCurvature(EnvelopeSegment::EnvelopeCurvatureExponential);
 }
@@ -76,7 +72,6 @@ void EnvelopeGenerator::calculateEnvelopeBuffer(int numSamples)
 
 void EnvelopeGenerator::resetEnvelope()
 {
-	currentStartingSample = 0;
 	state = EnvelopeStateAttack;
 	calculateDurations();
 	attackSegment.resetSegment();
@@ -97,16 +92,6 @@ void EnvelopeGenerator::setDecayRate(double decayRate)
 	calculateDurations();
 }
 
-void EnvelopeGenerator::setPeakAmp(double peakAmp)
-{
-	this->peakAmp = std::fmin(1.0, peakAmp);
-	this->attackSegment.setPeakAmp(this->peakAmp);
-	this->attackSegment.setStartAmp(0.0);
-	this->attackSegment.setFinalAmp(this->peakAmp);
-	this->decaySegment.setStartAmp(attackSegment.getFinalAmp());
-	this->decaySegment.setFinalAmp(0.0);
-}
-
 void EnvelopeGenerator::setSampleRate(int sampleRate)
 {
 	this->sampleRate = sampleRate;
@@ -122,11 +107,20 @@ void EnvelopeGenerator::setDurationInSec(double durationInSec)
 void EnvelopeGenerator::setStartingAmp(double startingAmp)
 {
 	this->startingAmp = startingAmp;
+	this->attackSegment.setStartAmp(startingAmp);
 }
 
-int EnvelopeGenerator::getCurrentStartingSample()
+void EnvelopeGenerator::setAttackLevel(double attackLevel)
 {
-	return currentStartingSample;
+	this->attackLevel = std::fmin(1.0, attackLevel);
+	this->attackSegment.setFinalAmp(this->attackLevel);
+	this->decaySegment.setStartAmp(this->attackLevel);
+}
+
+void EnvelopeGenerator::setDecayLevel(double decayLevel)
+{
+	this->decayLevel = std::fmin(1.0, decayLevel);
+	this->decaySegment.setFinalAmp(this->decayLevel);
 }
 
 void EnvelopeGenerator::calculateDurations()
