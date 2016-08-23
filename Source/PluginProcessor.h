@@ -13,6 +13,7 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "EnvelopeGenerator.h"
+#include "IIRFilterDouble.h"
 
 typedef enum 
 {
@@ -21,6 +22,26 @@ typedef enum
 	WaveformSawtooth,
     WaveformTriangle,
 } Waveform;
+
+typedef enum
+{
+	ParameterTypeGain,
+	ParameterTypeFilterFrequency
+} ParameterType;
+
+typedef enum
+{
+	ModulatorTypeEnvelope,
+	ModulatorTypeLFO,
+} ModulatorType;
+
+struct ModulationParameter
+{
+	bool isModulated;
+	uint32 modulatorId;
+	double start;
+	double end;
+};
 
 //==============================================================================
 /**
@@ -95,6 +116,14 @@ public:
 	AudioParameterFloat* gainParam;
 	AudioParameterFloat* delayParam;
 	AudioParameterFloat* filterFrequencyParam;
+	AudioParameterFloat* envAttackParam;
+	AudioParameterFloat* envDecayParam;
+
+	HashMap<int, ModulationParameter> modulationMatrix;
+
+	void addModulatorWithId(ModulatorType type, uint32 id);
+	void removeModulatorWithId(uint32 id);
+	void removeAllModulators();
 
 private:
     //==============================================================================
@@ -113,12 +142,14 @@ private:
 	double currentSampleRate = 0;
 
 	Synthesiser synth;
-	EnvelopeGenerator envelope;
+	HashMap<int, EnvelopeGenerator*> modulatorsById;
+	std::vector<uint32> modulatorIDs;
 	// Contains filters for left and right channel
-	std::vector<IIRFilter> filters;
+	std::vector<IIRFilterDouble> filters;
 
 	void initialiseSynthForWaveform(const Waveform waveform, const int numVoices);
 	void initialiseLowPassFilter();
+	void initialiseLowPassFilter(double frequency);
 	void updateCurrentTimeInfoFromHost();
 
 	virtual void handleNoteOn(MidiKeyboardState* source,

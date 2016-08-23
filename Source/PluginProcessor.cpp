@@ -148,7 +148,7 @@ private:
 //==============================================================================
 NoisemakerAudioProcessor::NoisemakerAudioProcessor() :
 	lastUIWidth(600),
-	lastUIHeight(200),
+	lastUIHeight(260),
 	gainParam(nullptr),
 	delayParam(nullptr),
 	delayPosition(0)
@@ -161,9 +161,18 @@ NoisemakerAudioProcessor::NoisemakerAudioProcessor() :
 	addParameter(gainParam = new AudioParameterFloat("gain", "Gain", 0.0f, 1.0f, 0.9f));
 	addParameter(delayParam = new AudioParameterFloat("delay", "Delay Feedback", 0.0f, 1.0f, 0.5f));
 	addParameter(filterFrequencyParam = new AudioParameterFloat("filter", "Filter Frequency", 0.0f, 20000.0f, 20000.0f));
+	addParameter(envAttackParam = new AudioParameterFloat("attack", "Envelope Attack", 0.0f, 3.0f, 1.0f));
+	addParameter(envDecayParam = new AudioParameterFloat("decay", "Envelope Decay", 0.0f, 3.0f, 1.0f));
 
-	filters.push_back(IIRFilter());
-	filters.push_back(IIRFilter());
+	filters.push_back(IIRFilterDouble());
+	filters.push_back(IIRFilterDouble());
+
+	ModulationParameter modParam;
+	modParam.isModulated = true;
+	modParam.start = 0.0;
+	modParam.end = 1.0;
+	modParam.modulatorId = 1;
+	modulationMatrix.set(ParameterTypeGain, modParam);
 
 	initialiseSynthForWaveform(WaveformSine, 8);
 	keyboardState.addListener(this);
@@ -171,6 +180,7 @@ NoisemakerAudioProcessor::NoisemakerAudioProcessor() :
 
 NoisemakerAudioProcessor::~NoisemakerAudioProcessor()
 {
+	removeAllModulators();
 }
 
 void NoisemakerAudioProcessor::initialiseSynthForWaveform(const Waveform waveform, const int numVoices)
@@ -222,12 +232,17 @@ void NoisemakerAudioProcessor::initialiseSynthForWaveform(const Waveform wavefor
 
 void NoisemakerAudioProcessor::initialiseLowPassFilter()
 {
-	IIRCoefficients coefficients = IIRCoefficients::makeLowPass(currentSampleRate, filterFrequencyParam->get());
+	initialiseLowPassFilter(filterFrequencyParam->get());
+}
+
+void NoisemakerAudioProcessor::initialiseLowPassFilter(double frequency)
+{
+	IIRCoefficientsDouble coefficients = IIRCoefficientsDouble::makeLowPass(currentSampleRate, std::fmax(frequency, 1));
 	for (int filter = 0; filter < filters.size(); filter++)
 	{
 		filters[filter].setCoefficients(coefficients);
 	}
-}
+};
 
 //==============================================================================
 const String NoisemakerAudioProcessor::getName() const
@@ -288,9 +303,6 @@ void NoisemakerAudioProcessor::prepareToPlay (double sampleRate, int samplesPerB
     // Use this method as the place to do any pre-playback
     // initialisation that you need..
 	synth.setCurrentPlaybackSampleRate(sampleRate);
-	envelope.setSampleRate(sampleRate);
-	envelope.setPeakAmp(1.0);
-	envelope.resetEnvelope();
 	currentSampleRate = sampleRate;
 	keyboardState.reset();
 	initialiseLowPassFilter();
@@ -356,8 +368,6 @@ void NoisemakerAudioProcessor::process(AudioBuffer<FloatType>& buffer,
 {
 	const int numSamples = buffer.getNumSamples();
 
-	initialiseLowPassFilter();
-
 	// In case we have more outputs than inputs, we'll clear any output
 	// channels that didn't contain input data, (because these aren't
 	// guaranteed to be empty - they may contain garbage).
@@ -368,19 +378,25 @@ void NoisemakerAudioProcessor::process(AudioBuffer<FloatType>& buffer,
 	// add messages to the buffer if the user is clicking on the on-screen keys
 	keyboardState.processNextMidiBuffer(midiMessages, 0, numSamples, true);
 
-	envelope.calculateEnvelopeBuffer(numSamples);
+	for (int idx = 0; idx < modulatorIDs.size(); idx++)
+	{
+		EnvelopeGenerator* env = modulatorsById[modulatorIDs[idx]];
+		env->calculateEnvelopeBuffer(numSamples);
+	}
+
+	initialiseLowPassFilter(filterFrequencyParam->get());
 
 	// and now get our synth to process these midi events and generate its output.
 	synth.renderNextBlock(buffer, midiMessages, 0, numSamples);
-
-	// Apply our delay effect to the new output..
-	applyDelay(buffer, delayBuffer);
 
 	// Apply filter
 	applyFilter(buffer, delayBuffer);
 
 	// apply our gain-change to the incoming data..
 	applyGain(buffer, delayBuffer);
+
+	// Apply our delay effect to the new output..
+	applyDelay(buffer, delayBuffer);
 
 	// Now ask the host for the current time so we can store it to be displayed later...
 	updateCurrentTimeInfoFromHost();
@@ -391,13 +407,23 @@ void NoisemakerAudioProcessor::applyGain(AudioBuffer<FloatType>& buffer, AudioBu
 {
 	ignoreUnused(delayBuffer);
 	const float gainLevel = gainParam->get();
+	ModulationParameter modParam = modulationMatrix[ParameterTypeGain];
+	uint32 modId = modParam.modulatorId;
+	EnvelopeGenerator* envGenerator = nullptr;
+	if (modulatorsById.contains(modId))
+	{
+		envGenerator = modulatorsById[modId];
+	}
+	
+	bool isModulated = modParam.isModulated && envGenerator != nullptr;
 
 	for (int channel = 0; channel < buffer.getNumChannels(); ++channel)
 	{
 		FloatType* const channelData = buffer.getWritePointer(channel);
+		isModulated = isModulated && envGenerator->envelopeBuffer.size() >= buffer.getNumSamples();
 		for (int sample = 0; sample < buffer.getNumSamples(); sample++)
 		{
-			channelData[sample] *= (gainLevel * envelope.envelopeBuffer[sample]);
+			channelData[sample] *= (gainLevel * (isModulated ? envGenerator->envelopeBuffer[sample] : 1.0));
 		}
 	}
 }
@@ -521,6 +547,43 @@ void NoisemakerAudioProcessor::setWaveform(Waveform waveform)
 	initialiseSynthForWaveform(waveform, 8);
 }
 
+void NoisemakerAudioProcessor::addModulatorWithId(ModulatorType type, uint32 id)
+{
+	if (type == ModulatorTypeEnvelope)
+	{
+		EnvelopeGenerator* envelope = new EnvelopeGenerator();
+		envelope->setSampleRate(currentSampleRate);
+		envelope->resetEnvelope();
+		modulatorsById.set(id, envelope);
+		modulatorIDs.push_back(id);
+	}
+}
+
+void NoisemakerAudioProcessor::removeModulatorWithId(uint32 id)
+{
+	if (modulatorsById.contains(id))
+	{
+		EnvelopeGenerator* modulator = modulatorsById[id];
+		modulatorsById.remove(id);
+		delete modulator;
+	}
+}
+
+void NoisemakerAudioProcessor::removeAllModulators()
+{
+	HashMap<int, EnvelopeGenerator*>::Iterator i(modulatorsById);
+	std::vector<int> keys;
+	
+	while (i.next())
+	{
+		keys.push_back(i.getKey());
+	}
+	for (int key : keys)
+	{
+		removeModulatorWithId(key);
+	}
+}
+
 //==============================================================================
 // This creates new instances of the plugin..
 AudioProcessor* JUCE_CALLTYPE createPluginFilter()
@@ -533,7 +596,17 @@ AudioProcessor* JUCE_CALLTYPE createPluginFilter()
 void NoisemakerAudioProcessor::handleNoteOn(MidiKeyboardState* source,
 	int midiChannel, int midiNoteNumber, float velocity)
 {
-	envelope.resetEnvelope();
+	for (int index = 0; index < modulatorIDs.size(); index++)
+	{
+		EnvelopeGenerator* modulator = modulatorsById[modulatorIDs[index]];
+		const double attackRate = envAttackParam->get();
+		const double decayRate = envDecayParam->get();
+
+		modulator->setDurationInSec(attackRate + decayRate);
+		modulator->setAttackRate(attackRate);
+		modulator->setDecayRate(decayRate);
+		modulator->resetEnvelope();
+	}
 }
 
 void NoisemakerAudioProcessor::handleNoteOff(MidiKeyboardState * source, int midiChannel, int midiNoteNumber, float velocity)
