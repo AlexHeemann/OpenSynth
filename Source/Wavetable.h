@@ -19,6 +19,7 @@ public:
 	Wavetable(float lowestFrequency, int tableSize, int sampleRate);
 	virtual ~Wavetable();
 	virtual float* getSubtableForFrequency(float frequency);
+    int getTableSize();
 
 protected:
 	int lowestFrequency;

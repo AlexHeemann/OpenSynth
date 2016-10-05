@@ -12,6 +12,7 @@
 #define SAWTOOTHWAVE_H_INCLUDED
 
 #include "../JuceLibraryCode/JuceHeader.h"
+#include "SawtoothWavetable.h"
 
 class SawtoothWaveSound : public SynthesiserSound
 {
@@ -29,7 +30,8 @@ class SawtoothWaveVoice : public SynthesiserVoice
 public:
 	SawtoothWaveVoice()
 		: angleDelta(0.0),
-		tailOff(0.0)
+		tailOff(0.0),
+        wavetable(SawtoothWavetable(40.0, 2048, getSampleRate()))
 	{
 	}
 
@@ -102,12 +104,16 @@ private:
 	{
 		if (angleDelta != 0.0)
 		{
+            float* subtable = wavetable.getSubtableForFrequency(frequency);
+            int tableSize = wavetable.getTableSize();
+            double twoPi = 2.0 * double_Pi;
 			if (tailOff > 0)
 			{
-				double twoPi = 2.0 * double_Pi;
 				while (--numSamples >= 0)
 				{
-					FloatType currentSample = level * ((currentAngle / double_Pi) - 1);
+                    int index = (int)((currentAngle / twoPi) * tableSize);
+                    FloatType currentSample = level * subtable[index];
+                    //DBG(subtable[index]);
 
 					for (int i = outputBuffer.getNumChannels(); --i >= 0;)
 						outputBuffer.addSample(i, startSample, currentSample);
@@ -132,10 +138,11 @@ private:
 			}
 			else
 			{
-				double twoPi = 2.0 * double_Pi;
 				while (--numSamples >= 0)
 				{
-					FloatType currentSample = level * ((currentAngle / double_Pi) - 1);
+                    int index = (int)((currentAngle / twoPi) * tableSize);
+					FloatType currentSample = level * subtable[index];
+                    //DBG(subtable[index]);
 
 					for (int i = outputBuffer.getNumChannels(); --i >= 0;)
 						outputBuffer.addSample(i, startSample, currentSample);
@@ -152,6 +159,7 @@ private:
 	}
 
 	double currentAngle, angleDelta, level, tailOff, frequency, period;
+    SawtoothWavetable wavetable;
 };
 
 

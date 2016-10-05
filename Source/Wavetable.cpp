@@ -13,16 +13,16 @@
 Wavetable::Wavetable(float lowestFrequency, int tableSize, int sampleRate) : lowestFrequency(lowestFrequency), tableSize(tableSize), sampleRate(sampleRate)
 {
 	// Initialize subtables
-	subtables = (float**)malloc(sizeof(float*) * 8);
-	for (int i = 0; i < 8; i++)
+	subtables = (float**)calloc(9, sizeof(float*));
+	for (int i = 0; i < 9; i++)
 	{
-		subtables[i] = (float*)malloc(sizeof(float) * tableSize);
+		subtables[i] = (float*)calloc(tableSize, sizeof(float));
 	}
 }
 
 Wavetable::~Wavetable()
 {
-	for (int i = 0; i < 8; i++)
+	for (int i = 0; i < 9; i++)
 	{
 		free(subtables[i]);
 	}
@@ -45,5 +45,10 @@ float* Wavetable::getSubtableForFrequency(float frequency)
 		}
 	}
 	
-	return subtables[index - 1];
+	return subtables[index];
+}
+
+int Wavetable::getTableSize()
+{
+    return tableSize;
 }

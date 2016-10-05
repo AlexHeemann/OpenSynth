@@ -30,7 +30,7 @@ void SawtoothWavetable::calculateSubtables()
     float phaseIncrement_0 = frqRad * frequency;
     
 	int numPartials = 368;
-	for (int index = 0; index < 8; index++)
+	for (int index = 0; index < 9; index++)
     {
         for (int partialIdx = 0; partialIdx < numPartials; partialIdx++)
         {
@@ -39,32 +39,28 @@ void SawtoothWavetable::calculateSubtables()
             float phaseIncrement = phaseIncrement_0 * partialMultiple;
             float phase = 0.0;
             
-            // Calculate scale to normalize amplitudes
-            for (int n = 0; n < tableSize; n++)
-            {
-                double value = 0.0;
-                value += std::sin(phase) * partialAmplitude;
-                if ((phase += phaseIncrement) >= twoPi)
-                {
-                    phase -= twoPi;
-                }
-
-                scale = value > scale ? value : scale;
-            }
-            
             for (int sampleIdx = 0; sampleIdx < tableSize; sampleIdx++)
             {
-                double value = 0.0;
-                value += std::sin(phase) * partialAmplitude;
+                double value = std::sin(phase) * partialAmplitude;
                 if ((phase += phaseIncrement) >= twoPi)
                 {
                     phase -= twoPi;
                 }
 
-                subtables[index][sampleIdx] = (value / scale);
+                subtables[index][sampleIdx] += value;
             }
         }
+        // Calculate scale to normalize amplitudes
+        scale = 1.0;
+        for (int sampleIdx = 0; sampleIdx < tableSize; sampleIdx++)
+        {
+            scale = subtables[index][sampleIdx] > scale ? subtables[index][sampleIdx] : scale;
+        }
+        for (int sampleIdx = 0; sampleIdx < tableSize; sampleIdx++)
+        {
+            subtables[index][sampleIdx] = subtables[index][sampleIdx] / scale;
+        }
         
-        numPartials /= 2;
+        numPartials = std::max(1, numPartials / 2);
 	}
 }

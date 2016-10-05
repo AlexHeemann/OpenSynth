@@ -18,9 +18,9 @@ class SawtoothWavetable : public Wavetable
 public:
 	SawtoothWavetable(float lowestFrequency, int tableSize, int sampleRate);
 	~SawtoothWavetable();
-
+    
 protected:
-	virtual void calculateSubtables();
+	virtual void calculateSubtables() override;
 };
 
 
