@@ -8,10 +8,16 @@
               pluginCode="Nois" pluginChannelConfigs="" pluginIsSynth="1" pluginWantsMidiIn="1"
               pluginProducesMidiOut="1" pluginIsMidiEffectPlugin="0" pluginEditorRequiresKeys="1"
               pluginAUExportPrefix="NoisemakerAU" pluginRTASCategory="" aaxIdentifier="com.yourcompany.Noisemaker"
-              pluginAAXCategory="AAX_ePlugInCategory_Dynamics" jucerVersion="4.2.3"
+              pluginAAXCategory="AAX_ePlugInCategory_Dynamics" jucerVersion="4.2.4"
               companyName="Alexander Heemann">
   <MAINGROUP id="A4iQ36" name="Noisemaker">
     <GROUP id="{115CB73A-FD2A-ACC8-26C7-8F73C7C67676}" name="Source">
+      <FILE id="KB5f4P" name="SawtoothWavetable.cpp" compile="1" resource="0"
+            file="Source/SawtoothWavetable.cpp"/>
+      <FILE id="G54pNc" name="SawtoothWavetable.h" compile="0" resource="0"
+            file="Source/SawtoothWavetable.h"/>
+      <FILE id="uI7ngR" name="Wavetable.cpp" compile="1" resource="0" file="Source/Wavetable.cpp"/>
+      <FILE id="TUCJNR" name="Wavetable.h" compile="0" resource="0" file="Source/Wavetable.h"/>
       <GROUP id="{01DF704A-2EAA-FA7C-AB9F-596ED2D32280}" name="DspFilters">
         <FILE id="d9Mzep" name="Bessel.cpp" compile="1" resource="0" file="Source/DspFilters/Bessel.cpp"/>
         <FILE id="OeBMWs" name="Bessel.h" compile="0" resource="0" file="Source/DspFilters/Bessel.h"/>
