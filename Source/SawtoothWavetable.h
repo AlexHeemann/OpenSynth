@@ -16,7 +16,7 @@
 class SawtoothWavetable : public Wavetable
 {
 public:
-	SawtoothWavetable(float lowestFrequency, int tableSize);
+	SawtoothWavetable(float lowestFrequency, int tableSize, int sampleRate);
 	~SawtoothWavetable();
 
 protected:

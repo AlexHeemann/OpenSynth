@@ -10,19 +10,14 @@
 
 #include "Wavetable.h"
 
-Wavetable::Wavetable(float lowestFrequency, int tableSize)
+Wavetable::Wavetable(float lowestFrequency, int tableSize, int sampleRate) : lowestFrequency(lowestFrequency), tableSize(tableSize), sampleRate(sampleRate)
 {
-	lowestFrequency = lowestFrequency;
-	tableSize = tableSize;
-
 	// Initialize subtables
 	subtables = (float**)malloc(sizeof(float*) * 8);
 	for (int i = 0; i < 8; i++)
 	{
 		subtables[i] = (float*)malloc(sizeof(float) * tableSize);
 	}
-
-	calculateSubtables();
 }
 
 Wavetable::~Wavetable()
