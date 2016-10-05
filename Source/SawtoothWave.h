@@ -48,10 +48,8 @@ public:
 		level = velocity * 0.15;
 		tailOff = 0.0;
 
-		double cyclesPerSecond = MidiMessage::getMidiNoteInHertz(midiNoteNumber);
-		double cyclesPerSample = cyclesPerSecond / getSampleRate();
+		frequency = MidiMessage::getMidiNoteInHertz(midiNoteNumber);
 		double frqRad = (2.0 * double_Pi) / getSampleRate();
-		frequency = cyclesPerSecond;
 		period = 1 / frequency;
 
 		angleDelta = frqRad * frequency;

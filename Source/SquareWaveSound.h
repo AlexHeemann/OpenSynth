@@ -12,6 +12,7 @@
 #define SQUAREWAVESOUND_H_INCLUDED
 
 #include "../JuceLibraryCode/JuceHeader.h"
+#include "SquareWavetable.h"
 
 class SquareWaveSound : public SynthesiserSound
 {
@@ -30,12 +31,8 @@ public:
 	SquareWaveVoice()
 		: angleDelta(0.0),
 		tailOff(0.0),
-		numPartials(10)
+		wavetable(SquareWavetable(40.0, 2048, getSampleRate()))
 	{
-		partialMultiples.resize(numPartials, 0);
-		partialAmplitudes.resize(numPartials, 0.0);
-		phases.resize(numPartials, 0.0);
-		phaseIncrements.resize(numPartials, 0.0);
 	}
 
 	bool canPlaySound(SynthesiserSound* sound) override
@@ -51,43 +48,11 @@ public:
 		level = velocity * 0.15;
 		tailOff = 0.0;
 
-		double cyclesPerSecond = MidiMessage::getMidiNoteInHertz(midiNoteNumber);
-		double cyclesPerSample = cyclesPerSecond / getSampleRate();
-		double samplesPerCycle = getSampleRate() / cyclesPerSecond;
-		frequency = cyclesPerSecond;
+		frequency = MidiMessage::getMidiNoteInHertz(midiNoteNumber);
 		frqRad = twoPi / getSampleRate();
 		period = 1 / frequency;
 
-		angleDelta = 1 / getSampleRate();
-
-		phaseIncrements[0] = frqRad * frequency;
-		phases[0] = 0.0;
-		partialMultiples[0] = 1.0;
-		partialAmplitudes[0] = 1.0;
-		for (int partialIdx = 1; partialIdx < numPartials; partialIdx++)
-		{
-			partialMultiples[partialIdx] = (2 * partialIdx) - 1;
-			partialAmplitudes[partialIdx] = 1.0 / partialMultiples[partialIdx];
-		}
-
-		for (int partialIdx = 1; partialIdx < numPartials; partialIdx++)
-		{
-			phaseIncrements[partialIdx] = phaseIncrements[0] * partialMultiples[partialIdx];
-		}
-		// Calculate scale to normalize amplitudes
-		for (int n = 0; n < samplesPerCycle; n++)
-		{
-			double value = 0.0;
-			for (int partialIdx = 0; partialIdx < numPartials; partialIdx++)
-			{
-				value += std::sin(phases[partialIdx]) * partialAmplitudes[partialIdx];
-				if ((phases[partialIdx] += phaseIncrements[partialIdx]) >= twoPi)
-				{
-					phases[partialIdx] -= twoPi;
-				}
-			}
-			scale = value > scale ? value : scale;
-		}
+		angleDelta = frqRad * frequency;
 	}
 
 	void stopNote(float /*velocity*/, bool allowTailOff) override
@@ -137,96 +102,57 @@ private:
 	{
 		if (angleDelta != 0.0)
 		{
-			double midPoint = period / 2.0;
-			if (tailOff > 0)
-			{
-				while (--numSamples >= 0)
-				{
-					FloatType currentSample;
-					/*
-					if (currentAngle < midPoint)
-					{
-						currentSample = static_cast<FloatType> (level * tailOff);
-					}
-					else
-					{
-						currentSample = static_cast<FloatType> (-level * tailOff);
-					}
-					*/
-
-					double value = 0.0;
-					for (int partialIdx = 0; partialIdx < numPartials; partialIdx++)
-					{
-						value += std::sin(phases[partialIdx]) * partialAmplitudes[partialIdx];
-						if ((phases[partialIdx] += phaseIncrements[partialIdx]) >= twoPi)
-						{
-							phases[partialIdx] -= twoPi;
-						}
-					}
-					currentSample = level * tailOff * (value / scale);
-
-					for (int i = outputBuffer.getNumChannels(); --i >= 0;)
-						outputBuffer.addSample(i, startSample, currentSample);
-
-					/*
-					currentAngle += angleDelta;
-					if (currentAngle >= period)
-					{
-						currentAngle -= period;
-					}
-					*/
-					++startSample;
-
-					tailOff *= 0.99;
-
-					if (tailOff <= 0.005)
-					{
-						clearCurrentNote();
-
-						angleDelta = 0.0;
-						break;
-					}
-				}
-			}
-			else
-			{
-				while (--numSamples >= 0)
-				{
-					FloatType currentSample;
-					/*
-					if (currentAngle < midPoint)
-					{
-						currentSample = static_cast<FloatType> (level);
-					}
-					else
-					{
-						currentSample = static_cast<FloatType> (-level);
-					}
-					*/
-					double value = 0.0;
-					for (int partialIdx = 0; partialIdx < numPartials; partialIdx++)
-					{
-						value += std::sin(phases[partialIdx]) * partialAmplitudes[partialIdx];
-						if ((phases[partialIdx] += phaseIncrements[partialIdx]) >= twoPi)
-						{
-							phases[partialIdx] -= twoPi;
-						}
-					}
-					currentSample = level * (value / scale);
-
-					for (int i = outputBuffer.getNumChannels(); --i >= 0;)
-						outputBuffer.addSample(i, startSample, currentSample);
-
-					/*
-					currentAngle += angleDelta;
-					if (currentAngle >= period)
-					{
-						currentAngle -= period;
-					}
-					*/
-					++startSample;
-				}
-			}
+            float* subtable = wavetable.getSubtableForFrequency(frequency);
+            int tableSize = wavetable.getTableSize();
+            double twoPi = 2.0 * double_Pi;
+            if (tailOff > 0)
+            {
+                while (--numSamples >= 0)
+                {
+                    int index = (int)((currentAngle / twoPi) * tableSize);
+                    FloatType currentSample = level * subtable[index];
+                    //DBG(subtable[index]);
+                    
+                    for (int i = outputBuffer.getNumChannels(); --i >= 0;)
+                        outputBuffer.addSample(i, startSample, currentSample);
+                    
+                    currentAngle += angleDelta;
+                    if (currentAngle >= twoPi)
+                    {
+                        currentAngle -= twoPi;
+                    }
+                    ++startSample;
+                    
+                    tailOff *= 0.99;
+                    
+                    if (tailOff <= 0.005)
+                    {
+                        clearCurrentNote();
+                        
+                        angleDelta = 0.0;
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                while (--numSamples >= 0)
+                {
+                    int index = (int)((currentAngle / twoPi) * tableSize);
+                    FloatType currentSample = level * subtable[index];
+                    //DBG(subtable[index]);
+                    
+                    for (int i = outputBuffer.getNumChannels(); --i >= 0;)
+                        outputBuffer.addSample(i, startSample, currentSample);
+                    
+                    currentAngle += angleDelta;
+                    if (currentAngle >= twoPi)
+                    {
+                        currentAngle -= twoPi;
+                    }
+                    ++startSample;
+                }
+            }
 		}
 	}
 
@@ -234,16 +160,7 @@ private:
 	double frqRad;
 	double twoPi = 2.0 * double_Pi;
 
-	int numPartials;
-	std::vector<int> partialMultiples;
-	std::vector<double> partialAmplitudes;
-	/* The current phase of each partial */
-	std::vector<double> phases;
-	/* The phase increments of each partial */
-	std::vector<double> phaseIncrements;
-	/* Scale to normalize amplitude */
-	double scale;
-	std::vector<double> sigma;
+    SquareWavetable wavetable;
 };
 
 
