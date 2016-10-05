@@ -11,7 +11,7 @@
 #ifndef ENVELOPESEGMENT_H_INCLUDED
 #define ENVELOPESEGMENT_H_INCLUDED
 
-#include <cmath.>
+#include <cmath>
 
 class EnvelopeSegment
 {
