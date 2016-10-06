@@ -18,6 +18,7 @@ Wavetable::Wavetable(float lowestFrequency, int tableSize, int sampleRate) : low
 	{
 		subtables[i] = (float*)calloc(tableSize, sizeof(float));
 	}
+    calculateSubtables();
 }
 
 Wavetable::~Wavetable()
@@ -51,4 +52,11 @@ float* Wavetable::getSubtableForFrequency(float frequency)
 int Wavetable::getTableSize()
 {
     return tableSize;
+}
+
+void Wavetable::setSampleRate(int sampleRate)
+{
+    this->sampleRate = sampleRate;
+    calculateSubtables();
+    
 }

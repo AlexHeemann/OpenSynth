@@ -13,6 +13,7 @@
 #include "SquareWaveSound.h"
 #include "SawtoothWave.h"
 #include "TriangleWave.h"
+#include "WavetableVoice.h"
 
 //==============================================================================
 /** A demo synth sound that's just a basic sine wave.. */
@@ -151,7 +152,9 @@ NoisemakerAudioProcessor::NoisemakerAudioProcessor() :
 	lastUIHeight(260),
 	gainParam(nullptr),
 	delayParam(nullptr),
-	delayPosition(0)
+	delayPosition(0),
+    sawtoothWavetable(SawtoothWavetable(40.0, 4096, getSampleRate())),
+    squareWavetable(SquareWavetable(40.0, 4096, getSampleRate()))
 {
 	lastPosInfo.resetToDefault();
 
@@ -177,7 +180,7 @@ NoisemakerAudioProcessor::NoisemakerAudioProcessor() :
 	modParamGain.end = 1.0;
 	modParamGain.modulatorId = 1;
 	modulationMatrix.set(ParameterTypeGain, modParamGain);
-
+    
 	initialiseLowPassFilter();
 	initialiseSynthForWaveform(WaveformSine, 8);
 	keyboardState.addListener(this);
@@ -202,10 +205,16 @@ void NoisemakerAudioProcessor::initialiseSynthForWaveform(const Waveform wavefor
 			synth.addVoice(new SineWaveVoice());
 			break;
 		case WaveformSquare:
-			synth.addVoice(new SquareWaveVoice());
-			break;
+            {
+                WavetableVoice *squareWaveVoice = new WavetableVoice(squareWavetable);
+                synth.addVoice(squareWaveVoice);
+            }
+                break;
 		case WaveformSawtooth:
-			synth.addVoice(new SawtoothWaveVoice());
+            {
+                WavetableVoice *sawtoothVoice = new WavetableVoice(sawtoothWavetable);
+                synth.addVoice(sawtoothVoice);
+            }
 			break;
         case WaveformTriangle:
             synth.addVoice(new TriangleWaveVoice());
@@ -222,10 +231,10 @@ void NoisemakerAudioProcessor::initialiseSynthForWaveform(const Waveform wavefor
 		synth.addSound(new SineWaveSound());
 		break;
 	case WaveformSquare:
-		synth.addSound(new SquareWaveSound());
+		synth.addSound(new WavetableSound());
 		break;
 	case WaveformSawtooth:
-		synth.addSound(new SawtoothWaveSound());
+		synth.addSound(new WavetableSound());
 		break;
     case WaveformTriangle:
         synth.addSound(new TriangleWaveSound());
@@ -313,6 +322,8 @@ void NoisemakerAudioProcessor::prepareToPlay (double sampleRate, int samplesPerB
 {
     // Use this method as the place to do any pre-playback
     // initialisation that you need..
+    sawtoothWavetable.setSampleRate(sampleRate);
+    squareWavetable.setSampleRate(sampleRate);
 	synth.setCurrentPlaybackSampleRate(sampleRate);
 	currentSampleRate = sampleRate;
 	keyboardState.reset();

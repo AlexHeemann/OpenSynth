@@ -11,7 +11,7 @@
 #include "SquareWavetable.h"
 
 SquareWavetable::SquareWavetable(float lowestFrequency, int tableSize, int sampleRate) :
-Wavetable(lowestFrequency, tableSize, sampleRate)
+    Wavetable(lowestFrequency, tableSize, sampleRate)
 {
     calculateSubtables();
 }
@@ -23,6 +23,10 @@ SquareWavetable::~SquareWavetable()
 
 void SquareWavetable::calculateSubtables()
 {
+    if (sampleRate <= 0)
+    {
+        return;
+    }
     currentAngle = 0.0;
     frqRad = twoPi / sampleRate;
     
@@ -30,12 +34,16 @@ void SquareWavetable::calculateSubtables()
     float phaseIncrement_0 = frqRad * frequency;
     
     int numPartials = 368;
+    // Lanczos sigma factor to eliminate much of the ripple
+    float sigmaK = double_Pi / numPartials;
     for (int index = 0; index < 9; index++)
     {
         for (int partialIdx = 0; partialIdx < numPartials; partialIdx++)
         {
             float partialMultiple = partialIdx == 0 ? 1.0 : (2 * partialIdx) - 1;
-            float partialAmplitude = partialIdx == 0 ? 1.0 : 1.0 / partialMultiple;
+            float sigmaN = partialMultiple * sigmaK;
+            float sigma = std::sin(sigmaN) / sigmaN;
+            float partialAmplitude = partialIdx == 0 ? 1.0 : (1.0 / partialMultiple) * sigma;
             float phaseIncrement = phaseIncrement_0 * partialMultiple;
             float phase = 0.0;
             

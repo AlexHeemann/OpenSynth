@@ -21,8 +21,14 @@ SawtoothWavetable::~SawtoothWavetable()
 
 }
 
+
+
 void SawtoothWavetable::calculateSubtables()
 {
+    if (sampleRate <= 0)
+    {
+        return;
+    }
     currentAngle = 0.0;
     frqRad = twoPi / sampleRate;
     
@@ -30,12 +36,16 @@ void SawtoothWavetable::calculateSubtables()
     float phaseIncrement_0 = frqRad * frequency;
     
 	int numPartials = 368;
+    // Lanczos sigma factor to eliminate much of the ripple
+    float sigmaK = double_Pi / numPartials;
 	for (int index = 0; index < 9; index++)
     {
         for (int partialIdx = 0; partialIdx < numPartials; partialIdx++)
         {
             float partialMultiple = partialIdx + 1;
-            float partialAmplitude = 1.0 / partialMultiple;
+            float sigmaN = partialMultiple * sigmaK;
+            float sigma = std::sin(sigmaN) / sigmaN;
+            float partialAmplitude = (1.0 / partialMultiple) * sigma;
             float phaseIncrement = phaseIncrement_0 * partialMultiple;
             float phase = 0.0;
             

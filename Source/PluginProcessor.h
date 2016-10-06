@@ -15,6 +15,8 @@
 #include "EnvelopeGenerator.h"
 #include "IIRFilterDouble.h"
 #include "DspFilters/Dsp.h"
+#include "SawtoothWavetable.h"
+#include "SquareWavetable.h"
 
 typedef enum 
 {
@@ -143,6 +145,8 @@ private:
 	double currentSampleRate = 0;
 
 	Synthesiser synth;
+    SawtoothWavetable sawtoothWavetable;
+    SquareWavetable squareWavetable;
 	HashMap<int, EnvelopeGenerator*> modulatorsById;
 	std::vector<uint32> modulatorIDs;
 	// Contains filters for left and right channel

@@ -20,6 +20,7 @@ public:
 	virtual ~Wavetable();
 	virtual float* getSubtableForFrequency(float frequency);
     int getTableSize();
+    virtual void setSampleRate(int sampleRate);
 
 protected:
 	int lowestFrequency;
@@ -41,7 +42,7 @@ protected:
     double scale;
     std::vector<double> sigma;
     
-	virtual void calculateSubtables() = 0;
+    virtual void calculateSubtables() { /* override in subclass */ } ;
 };
 
 

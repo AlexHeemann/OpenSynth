@@ -31,7 +31,7 @@ public:
 	SquareWaveVoice()
 		: angleDelta(0.0),
 		tailOff(0.0),
-		wavetable(SquareWavetable(40.0, 2048, getSampleRate()))
+		wavetable(SquareWavetable(40.0, 4096, getSampleRate()))
 	{
 	}
 
@@ -128,7 +128,7 @@ private:
                     if (tailOff <= 0.005)
                     {
                         clearCurrentNote();
-                        
+                        currentAngle = 0.0;
                         angleDelta = 0.0;
                         break;
                     }
