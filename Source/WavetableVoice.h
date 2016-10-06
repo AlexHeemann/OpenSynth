@@ -56,12 +56,24 @@ public:
         processBlock(outputBuffer, startSample, numSamples);
     }
     
+    /**
+     * Set the length of the release (in samples)
+     */
+    void setReleaseLength(int releaseLength);
+    
+    /**
+     * Set the wavetable to use for the voice
+     */
+    void setWavetable(Wavetable& wavetable);
+    
 private:
     
     template <typename FloatType>
     void processBlock(AudioBuffer<FloatType>& outputBuffer, int startSample, int numSamples);
     double currentAngle, angleDelta, level, tailOff, frequency, period;
     Wavetable& wavetable;
+    int releaseLength;
+    int releaseCounter;
 };
 
 
