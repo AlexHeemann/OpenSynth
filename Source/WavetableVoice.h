@@ -70,7 +70,7 @@ private:
     
     template <typename FloatType>
     void processBlock(AudioBuffer<FloatType>& outputBuffer, int startSample, int numSamples);
-    double currentAngle, angleDelta, level, tailOff, frequency, period;
+    double currentPhase, phaseIncrement, level, frequency;
     Wavetable& wavetable;
     int releaseLength;
     int releaseCounter;
