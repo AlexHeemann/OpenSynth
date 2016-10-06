@@ -10,8 +10,6 @@
 
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
-#include "SquareWaveSound.h"
-#include "SawtoothWave.h"
 #include "TriangleWave.h"
 #include "WavetableVoice.h"
 
