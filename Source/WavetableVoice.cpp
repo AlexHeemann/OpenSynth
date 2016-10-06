@@ -91,7 +91,6 @@ void WavetableVoice::processBlock(AudioBuffer<FloatType>& outputBuffer, int star
                     currentPhase -= twoPi;
                 }
                 ++startSample;
-                
                 releaseCounter--;
                 
                 if (releaseCounter <= 0)

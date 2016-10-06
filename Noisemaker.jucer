@@ -12,20 +12,26 @@
               companyName="Alexander Heemann">
   <MAINGROUP id="A4iQ36" name="Noisemaker">
     <GROUP id="{115CB73A-FD2A-ACC8-26C7-8F73C7C67676}" name="Source">
-      <FILE id="lrvHWc" name="WavetableVoice.cpp" compile="1" resource="0"
-            file="Source/WavetableVoice.cpp"/>
-      <FILE id="FsNgD5" name="WavetableVoice.h" compile="0" resource="0"
-            file="Source/WavetableVoice.h"/>
-      <FILE id="LMj4IL" name="SquareWavetable.cpp" compile="1" resource="0"
-            file="Source/SquareWavetable.cpp"/>
-      <FILE id="r8x9ry" name="SquareWavetable.h" compile="0" resource="0"
-            file="Source/SquareWavetable.h"/>
-      <FILE id="KB5f4P" name="SawtoothWavetable.cpp" compile="1" resource="0"
-            file="Source/SawtoothWavetable.cpp"/>
-      <FILE id="G54pNc" name="SawtoothWavetable.h" compile="0" resource="0"
-            file="Source/SawtoothWavetable.h"/>
-      <FILE id="uI7ngR" name="Wavetable.cpp" compile="1" resource="0" file="Source/Wavetable.cpp"/>
-      <FILE id="TUCJNR" name="Wavetable.h" compile="0" resource="0" file="Source/Wavetable.h"/>
+      <FILE id="HbSOEp" name="Processor.h" compile="0" resource="0" file="Source/Processor.h"/>
+      <FILE id="h6HzZR" name="AmpProcessor.cpp" compile="1" resource="0"
+            file="Source/AmpProcessor.cpp"/>
+      <FILE id="tZtJ1d" name="AmpProcessor.h" compile="0" resource="0" file="Source/AmpProcessor.h"/>
+      <GROUP id="{8C6B5EB4-14D6-B31F-0FAF-605FBB7D7ABC}" name="Wavetables">
+        <FILE id="lrvHWc" name="WavetableVoice.cpp" compile="1" resource="0"
+              file="Source/WavetableVoice.cpp"/>
+        <FILE id="FsNgD5" name="WavetableVoice.h" compile="0" resource="0"
+              file="Source/WavetableVoice.h"/>
+        <FILE id="LMj4IL" name="SquareWavetable.cpp" compile="1" resource="0"
+              file="Source/SquareWavetable.cpp"/>
+        <FILE id="r8x9ry" name="SquareWavetable.h" compile="0" resource="0"
+              file="Source/SquareWavetable.h"/>
+        <FILE id="KB5f4P" name="SawtoothWavetable.cpp" compile="1" resource="0"
+              file="Source/SawtoothWavetable.cpp"/>
+        <FILE id="G54pNc" name="SawtoothWavetable.h" compile="0" resource="0"
+              file="Source/SawtoothWavetable.h"/>
+        <FILE id="uI7ngR" name="Wavetable.cpp" compile="1" resource="0" file="Source/Wavetable.cpp"/>
+        <FILE id="TUCJNR" name="Wavetable.h" compile="0" resource="0" file="Source/Wavetable.h"/>
+      </GROUP>
       <GROUP id="{01DF704A-2EAA-FA7C-AB9F-596ED2D32280}" name="DspFilters">
         <FILE id="d9Mzep" name="Bessel.cpp" compile="1" resource="0" file="Source/DspFilters/Bessel.cpp"/>
         <FILE id="OeBMWs" name="Bessel.h" compile="0" resource="0" file="Source/DspFilters/Bessel.h"/>

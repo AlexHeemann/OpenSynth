@@ -211,6 +211,7 @@ void NoisemakerAudioProcessor::initialiseSynthForWaveform(const Waveform wavefor
 		case WaveformSawtooth:
             {
                 WavetableVoice *sawtoothVoice = new WavetableVoice(sawtoothWavetable);
+                sawtoothVoice->setReleaseLength(synth.getSampleRate() * 1);
                 synth.addVoice(sawtoothVoice);
             }
 			break;
