@@ -17,20 +17,27 @@
 class AmpProcessor : public Processor
 {
 public:
-    AmpProcessor() {};
+    AmpProcessor();
     virtual ~AmpProcessor() {};
     
-    template <typename FloatType>
-    void process(AudioBuffer<FloatType>& buffer, MidiBuffer& midiMessages, AudioBuffer<FloatType>& delayBuffer);
+    void process(AudioBuffer<float>& buffer, MidiBuffer& midiMessages, AudioBuffer<float>& delayBuffer)
+    {
+        processBuffer(buffer, midiMessages, delayBuffer);
+    }
+    void process(AudioBuffer<double>& buffer, MidiBuffer& midiMessages, AudioBuffer<double>& delayBuffer)
+    {
+        processBuffer(buffer, midiMessages, delayBuffer);
+    }
+    
     void setEnvelopeGenerator(EnvelopeGenerator* envelopeGenerator);
     EnvelopeGenerator* getEnvelopeGenerator();
-    void setLevel(float level);
-    float getLevel();
+    AudioParameterFloat* level;
     
 private:
     EnvelopeGenerator* envelopeGenerator;
-    float level;
     
+    template <typename FloatType>
+    void processBuffer(AudioBuffer<FloatType>& buffer, MidiBuffer& midiMessages, AudioBuffer<FloatType>& delayBuffer);
 };
 
 

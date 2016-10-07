@@ -10,7 +10,7 @@
 
 #include "WavetableVoice.h"
 
-WavetableVoice::WavetableVoice(Wavetable& wavetable) : phaseIncrement(0.0), wavetable(wavetable), releaseLength(0)
+WavetableVoice::WavetableVoice(Wavetable& wavetable) : phaseIncrement(0.0), wavetable(wavetable)
 {
     
 }
@@ -20,9 +20,9 @@ WavetableVoice::~WavetableVoice()
     
 }
 
-void WavetableVoice::setReleaseLength(int releaseLength)
+void WavetableVoice::setEnvelopeGenerator(EnvelopeGenerator* envelopeGenerator)
 {
-    this->releaseLength = releaseLength;
+    this->envelopeGenerator = envelopeGenerator;
 }
 
 void WavetableVoice::setWavetable(Wavetable& wavetable)
@@ -42,11 +42,13 @@ void WavetableVoice::startNote(int midiNoteNumber, float velocity,
     double frqRad = (2.0 * double_Pi) / getSampleRate();
     
     phaseIncrement = frqRad * frequency;
+    
+    envelopeGenerator->resetEnvelope();
 }
 
 void WavetableVoice::stopNote(float velocity, bool allowTailOff)
 {
-    if (allowTailOff && releaseLength > 0)
+    if (allowTailOff && envelopeGenerator != nullptr && envelopeGenerator->releaseRate->get() > 0)
     {
         // start a tail-off by setting this flag. The render callback will pick up on
         // this and do a fade out, calling clearCurrentNote() when it's finished.
@@ -55,7 +57,8 @@ void WavetableVoice::stopNote(float velocity, bool allowTailOff)
         // stopNote method could be called more than once.
         if (releaseCounter == 0)
         {
-            releaseCounter = releaseLength;
+            releaseCounter = envelopeGenerator->releaseRate->get() * getSampleRate();
+            envelopeGenerator->setEnvelopeState(EnvelopeGenerator::EnvelopeStateRelease);
         }
     }
     else

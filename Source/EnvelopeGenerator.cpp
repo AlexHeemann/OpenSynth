@@ -10,15 +10,16 @@
 
 #include "EnvelopeGenerator.h"
 
-EnvelopeGenerator::EnvelopeGenerator() : sampleRate(0.0), attackRate(1.0), decayRate(1.0), currentAmp(0.0), durationInSec(2.0), envInc(0.0)
+EnvelopeGenerator::EnvelopeGenerator() : currentAmp(0.0), sampleRate(0.0), durationInSec(2.0), envInc(0.0)
 {
-	setAttackLevel(1.0);
-	setDecayLevel(0.0);
-	setStartingAmp(0.0);
-	calculateDurations();
-	resetEnvelope();
+    attackRate = new AudioParameterFloat("attack", "Envelope Attack", 0.0f, 3.0f, 1.0f);
+    decayRate = new AudioParameterFloat("decay", "Envelope Decay", 0.0f, 3.0f, 1.0f);
+    releaseRate = new AudioParameterFloat("release", "Envelope Release", 0.0f, 3.0f, 1.0f);
+    sustainLevel = new AudioParameterFloat("sustain", "Envelope Sustain", 0.0f, 1.0f, 1.0f);
+    resetEnvelope();
 	attackSegment.setCurvature(EnvelopeSegment::EnvelopeCurvatureExponential);
 	decaySegment.setCurvature(EnvelopeSegment::EnvelopeCurvatureExponential);
+    releaseSegment.setCurvature(EnvelopeSegment::EnvelopeCurvatureExponential);
 }
 
 EnvelopeGenerator::~EnvelopeGenerator() {}
@@ -54,7 +55,7 @@ void EnvelopeGenerator::calculateEnvelopeBuffer(int numSamples)
 			else
 			{
 				currentAmp = decaySegment.getFinalAmp();
-				state = EnvelopeStateRelease;
+				state = EnvelopeStateSustain;
 				decaySegment.resetSegment();
 			}
 			break;
@@ -62,7 +63,15 @@ void EnvelopeGenerator::calculateEnvelopeBuffer(int numSamples)
 			currentAmp = decaySegment.getFinalAmp();
 			break;
 		case EnvelopeStateRelease:
-			currentAmp = 0.0;
+			if (--envCount > 0)
+            {
+                currentAmp = releaseSegment.getCurrentAmp();
+                releaseSegment.calculateNextAmp();
+            }
+            else
+            {
+                currentAmp = 0.0;
+            }
 			break;
 		}
 
@@ -70,26 +79,33 @@ void EnvelopeGenerator::calculateEnvelopeBuffer(int numSamples)
 	}
 }
 
+void EnvelopeGenerator::setEnvelopeState(EnvelopeState state)
+{
+    this->state = state;
+    if (state == EnvelopeStateRelease)
+    {
+        envCount = releaseDuration;
+        releaseSegment.setStartAmp(currentAmp);
+    }
+};
+
+
 void EnvelopeGenerator::resetEnvelope()
 {
 	state = EnvelopeStateAttack;
-	calculateDurations();
+    attackSegment.setStartAmp(0.0);
+    attackSegment.setFinalAmp(1.0);
+    decaySegment.setStartAmp(1.0);
+    decaySegment.setFinalAmp(sustainLevel->get());
+    releaseSegment.setStartAmp(sustainLevel->get());
+    releaseSegment.setFinalAmp(0.0);
 	attackSegment.resetSegment();
 	decaySegment.resetSegment();
+    releaseSegment.resetSegment();
 	currentAmp = attackSegment.getStartAmp();
 	envCount = attackSegment.getDurationInSamples();
-}
-
-void EnvelopeGenerator::setAttackRate(double attackRate)
-{
-	this->attackRate = attackRate;
-	calculateDurations();
-}
-
-void EnvelopeGenerator::setDecayRate(double decayRate)
-{
-	this->decayRate = decayRate;
-	calculateDurations();
+    
+    calculateDurations();
 }
 
 void EnvelopeGenerator::setSampleRate(int sampleRate)
@@ -104,34 +120,16 @@ void EnvelopeGenerator::setDurationInSec(double durationInSec)
 	calculateDurations();
 }
 
-void EnvelopeGenerator::setStartingAmp(double startingAmp)
-{
-	this->startingAmp = startingAmp;
-	this->attackSegment.setStartAmp(startingAmp);
-}
-
-void EnvelopeGenerator::setAttackLevel(double attackLevel)
-{
-	this->attackLevel = std::fmin(1.0, attackLevel);
-	this->attackSegment.setFinalAmp(this->attackLevel);
-	this->decaySegment.setStartAmp(this->attackLevel);
-}
-
-void EnvelopeGenerator::setDecayLevel(double decayLevel)
-{
-	this->decayLevel = std::fmin(1.0, decayLevel);
-	this->decaySegment.setFinalAmp(this->decayLevel);
-}
-
 void EnvelopeGenerator::calculateDurations()
 {
-	totalDuration = durationInSec * sampleRate;
-	attackDuration = attackRate * sampleRate;
-	decayDuration = decayRate * sampleRate;
-	decayStart = totalDuration - decayDuration;
+	attackDuration = attackRate->get() * sampleRate;
+	decayDuration = decayRate->get() * sampleRate;
+	decayStart = attackDuration;
+    releaseDuration = releaseRate->get() * sampleRate;
 
 	attackSegment.setDurationInSamples(attackDuration);
 	decaySegment.setDurationInSamples(decayDuration);
+    releaseSegment.setDurationInSamples(releaseDuration);
 	envCount = attackDuration;
 }
 

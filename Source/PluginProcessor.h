@@ -17,6 +17,7 @@
 #include "DspFilters/Dsp.h"
 #include "SawtoothWavetable.h"
 #include "SquareWavetable.h"
+#include "AmpProcessor.h"
 
 typedef enum 
 {
@@ -123,6 +124,9 @@ public:
 	AudioParameterFloat* envDecayParam;
 
 	HashMap<int, ModulationParameter> modulationMatrix;
+    
+    EnvelopeGenerator ampEnvelope;
+    AmpProcessor ampProcessor;
 
 	void addModulatorWithId(ModulatorType type, uint32 id);
 	void removeModulatorWithId(uint32 id);

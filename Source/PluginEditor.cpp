@@ -10,78 +10,9 @@
 
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
-
-//==============================================================================
-// This is a handy slider subclass that controls an AudioProcessorParameter
-// (may move this class into the library itself at some point in the future..)
-class NoisemakerAudioProcessorEditor::ParameterSlider : public Slider, public DragAndDropTarget,
-	private Timer
-{
-public:
-	ParameterSlider(AudioProcessorParameter& p)
-		: Slider(p.getName(256)), param(p)
-	{
-		setRange(0.0, 1.0, 0.0);
-		startTimerHz(30);
-		updateSliderPos();
-	}
-
-	void valueChanged() override
-	{
-		param.setValueNotifyingHost((float)Slider::getValue());
-	}
-
-	void timerCallback() override { updateSliderPos(); }
-
-	void startedDragging() override { param.beginChangeGesture(); }
-	void stoppedDragging() override { param.endChangeGesture(); }
-
-	double getValueFromText(const String& text) override { return param.getValueForText(text); }
-	String getTextFromValue(double value) override { return param.getText((float)value, 1024); }
-
-	void updateSliderPos()
-	{
-		const float newValue = param.getValue();
-
-		if (newValue != (float)Slider::getValue() && !isMouseButtonDown())
-			Slider::setValue(newValue);
-	}
-
-	virtual void itemDragEnter(const SourceDetails& dragSourceDetails)
-	{
-		originalSliderFillColour = findColour(rotarySliderFillColourId);
-		setColour(rotarySliderFillColourId, Colour(0, 200, 23));
-	}
-
-	virtual void itemDragExit(const SourceDetails& dragSourceDetails)
-	{
-		setColour(rotarySliderFillColourId, originalSliderFillColour);
-	}
-
-	virtual bool isInterestedInDragSource(const SourceDetails& dragSourceDetails)
-	{
-		return dragSourceDetails.description.equals(1) && (parameterType == ParameterTypeGain || parameterType == ParameterTypeFilterFrequency);
-	}
-
-	virtual void itemDropped(const SourceDetails& dragSourceDetails)
-	{
-		setColour(rotarySliderFillColourId, originalSliderFillColour);
-		ModulationParameter modParam;
-		modParam.isModulated = true;
-		modParam.modulatorId = static_cast<uint32>(int(dragSourceDetails.description));
-		modulationMatrix->set(parameterType, modParam);
-	}
-
-	AudioProcessorParameter& param;
-	ParameterType parameterType;
-	HashMap<int, ModulationParameter>* modulationMatrix;
-
-private:
-	Colour originalSliderFillColour;
-
-	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ParameterSlider)
-
-};
+#include "AmpComponent.h"
+#include "AmpProcessor.h"
+#include "ParameterSlider.h"
 
 //==============================================================================
 NoisemakerAudioProcessorEditor::NoisemakerAudioProcessorEditor (NoisemakerAudioProcessor& owner)
@@ -97,40 +28,7 @@ NoisemakerAudioProcessorEditor::NoisemakerAudioProcessorEditor (NoisemakerAudioP
     // Make sure that before the constructor has finished, you've set the
     // editor's size to whatever you need it to be.
 	// add some sliders..
-	addAndMakeVisible(gainSlider = new ParameterSlider(*owner.gainParam));
-	gainSlider->setSliderStyle(Slider::Rotary);
-	gainSlider->parameterType = ParameterTypeGain;
-	gainSlider->modulationMatrix = &processor.modulationMatrix;
-
-	addAndMakeVisible(delaySlider = new ParameterSlider(*owner.delayParam));
-	delaySlider->setSliderStyle(Slider::Rotary);
-
-	addAndMakeVisible(filterSlider = new ParameterSlider(*owner.filterFrequencyParam));
-	filterSlider->setSliderStyle(Slider::Rotary);
-	filterSlider->parameterType = ParameterTypeFilterFrequency;
-	filterSlider->modulationMatrix = &processor.modulationMatrix;
-
-	addAndMakeVisible(envAttackSlider = new ParameterSlider(*owner.envAttackParam));
-	envAttackSlider->setSliderStyle(Slider::LinearVertical);
-
-	addAndMakeVisible(envDecaySlider = new ParameterSlider(*owner.envDecayParam));
-	envDecaySlider->setSliderStyle(Slider::LinearVertical);
-
-	// add some labels for the sliders..
-	gainLabel.attachToComponent(gainSlider, false);
-	gainLabel.setFont(Font(11.0f));
-
-	delayLabel.attachToComponent(delaySlider, false);
-	delayLabel.setFont(Font(11.0f));
-
-	filterLabel.attachToComponent(filterSlider, false);
-	filterLabel.setFont(Font(11.0f));
-
-	envAttackLabel.attachToComponent(envAttackSlider, false);
-	envAttackLabel.setFont(Font(11.0f));
-
-	envDecayLabel.attachToComponent(envDecaySlider, false);
-	envDecayLabel.setFont(Font(11.0f));
+    addAndMakeVisible(ampComponent = new AmpComponent(owner.ampProcessor));
 
 	// add the midi keyboard component..
 	addAndMakeVisible(keyboardComponent);
@@ -156,8 +54,7 @@ NoisemakerAudioProcessorEditor::NoisemakerAudioProcessorEditor (NoisemakerAudioP
 	resizeLimits.setSizeLimits(200, 150, 800, 300);
 
 	// set our component's initial size to be the last one that was stored in the filter's settings
-	setSize(owner.lastUIWidth,
-		owner.lastUIHeight);
+	setSize(600, 400);
 
 	// start a timer which will keep our timecode display updated
 	startTimerHz(30);
@@ -181,25 +78,10 @@ void NoisemakerAudioProcessorEditor::resized()
 
 	Rectangle<int> r(getLocalBounds().reduced(8));
 
-	waveformBox->setBounds(r.removeFromTop(26));
+    waveformBox->setBounds(10, 8, 120, 25);
 	keyboardComponent.setBounds(r.removeFromBottom(70));
-
-	r.removeFromTop(30);
-	Rectangle<int> sliderArea(r.removeFromTop(50));
-	gainSlider->setBounds(sliderArea.removeFromLeft(jmin(180, sliderArea.getWidth() / 2)));
-	delaySlider->setBounds(sliderArea.removeFromLeft(jmin(180, sliderArea.getWidth())));
-	filterSlider->setBounds(sliderArea.removeFromLeft(jmin(180, sliderArea.getWidth())));
-
-	r.removeFromTop(10);
-	Rectangle<int> sliderArea2(r.removeFromTop(50));
-	envAttackSlider->setBounds(sliderArea2.removeFromLeft(jmin(180, sliderArea2.getWidth() / 2)));
-	envDecaySlider->setBounds(sliderArea2.removeFromLeft(jmin(180, sliderArea2.getWidth())));
-	envelopeConnector->setBounds(sliderArea2.removeFromLeft(20));
-
-	resizer->setBounds(getWidth() - 16, getHeight() - 16, 16, 16);
-
-	getProcessor().lastUIWidth = getWidth();
-	getProcessor().lastUIHeight = getHeight();
+    
+	ampComponent->setBounds(469, 10, 121, 111);
 }
 
 //==============================================================================

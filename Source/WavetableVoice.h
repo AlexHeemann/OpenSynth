@@ -13,6 +13,7 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "Wavetable.h"
+#include "EnvelopeGenerator.h"
 
 class WavetableSound : public SynthesiserSound
 {
@@ -24,7 +25,6 @@ public:
 };
 
 //==============================================================================
-/** A simple demo synth voice that just plays a sine wave.. */
 class WavetableVoice : public SynthesiserVoice
 {
 public:
@@ -56,10 +56,8 @@ public:
         processBlock(outputBuffer, startSample, numSamples);
     }
     
-    /**
-     * Set the length of the release (in samples)
-     */
-    void setReleaseLength(int releaseLength);
+    void setEnvelopeGenerator(EnvelopeGenerator *envelopeGenerator);
+    EnvelopeGenerator* getEnvelopeGenerator() const { return envelopeGenerator; };
     
     /**
      * Set the wavetable to use for the voice
@@ -72,7 +70,7 @@ private:
     void processBlock(AudioBuffer<FloatType>& outputBuffer, int startSample, int numSamples);
     double currentPhase, phaseIncrement, level, frequency;
     Wavetable& wavetable;
-    int releaseLength;
+    EnvelopeGenerator* envelopeGenerator;
     int releaseCounter;
 };
 

@@ -10,6 +10,11 @@
 
 #include "AmpProcessor.h"
 
+AmpProcessor::AmpProcessor()
+{
+    level = new AudioParameterFloat("gain", "Gain", 0.0f, 1.0f, 0.9f);
+}
+
 void AmpProcessor::setEnvelopeGenerator(EnvelopeGenerator* envelopeGenerator)
 {
     this->envelopeGenerator = envelopeGenerator;
@@ -20,38 +25,33 @@ EnvelopeGenerator* AmpProcessor::getEnvelopeGenerator()
     return envelopeGenerator;
 }
 
-void AmpProcessor::setLevel(float level)
-{
-    this->level = level;
-}
-
-float AmpProcessor::getLevel()
-{
-    return level;
-}
-
 template <typename FloatType>
-void AmpProcessor::process(AudioBuffer<FloatType> &buffer, juce::MidiBuffer &midiMessages, AudioBuffer<FloatType> &delayBuffer)
+void AmpProcessor::processBuffer(AudioBuffer<FloatType> &buffer, juce::MidiBuffer &midiMessages, AudioBuffer<FloatType> &delayBuffer)
 {
     bool isModulated = envelopeGenerator != nullptr;
+    if (isModulated)
+    {
+        envelopeGenerator->calculateEnvelopeBuffer(buffer.getNumSamples());
+    }
     
     for (int channel = 0; channel < buffer.getNumChannels(); ++channel)
     {
         FloatType* const channelData = buffer.getWritePointer(channel);
         isModulated = isModulated && envelopeGenerator->envelopeBuffer.size() >= buffer.getNumSamples();
+        const float localLevel = level->get();
         if (isModulated)
         {
             std::vector<double> envelopeBuffer = envelopeGenerator->envelopeBuffer;
             for (int sample = 0; sample < buffer.getNumSamples(); sample++)
             {
-                channelData[sample] *= level * envelopeBuffer[sample];
+                channelData[sample] *= localLevel * envelopeBuffer[sample];
             }
         }
         else
         {
             for (int sample = 0; sample < buffer.getNumSamples(); sample++)
             {
-                channelData[sample] *= level;
+                channelData[sample] *= localLevel;
             }
         }
     }

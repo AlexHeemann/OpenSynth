@@ -25,7 +25,7 @@ public:
 	EnvelopeSegment()
 	{
 	}
-	~EnvelopeSegment()
+	virtual ~EnvelopeSegment()
 	{
 	}
 
@@ -110,7 +110,7 @@ public:
 	{
 
 	}
-	~EnvelopeSegmentAttack()
+	virtual ~EnvelopeSegmentAttack()
 	{
 
 	}
@@ -132,7 +132,7 @@ public:
 	{
 
 	}
-	~EnvelopeSegmentDecay()
+	virtual ~EnvelopeSegmentDecay()
 	{
 
 	}
@@ -147,6 +147,31 @@ public:
 		expMul = std::pow(expMin / (1.0 + expMin), 1.0 / durationInSamples);
 	}
 };
+
+class EnvelopeSegmentRelease : public EnvelopeSegment
+{
+public:
+    EnvelopeSegmentRelease() : EnvelopeSegment()
+    {
+        
+    }
+    virtual ~EnvelopeSegmentRelease()
+    {
+        
+    }
+    
+    virtual void resetSegment()
+    {
+        EnvelopeSegment::resetSegment();
+        
+        finalAmp = 0.0;
+        offset = 0.0;
+        expNow = 1.0 + expMin;
+        range *= (-1);
+        expMul = std::pow(expMin / (1.0 + expMin), 1.0 / durationInSamples);
+    }
+};
+
 
 
 #endif  // ENVELOPESEGMENT_H_INCLUDED

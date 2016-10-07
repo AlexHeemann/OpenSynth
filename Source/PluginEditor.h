@@ -14,7 +14,9 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "PluginProcessor.h"
 #include "ModulationConnector.h"
+#include "AmpComponent.h"
 
+class ParameterSlider;
 
 //==============================================================================
 /**
@@ -36,7 +38,6 @@ public:
 private:
     // This reference is provided as a quick way for your editor to
     // access the processor object that created it.
-	class ParameterSlider;
 
     NoisemakerAudioProcessor& processor;
 	MidiKeyboardComponent keyboardComponent;
@@ -46,6 +47,7 @@ private:
 	ScopedPointer<ResizableCornerComponent> resizer;
 	ScopedPointer<ComboBox> waveformBox;
 	ScopedPointer<ModulationConnector> envelopeConnector;
+    ScopedPointer<AmpComponent> ampComponent;
 	ComponentBoundsConstrainer resizeLimits;
 
 	AudioPlayHead::CurrentPositionInfo lastDisplayedPosition;

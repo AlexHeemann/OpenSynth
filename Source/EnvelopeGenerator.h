@@ -41,38 +41,35 @@ public:
 	virtual ~EnvelopeGenerator();
 	// Contains the values for the current buffer
 	std::vector<double> envelopeBuffer;
+    std::vector<double> releaseBuffer;
 
 	void calculateEnvelopeBuffer(int numSamples);
 	void resetEnvelope();
-
-	void setAttackRate(double attackRate);
-	void setDecayRate(double decayRate);
+    
+    AudioParameterFloat* attackRate;
+    AudioParameterFloat* decayRate;
+    AudioParameterFloat* releaseRate;
+    AudioParameterFloat* sustainLevel;
+    AudioParameterFloat* envelopeAmount;
+    
 	void setSampleRate(int sampleRate);
 	void setDurationInSec(double durationInSec);
-	void setStartingAmp(double startingAmp);
-	void setAttackLevel(double attackLevel);
-	void setDecayLevel(double decayLevel);
-
+    void setEnvelopeState(EnvelopeState state);
+    
 private:
 	double currentAmp = 0;
 	double startingAmp = 0;
 	int sampleRate;
 	double durationInSec;
 	// Duration in samples
-	int totalDuration;
 	int attackDuration;
-	int sustainDuration;
 	int decayDuration;
 	int decayStart;
+    int releaseDuration;
 	EnvelopeState state = EnvelopeStateAttack;
 	EnvelopeSegmentAttack attackSegment;
 	EnvelopeSegmentDecay decaySegment;
-
-	// Modifiable from the outside
-	double attackRate;
-	double decayRate;
-	double attackLevel;
-	double decayLevel;
+    EnvelopeSegmentRelease releaseSegment;
 
 	double envInc;
 	double envCount;
