@@ -81,7 +81,7 @@ void NoisemakerAudioProcessorEditor::resized()
     waveformBox->setBounds(10, 8, 120, 25);
 	keyboardComponent.setBounds(r.removeFromBottom(70));
     
-	ampComponent->setBounds(469, 10, 121, 111);
+    ampComponent->setTopLeftPosition(r.getWidth() - ampComponent->getWidth(), r.getY());
 }
 
 //==============================================================================

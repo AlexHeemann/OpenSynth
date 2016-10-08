@@ -38,6 +38,7 @@ private:
     ScopedPointer<ParameterSlider> decaySlider;
     ScopedPointer<ParameterSlider> sustainSlider;
     ScopedPointer<ParameterSlider> releaseSlider;
+    Label attackLabel, decayLabel, sustainLabel, releaseLabel, ampLabel;
 };
 
 

@@ -12,23 +12,37 @@
 #include "AmpComponent.h"
 
 //==============================================================================
-AmpComponent::AmpComponent(NoisemakerAudioProcessor &processor) : processor(processor)
+AmpComponent::AmpComponent(NoisemakerAudioProcessor &processor) : processor(processor),
+                                                                  attackLabel(String::empty, "A"),
+                                                                  decayLabel(String::empty, "D"),
+                                                                  sustainLabel(String::empty, "S"),
+                                                                  releaseLabel(String::empty, "R"),
+                                                                  ampLabel(String::empty, "Gain")
 {
     // In your constructor, you should add any child components, and
     // initialise any special settings that your component needs.
-    setSize(121, 111);
+    setSize(140, 105);
     
     addAndMakeVisible(gainKnob = new ParameterSlider(*processor.level));
     gainKnob->setSliderStyle(Slider::Rotary);
+    gainKnob->setTextBoxStyle(juce::Slider::TextEntryBoxPosition::TextBoxBelow, false, 40, 15);
+    ampLabel.attachToComponent(gainKnob, false);
     
     addAndMakeVisible(attackSlider = new ParameterSlider(*processor.attackRate));
     attackSlider->setSliderStyle(Slider::LinearVertical);
+    attackLabel.attachToComponent(attackSlider, false);
+    
     addAndMakeVisible(decaySlider = new ParameterSlider(*processor.decayRate));
     decaySlider->setSliderStyle(Slider::LinearVertical);
+    decayLabel.attachToComponent(decaySlider, false);
+    
     addAndMakeVisible(sustainSlider = new ParameterSlider(*processor.sustainLevel));
     sustainSlider->setSliderStyle(Slider::LinearVertical);
+    sustainLabel.attachToComponent(sustainSlider, false);
+    
     addAndMakeVisible(releaseSlider = new ParameterSlider(*processor.releaseRate));
     releaseSlider->setSliderStyle(Slider::LinearVertical);
+    releaseLabel.attachToComponent(releaseSlider, false);
 }
 
 AmpComponent::~AmpComponent()
@@ -37,13 +51,6 @@ AmpComponent::~AmpComponent()
 
 void AmpComponent::paint (Graphics& g)
 {
-    /* This demo code just fills the component's background and
-       draws some placeholder text to get you started.
-
-       You should replace everything in this method with your own
-       drawing code..
-    */
-
     g.fillAll (Colours::white);   // clear the background
 
     g.setColour (Colours::grey);
@@ -51,14 +58,12 @@ void AmpComponent::paint (Graphics& g)
 
     g.setColour (Colours::lightblue);
     g.setFont (14.0f);
-    g.drawText ("AmpComponent", getLocalBounds(),
-                Justification::centred, true);   // draw some placeholder text
     
-    gainKnob->setBounds(85, 10, 35, 35);
-    attackSlider->setBounds(10, 10, 20, 80);
-    decaySlider->setBounds(32, 10, 20, 80);
-    sustainSlider->setBounds(57, 10, 20, 80);
-    releaseSlider->setBounds(82, 10, 20, 80);
+    gainKnob->setBounds(90, 22, 47, 70);
+    attackSlider->setBounds(5, 22, 20, 80);
+    decaySlider->setBounds(28, 22, 20, 80);
+    sustainSlider->setBounds(51, 22, 20, 80);
+    releaseSlider->setBounds(69, 22, 20, 80);
 }
 
 void AmpComponent::resized()
