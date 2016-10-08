@@ -28,19 +28,19 @@ AmpComponent::AmpComponent(NoisemakerAudioProcessor &processor) : processor(proc
     gainKnob->setTextBoxStyle(juce::Slider::TextEntryBoxPosition::TextBoxBelow, false, 40, 15);
     ampLabel.attachToComponent(gainKnob, false);
     
-    addAndMakeVisible(attackSlider = new ParameterSlider(*processor.attackRate));
+    addAndMakeVisible(attackSlider = new ParameterSlider(*processor.attackRateAmp));
     attackSlider->setSliderStyle(Slider::LinearVertical);
     attackLabel.attachToComponent(attackSlider, false);
     
-    addAndMakeVisible(decaySlider = new ParameterSlider(*processor.decayRate));
+    addAndMakeVisible(decaySlider = new ParameterSlider(*processor.decayRateAmp));
     decaySlider->setSliderStyle(Slider::LinearVertical);
     decayLabel.attachToComponent(decaySlider, false);
     
-    addAndMakeVisible(sustainSlider = new ParameterSlider(*processor.sustainLevel));
+    addAndMakeVisible(sustainSlider = new ParameterSlider(*processor.sustainLevelAmp));
     sustainSlider->setSliderStyle(Slider::LinearVertical);
     sustainLabel.attachToComponent(sustainSlider, false);
     
-    addAndMakeVisible(releaseSlider = new ParameterSlider(*processor.releaseRate));
+    addAndMakeVisible(releaseSlider = new ParameterSlider(*processor.releaseRateAmp));
     releaseSlider->setSliderStyle(Slider::LinearVertical);
     releaseLabel.attachToComponent(releaseSlider, false);
 }

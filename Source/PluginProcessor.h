@@ -118,11 +118,15 @@ public:
 
 	// Our parameters
     AudioParameterFloat* level;
-    AudioParameterFloat* attackRate;
-    AudioParameterFloat* decayRate;
-    AudioParameterFloat* releaseRate;
-    AudioParameterFloat* sustainLevel;
-    AudioParameterFloat* envelopeAmount;
+    AudioParameterFloat* attackRateAmp;
+    AudioParameterFloat* decayRateAmp;
+    AudioParameterFloat* releaseRateAmp;
+    AudioParameterFloat* sustainLevelAmp;
+    AudioParameterFloat* attackRateFilter;
+    AudioParameterFloat* decayRateFilter;
+    AudioParameterFloat* releaseRateFilter;
+    AudioParameterFloat* sustainLevelFilter;
+    AudioParameterFloat* envelopeAmountFilter;
     AudioParameterFloat* filterFrequency;
 
 	HashMap<int, ModulationParameter> modulationMatrix;

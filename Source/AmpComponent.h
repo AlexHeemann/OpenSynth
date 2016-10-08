@@ -12,7 +12,6 @@
 #define AMPCOMPONENT_H_INCLUDED
 
 #include "../JuceLibraryCode/JuceHeader.h"
-#include "AmpProcessor.h"
 #include "ParameterSlider.h"
 #include "PluginProcessor.h"
 
