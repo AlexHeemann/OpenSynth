@@ -30,6 +30,9 @@
             file="Source/AmpProcessor.cpp"/>
       <FILE id="tZtJ1d" name="AmpProcessor.h" compile="0" resource="0" file="Source/AmpProcessor.h"/>
       <GROUP id="{8C6B5EB4-14D6-B31F-0FAF-605FBB7D7ABC}" name="Wavetables">
+        <FILE id="n6eNwb" name="SineWavetable.cpp" compile="1" resource="0"
+              file="Source/SineWavetable.cpp"/>
+        <FILE id="A1Bdty" name="SineWavetable.h" compile="0" resource="0" file="Source/SineWavetable.h"/>
         <FILE id="lrvHWc" name="WavetableVoice.cpp" compile="1" resource="0"
               file="Source/WavetableVoice.cpp"/>
         <FILE id="FsNgD5" name="WavetableVoice.h" compile="0" resource="0"

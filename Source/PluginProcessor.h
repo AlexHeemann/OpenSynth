@@ -16,6 +16,7 @@
 #include "DspFilters/Dsp.h"
 #include "SawtoothWavetable.h"
 #include "SquareWavetable.h"
+#include "SineWavetable.h"
 #include "AmpProcessor.h"
 
 typedef enum 
@@ -127,6 +128,7 @@ private:
 	Synthesiser synth;
     SawtoothWavetable sawtoothWavetable;
     SquareWavetable squareWavetable;
+    SineWavetable sineWavetable;
 	// Contains filters for left and right channel
 	std::vector<Dsp::SmoothedFilterDesign<Dsp::RBJ::Design::LowPass, 1>> filters;
 

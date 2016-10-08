@@ -150,7 +150,8 @@ NoisemakerAudioProcessor::NoisemakerAudioProcessor() :
 	lastUIHeight(260),
 	delayPosition(0),
     sawtoothWavetable(SawtoothWavetable(40.0, 4096, getSampleRate())),
-    squareWavetable(SquareWavetable(40.0, 4096, getSampleRate()))
+    squareWavetable(SquareWavetable(40.0, 4096, getSampleRate())),
+    sineWavetable(SineWavetable(40.0, 4096, getSampleRate()))
 {
 	lastPosInfo.resetToDefault();
     
@@ -190,6 +191,10 @@ void NoisemakerAudioProcessor::initialiseSynthForWaveform(const Waveform wavefor
         switch (waveform)
         {
             case WaveformSine:
+            {
+                wavetableVoice = new WavetableVoice(sineWavetable);
+                break;
+            }
             case WaveformSquare:
             {
                 wavetableVoice = new WavetableVoice(squareWavetable);
@@ -326,6 +331,7 @@ void NoisemakerAudioProcessor::prepareToPlay (double sampleRate, int samplesPerB
     // initialisation that you need..
     sawtoothWavetable.setSampleRate(sampleRate);
     squareWavetable.setSampleRate(sampleRate);
+    sineWavetable.setSampleRate(sampleRate);
 	synth.setCurrentPlaybackSampleRate(sampleRate);
     for (int voiceIdx = 0; voiceIdx < synth.getNumVoices(); voiceIdx++)
     {
