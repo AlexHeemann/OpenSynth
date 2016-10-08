@@ -19,26 +19,26 @@ sustainLabel(String::empty, "S"),
 releaseLabel(String::empty, "R"),
 frequencyLabel(String::empty, "Frequency")
 {
-    setSize(140, 105);
+    setSize(160, 105);
     
     addAndMakeVisible(frequencyKnob = new ParameterSlider(*processor.filterFrequency));
     frequencyKnob->setSliderStyle(Slider::Rotary);
-    frequencyKnob->setTextBoxStyle(juce::Slider::TextEntryBoxPosition::TextBoxBelow, false, 40, 15);
+    frequencyKnob->setTextBoxStyle(juce::Slider::TextEntryBoxPosition::TextBoxBelow, false, 68, 15);
     frequencyLabel.attachToComponent(frequencyKnob, false);
     
-    addAndMakeVisible(attackSlider = new ParameterSlider(*processor.attackRateAmp));
+    addAndMakeVisible(attackSlider = new ParameterSlider(*processor.attackRateFilter));
     attackSlider->setSliderStyle(Slider::LinearVertical);
     attackLabel.attachToComponent(attackSlider, false);
     
-    addAndMakeVisible(decaySlider = new ParameterSlider(*processor.decayRateAmp));
+    addAndMakeVisible(decaySlider = new ParameterSlider(*processor.decayRateFilter));
     decaySlider->setSliderStyle(Slider::LinearVertical);
     decayLabel.attachToComponent(decaySlider, false);
     
-    addAndMakeVisible(sustainSlider = new ParameterSlider(*processor.sustainLevelAmp));
+    addAndMakeVisible(sustainSlider = new ParameterSlider(*processor.sustainLevelFilter));
     sustainSlider->setSliderStyle(Slider::LinearVertical);
     sustainLabel.attachToComponent(sustainSlider, false);
     
-    addAndMakeVisible(releaseSlider = new ParameterSlider(*processor.releaseRateAmp));
+    addAndMakeVisible(releaseSlider = new ParameterSlider(*processor.releaseRateFilter));
     releaseSlider->setSliderStyle(Slider::LinearVertical);
     releaseLabel.attachToComponent(releaseSlider, false);
 }
@@ -64,7 +64,7 @@ void FilterComponent::paint (Graphics& g)
     g.setColour (Colours::lightblue);
     g.setFont (14.0f);
     
-    frequencyKnob->setBounds(90, 22, 47, 70);
+    frequencyKnob->setBounds(90, 22, 60, 70);
     attackSlider->setBounds(5, 22, 20, 80);
     decaySlider->setBounds(28, 22, 20, 80);
     sustainSlider->setBounds(51, 22, 20, 80);
