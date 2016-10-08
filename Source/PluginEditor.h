@@ -15,6 +15,7 @@
 #include "PluginProcessor.h"
 #include "ModulationConnector.h"
 #include "AmpComponent.h"
+#include "FilterComponent.h"
 
 class ParameterSlider;
 
@@ -48,6 +49,7 @@ private:
 	ScopedPointer<ComboBox> waveformBox;
 	ScopedPointer<ModulationConnector> envelopeConnector;
     ScopedPointer<AmpComponent> ampComponent;
+    ScopedPointer<FilterComponent> filterComponent;
 	ComponentBoundsConstrainer resizeLimits;
 
 	AudioPlayHead::CurrentPositionInfo lastDisplayedPosition;

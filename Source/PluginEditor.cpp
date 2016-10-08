@@ -10,8 +10,6 @@
 
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
-#include "AmpComponent.h"
-#include "AmpProcessor.h"
 #include "ParameterSlider.h"
 
 //==============================================================================
@@ -27,8 +25,8 @@ NoisemakerAudioProcessorEditor::NoisemakerAudioProcessorEditor (NoisemakerAudioP
 {
     // Make sure that before the constructor has finished, you've set the
     // editor's size to whatever you need it to be.
-	// add some sliders..
     addAndMakeVisible(ampComponent = new AmpComponent(owner));
+    addAndMakeVisible(filterComponent = new FilterComponent(owner));
 
 	// add the midi keyboard component..
 	addAndMakeVisible(keyboardComponent);
@@ -82,6 +80,7 @@ void NoisemakerAudioProcessorEditor::resized()
 	keyboardComponent.setBounds(r.removeFromBottom(70));
     
     ampComponent->setTopLeftPosition(r.getWidth() - ampComponent->getWidth(), r.getY());
+    filterComponent->setTopLeftPosition(r.getWidth() - ampComponent->getWidth() - filterComponent->getWidth() - 10, r.getY());
 }
 
 //==============================================================================
