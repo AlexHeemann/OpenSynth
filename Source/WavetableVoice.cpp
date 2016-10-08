@@ -51,9 +51,9 @@ void WavetableVoice::startNote(int midiNoteNumber, float velocity,
     releaseCounter = 0;
     
     frequency = MidiMessage::getMidiNoteInHertz(midiNoteNumber);
-    double frqRad = (2.0 * double_Pi) / getSampleRate();
+    frqRad = (2.0 * double_Pi) / getSampleRate();
     
-    phaseIncrement = frqRad * frequency;
+    calculatePhaseIncrement();
     
     if (ampEnvelopeGenerator != nullptr)
     {
@@ -63,6 +63,11 @@ void WavetableVoice::startNote(int midiNoteNumber, float velocity,
     {
         filterEnvelopeGenerator->resetEnvelope();
     }
+}
+
+void WavetableVoice::calculatePhaseIncrement()
+{
+    phaseIncrement = frqRad * frequency;
 }
 
 void WavetableVoice::stopNote(float velocity, bool allowTailOff)
@@ -98,6 +103,13 @@ void WavetableVoice::processBlock(AudioBuffer<FloatType>& outputBuffer, int star
     // This buffer is used to calculate all the samples for this voice, it then gets added to the overall output buffer of the synth
     AudioBuffer<FloatType> localBuffer = AudioBuffer<FloatType>(outputBuffer.getNumChannels(), outputBuffer.getNumSamples());
     localBuffer.clear();
+ 
+    int currentNote = getCurrentlyPlayingNote();
+    if (currentNote >= 0)
+    {
+        frequency = MidiMessage::getMidiNoteInHertz(currentNote + osc1Semi->get());
+        calculatePhaseIncrement();
+    }
     
     if (phaseIncrement != 0.0)
     {

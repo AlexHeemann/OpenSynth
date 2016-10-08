@@ -38,8 +38,9 @@ NoisemakerAudioProcessor::NoisemakerAudioProcessor() :
     addParameter(decayRateFilter = new AudioParameterFloat("decay", "Envelope Decay", 0.0f, 3.0f, 1.0f));
     addParameter(releaseRateFilter = new AudioParameterFloat("release", "Envelope Release", 0.0f, 3.0f, 1.0f));
     addParameter(sustainLevelFilter = new AudioParameterFloat("sustain", "Envelope Sustain", 0.0f, 1.0f, 1.0f));
-    addParameter(osc1Semi = new AudioParameterInt("osc1semi", "Osc 1 Semi", -10, 0, 10));
-    addParameter(osc2Semi = new AudioParameterInt("osc2semi", "Osc 2 Semi", -10, 0, 10));
+    addParameter(osc1Semi = new AudioParameterInt("osc1semi", "Osc 1 Semi", -36, 36, 0));
+    addParameter(osc2Semi = new AudioParameterInt("osc2semi", "Osc 2 Semi", -36, 36, 0));
+    addParameter(oscMix = new AudioParameterFloat("oscMix", "Osc Mix", 0.0f, 1.0f, 0.0f));
     
 	//initialiseLowPassFilter();
 	initialiseSynthForWaveform(WaveformSawtooth, 8);
@@ -100,6 +101,8 @@ void NoisemakerAudioProcessor::initialiseSynthForWaveform(const Waveform wavefor
         wavetableVoice->getAmpProcessor().level = level;
         wavetableVoice->getFilterProcessor().frequency = filterFrequency;
         wavetableVoice->getFilterProcessor().envelopeAmount = envelopeAmountFilter;
+        wavetableVoice->osc1Semi = osc1Semi;
+        wavetableVoice->osc2Semi = osc2Semi;
         synth.addVoice(wavetableVoice);
 	}
 

@@ -71,17 +71,23 @@ public:
     AmpProcessor& getAmpProcessor() { return ampProcessor; }
     FilterProcessor& getFilterProcessor() { return filterProcessor; }
     
-private:
+    AudioParameterInt* osc1Semi;
+    AudioParameterInt* osc2Semi;
+    AudioParameterFloat* oscMix;
     
-    template <typename FloatType>
-    void processBlock(AudioBuffer<FloatType>& outputBuffer, int startSample, int numSamples);
-    double currentPhase, phaseIncrement, level, frequency;
+private:
+    double currentPhase, phaseIncrement, level, frequency, frqRad;
     Wavetable& wavetable;
     EnvelopeGenerator* ampEnvelopeGenerator;
     EnvelopeGenerator* filterEnvelopeGenerator;
     AmpProcessor ampProcessor;
     FilterProcessor filterProcessor;
     int releaseCounter;
+    
+    template <typename FloatType>
+    void processBlock(AudioBuffer<FloatType>& outputBuffer, int startSample, int numSamples);
+    
+    void calculatePhaseIncrement();
 };
 
 

@@ -110,6 +110,7 @@ public:
     AudioParameterFloat* filterFrequency;
     
     // Oscillator Parameters
+    AudioParameterFloat* oscMix;
     AudioParameterInt* osc1Semi;
     AudioParameterInt* osc2Semi;
 

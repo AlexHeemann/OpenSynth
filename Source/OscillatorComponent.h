@@ -42,11 +42,11 @@ class OscillatorComponent  : public Component,
 {
 public:
     //==============================================================================
+    OscillatorComponent (NoisemakerAudioProcessor& processor);
     ~OscillatorComponent();
 
     //==============================================================================
     //[UserMethods]     -- You can add your own custom methods in this section.
-    OscillatorComponent(NoisemakerAudioProcessor& processor);
     //[/UserMethods]
 
     void paint (Graphics& g) override;
@@ -63,14 +63,12 @@ private:
 
     //==============================================================================
     ScopedPointer<ComboBox> osc1ComboBox;
-    ScopedPointer<Slider> oscMixSlider;
+    ScopedPointer<ParameterSlider> oscMixSlider;
     ScopedPointer<ComboBox> osc2ComboBox;
-    ScopedPointer<ParameterSlider> osc1SemiSlider;
-    ScopedPointer<ParameterSlider> osc2SemiSlider2;
     ScopedPointer<Label> mixLabel;
     ScopedPointer<Label> titleLabel;
-    ScopedPointer<Label> semi1Label;
-    ScopedPointer<Label> semi1Label2;
+    ScopedPointer<ParameterSlider> osc1SemiSlider;
+    ScopedPointer<ParameterSlider> osc2SemiSlider;
 
 
     //==============================================================================
