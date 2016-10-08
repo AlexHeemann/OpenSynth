@@ -30,6 +30,7 @@ public:
     }
     
     AudioParameterFloat* frequency;
+    AudioParameterFloat* envelopeAmount;
     
 private:
     template <typename FloatType>

@@ -162,7 +162,8 @@ NoisemakerAudioProcessor::NoisemakerAudioProcessor() :
     addParameter(decayRateAmp = new AudioParameterFloat("decay", "Envelope Decay", 0.0f, 3.0f, 1.0f));
     addParameter(releaseRateAmp = new AudioParameterFloat("release", "Envelope Release", 0.0f, 3.0f, 1.0f));
     addParameter(sustainLevelAmp = new AudioParameterFloat("sustain", "Envelope Sustain", 0.0f, 1.0f, 1.0f));
-    addParameter(filterFrequency = new AudioParameterFloat("filter_frequency", "Filter Frequency", 1.0f, 20000.0f, 10000.0f));
+    addParameter(filterFrequency = new AudioParameterFloat("filter_frequency", "Filter Frequency", 0.0f, 20000.0f, 10000.0f));
+    addParameter(envelopeAmountFilter = new AudioParameterFloat("env_amount_filter", "Envelope Amount", 0.0f, 20000.0f, 0.0f));
     addParameter(attackRateFilter = new AudioParameterFloat("attack", "Envelope Attack", 0.0f, 3.0f, 1.0f));
     addParameter(decayRateFilter = new AudioParameterFloat("decay", "Envelope Decay", 0.0f, 3.0f, 1.0f));
     addParameter(releaseRateFilter = new AudioParameterFloat("release", "Envelope Release", 0.0f, 3.0f, 1.0f));
@@ -223,6 +224,7 @@ void NoisemakerAudioProcessor::initialiseSynthForWaveform(const Waveform wavefor
         wavetableVoice->setFilterEnvelopeGenerator(filterEnvelopeGenerator);
         wavetableVoice->getAmpProcessor().level = level;
         wavetableVoice->getFilterProcessor().frequency = filterFrequency;
+        wavetableVoice->getFilterProcessor().envelopeAmount = envelopeAmountFilter;
         synth.addVoice(wavetableVoice);
 
 	}
