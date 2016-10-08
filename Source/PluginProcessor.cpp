@@ -182,43 +182,40 @@ void NoisemakerAudioProcessor::initialiseSynthForWaveform(const Waveform wavefor
 	// Add some voices...
 	for (int i = numVoices; --i >= 0;)
 	{
-		switch (waveform)
-		{
-		case WaveformSine:
-		case WaveformSquare:
+        WavetableVoice* wavetableVoice;
+        switch (waveform)
+        {
+            case WaveformSine:
+            case WaveformSquare:
             {
-                WavetableVoice *squareWaveVoice = new WavetableVoice(squareWavetable);
-                EnvelopeGenerator* envelopeGenerator = new EnvelopeGenerator();
-                envelopeGenerator->attackRate = attackRate;
-                envelopeGenerator->decayRate = decayRate;
-                envelopeGenerator->sustainLevel = sustainLevel;
-                envelopeGenerator->releaseRate = releaseRate;
-                squareWaveVoice->setEnvelopeGenerator(envelopeGenerator);
-                squareWaveVoice->getAmpProcessor().level = level;
-                squareWaveVoice->getFilterProcessor().frequency = filterFrequency;
-                synth.addVoice(squareWaveVoice);
+                wavetableVoice = new WavetableVoice(squareWavetable);
             }
-            break;
-		case WaveformSawtooth:
+                break;
+            case WaveformSawtooth:
             {
-                WavetableVoice *sawtoothVoice = new WavetableVoice(sawtoothWavetable);
-                EnvelopeGenerator* envelopeGenerator = new EnvelopeGenerator();
-                envelopeGenerator->attackRate = attackRate;
-                envelopeGenerator->decayRate = decayRate;
-                envelopeGenerator->sustainLevel = sustainLevel;
-                envelopeGenerator->releaseRate = releaseRate;
-                sawtoothVoice->setEnvelopeGenerator(envelopeGenerator);
-                sawtoothVoice->getAmpProcessor().level = level;
-                sawtoothVoice->getFilterProcessor().frequency = filterFrequency;
-                synth.addVoice(sawtoothVoice);
+                wavetableVoice = new WavetableVoice(sawtoothWavetable);
             }
-			break;
-        case WaveformTriangle:
-            synth.addVoice(new TriangleWaveVoice());
-            break;
-		default:
-			synth.addVoice(new SineWaveVoice());
-		}
+                break;
+            case WaveformTriangle:
+            {
+                wavetableVoice = new WavetableVoice(sawtoothWavetable);
+            }
+                break;
+            default:
+            {
+                wavetableVoice = new WavetableVoice(sawtoothWavetable);
+            }
+        }
+        EnvelopeGenerator* envelopeGenerator = new EnvelopeGenerator();
+        envelopeGenerator->attackRate = attackRateAmp;
+        envelopeGenerator->decayRate = decayRateAmp;
+        envelopeGenerator->sustainLevel = sustainLevelAmp;
+        envelopeGenerator->releaseRate = releaseRateAmp;
+        wavetableVoice->setEnvelopeGenerator(envelopeGenerator);
+        wavetableVoice->getAmpProcessor().level = level;
+        wavetableVoice->getFilterProcessor().frequency = filterFrequency;
+        synth.addVoice(wavetableVoice);
+
 	}
 
 	// ..and give the synth a sound to play
