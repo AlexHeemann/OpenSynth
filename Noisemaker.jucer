@@ -90,10 +90,6 @@
         <FILE id="NsV9mq" name="Types.h" compile="0" resource="0" file="Source/DspFilters/Types.h"/>
         <FILE id="WuIpPA" name="Utilities.h" compile="0" resource="0" file="Source/DspFilters/Utilities.h"/>
       </GROUP>
-      <FILE id="LYWfYU" name="IIRFilterDouble.cpp" compile="1" resource="0"
-            file="Source/IIRFilterDouble.cpp"/>
-      <FILE id="MxmRBu" name="IIRFilterDouble.h" compile="0" resource="0"
-            file="Source/IIRFilterDouble.h"/>
       <FILE id="d1Pn0I" name="ModulationConnector.cpp" compile="1" resource="0"
             file="Source/ModulationConnector.cpp"/>
       <FILE id="YGMF9X" name="ModulationConnector.h" compile="0" resource="0"

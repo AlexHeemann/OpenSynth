@@ -13,7 +13,6 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "EnvelopeGenerator.h"
-#include "IIRFilterDouble.h"
 #include "DspFilters/Dsp.h"
 #include "SawtoothWavetable.h"
 #include "SquareWavetable.h"
@@ -128,8 +127,6 @@ private:
 	Synthesiser synth;
     SawtoothWavetable sawtoothWavetable;
     SquareWavetable squareWavetable;
-	HashMap<int, EnvelopeGenerator*> modulatorsById;
-	std::vector<uint32> modulatorIDs;
 	// Contains filters for left and right channel
 	std::vector<Dsp::SmoothedFilterDesign<Dsp::RBJ::Design::LowPass, 1>> filters;
 
