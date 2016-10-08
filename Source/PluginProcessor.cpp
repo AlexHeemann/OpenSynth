@@ -148,8 +148,6 @@ private:
 NoisemakerAudioProcessor::NoisemakerAudioProcessor() :
 	lastUIWidth(600),
 	lastUIHeight(260),
-	gainParam(nullptr),
-	delayParam(nullptr),
 	delayPosition(0),
     sawtoothWavetable(SawtoothWavetable(40.0, 4096, getSampleRate())),
     squareWavetable(SquareWavetable(40.0, 4096, getSampleRate()))
@@ -159,16 +157,14 @@ NoisemakerAudioProcessor::NoisemakerAudioProcessor() :
 	// This creates our parameters. We'll keep some raw pointers to them in this class,
 	// so that we can easily access them later, but the base class will take care of
 	// deleting them for us.
-	addParameter(ampProcessor.level);
-    addParameter(ampEnvelope.attackRate);
-    addParameter(ampEnvelope.decayRate);
-    addParameter(ampEnvelope.releaseRate);
-    addParameter(ampEnvelope.sustainLevel);
-
-    ampProcessor.setEnvelopeGenerator(&ampEnvelope);
+	addParameter(level = new AudioParameterFloat("gain", "Gain", 0.0f, 1.0f, 0.9f));
+    addParameter(attackRate = new AudioParameterFloat("attack", "Envelope Attack", 0.0f, 3.0f, 1.0f));
+    addParameter(decayRate = new AudioParameterFloat("decay", "Envelope Decay", 0.0f, 3.0f, 1.0f));
+    addParameter(releaseRate = new AudioParameterFloat("release", "Envelope Release", 0.0f, 3.0f, 1.0f));
+    addParameter(sustainLevel = new AudioParameterFloat("sustain", "Envelope Sustain", 0.0f, 1.0f, 1.0f));
     
 	//initialiseLowPassFilter();
-	initialiseSynthForWaveform(WaveformSine, 8);
+	initialiseSynthForWaveform(WaveformSawtooth, 8);
 	keyboardState.addListener(this);
 }
 
@@ -188,19 +184,29 @@ void NoisemakerAudioProcessor::initialiseSynthForWaveform(const Waveform wavefor
 		switch (waveform)
 		{
 		case WaveformSine:
-			synth.addVoice(new SineWaveVoice());
-			break;
 		case WaveformSquare:
             {
                 WavetableVoice *squareWaveVoice = new WavetableVoice(squareWavetable);
-                squareWaveVoice->setEnvelopeGenerator(&ampEnvelope);
+                EnvelopeGenerator* envelopeGenerator = new EnvelopeGenerator();
+                envelopeGenerator->attackRate = attackRate;
+                envelopeGenerator->decayRate = decayRate;
+                envelopeGenerator->sustainLevel = sustainLevel;
+                envelopeGenerator->releaseRate = releaseRate;
+                squareWaveVoice->setEnvelopeGenerator(envelopeGenerator);
+                squareWaveVoice->getAmpProcessor().level = level;
                 synth.addVoice(squareWaveVoice);
             }
-                break;
+            break;
 		case WaveformSawtooth:
             {
                 WavetableVoice *sawtoothVoice = new WavetableVoice(sawtoothWavetable);
-                sawtoothVoice->setEnvelopeGenerator(&ampEnvelope);
+                EnvelopeGenerator* envelopeGenerator = new EnvelopeGenerator();
+                envelopeGenerator->attackRate = attackRate;
+                envelopeGenerator->decayRate = decayRate;
+                envelopeGenerator->sustainLevel = sustainLevel;
+                envelopeGenerator->releaseRate = releaseRate;
+                sawtoothVoice->setEnvelopeGenerator(envelopeGenerator);
+                sawtoothVoice->getAmpProcessor().level = level;
                 synth.addVoice(sawtoothVoice);
             }
 			break;
@@ -216,8 +222,6 @@ void NoisemakerAudioProcessor::initialiseSynthForWaveform(const Waveform wavefor
 	switch (waveform)
 	{
 	case WaveformSine:
-		synth.addSound(new SineWaveSound());
-		break;
 	case WaveformSquare:
 		synth.addSound(new WavetableSound());
 		break;
@@ -234,7 +238,6 @@ void NoisemakerAudioProcessor::initialiseSynthForWaveform(const Waveform wavefor
 
 void NoisemakerAudioProcessor::initialiseLowPassFilter()
 {
-	initialiseLowPassFilter(filterFrequencyParam->get());
 }
 
 void NoisemakerAudioProcessor::initialiseLowPassFilter(double frequency)
@@ -313,7 +316,15 @@ void NoisemakerAudioProcessor::prepareToPlay (double sampleRate, int samplesPerB
     sawtoothWavetable.setSampleRate(sampleRate);
     squareWavetable.setSampleRate(sampleRate);
 	synth.setCurrentPlaybackSampleRate(sampleRate);
-    ampEnvelope.setSampleRate(sampleRate);
+    for (int voiceIdx = 0; voiceIdx < synth.getNumVoices(); voiceIdx++)
+    {
+        WavetableVoice* voice = dynamic_cast<WavetableVoice*>(synth.getVoice(voiceIdx));
+        if (voice != nullptr && voice->getEnvelopeGenerator() != nullptr)
+        {
+            voice->getEnvelopeGenerator()->setSampleRate(sampleRate);
+            voice->getEnvelopeGenerator()->resetEnvelope();
+        }
+    }
 	currentSampleRate = sampleRate;
 	keyboardState.reset();
 	//initialiseLowPassFilter();
@@ -389,12 +400,6 @@ void NoisemakerAudioProcessor::process(AudioBuffer<FloatType>& buffer,
 	// add messages to the buffer if the user is clicking on the on-screen keys
 	keyboardState.processNextMidiBuffer(midiMessages, 0, numSamples, true);
 
-	for (int idx = 0; idx < modulatorIDs.size(); idx++)
-	{
-		EnvelopeGenerator* env = modulatorsById[modulatorIDs[idx]];
-		env->calculateEnvelopeBuffer(numSamples);
-	}
-
     /*
 	// Update filter frequency
 	for (int filterId = 0; filterId < filters.size(); ++filterId)
@@ -420,8 +425,6 @@ void NoisemakerAudioProcessor::process(AudioBuffer<FloatType>& buffer,
 	// and now get our synth to process these midi events and generate its output.
 	synth.renderNextBlock(buffer, midiMessages, 0, numSamples);
 
-    ampProcessor.process(buffer, midiMessages, delayBuffer);
-
 	// Now ask the host for the current time so we can store it to be displayed later...
 	updateCurrentTimeInfoFromHost();
 }
@@ -430,7 +433,7 @@ template <typename FloatType>
 void NoisemakerAudioProcessor::applyGain(AudioBuffer<FloatType>& buffer, AudioBuffer<FloatType>& delayBuffer)
 {
 	ignoreUnused(delayBuffer);
-	const float gainLevel = gainParam->get();
+	const float gainLevel = level->get();
 	ModulationParameter modParam = modulationMatrix[ParameterTypeGain];
 	uint32 modId = modParam.modulatorId;
 	EnvelopeGenerator* envGenerator = nullptr;
@@ -456,7 +459,7 @@ template <typename FloatType>
 void NoisemakerAudioProcessor::applyDelay(AudioBuffer<FloatType>& buffer, AudioBuffer<FloatType>& delayBuffer)
 {
 	const int numSamples = buffer.getNumSamples();
-	const float delayLevel = delayParam->get();
+	//const float delayLevel = delayParam->get();
 
 	int delayPos = 0;
 
@@ -470,7 +473,7 @@ void NoisemakerAudioProcessor::applyDelay(AudioBuffer<FloatType>& buffer, AudioB
 		{
 			const FloatType in = channelData[i];
 			channelData[i] += delayData[delayPos];
-			delayData[delayPos] = (delayData[delayPos] + in) * delayLevel;
+			//delayData[delayPos] = (delayData[delayPos] + in) * delayLevel;
 
 			if (++delayPos >= delayBuffer.getNumSamples())
 				delayPos = 0;
@@ -575,14 +578,7 @@ void NoisemakerAudioProcessor::setWaveform(Waveform waveform)
 
 void NoisemakerAudioProcessor::addModulatorWithId(ModulatorType type, uint32 id)
 {
-	if (type == ModulatorTypeEnvelope)
-	{
-		EnvelopeGenerator* envelope = new EnvelopeGenerator();
-		envelope->setSampleRate(currentSampleRate);
-		envelope->resetEnvelope();
-		modulatorsById.set(id, envelope);
-		modulatorIDs.push_back(id);
-	}
+
 }
 
 void NoisemakerAudioProcessor::removeModulatorWithId(uint32 id)

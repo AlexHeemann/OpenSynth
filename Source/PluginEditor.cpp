@@ -28,7 +28,7 @@ NoisemakerAudioProcessorEditor::NoisemakerAudioProcessorEditor (NoisemakerAudioP
     // Make sure that before the constructor has finished, you've set the
     // editor's size to whatever you need it to be.
 	// add some sliders..
-    addAndMakeVisible(ampComponent = new AmpComponent(owner.ampProcessor));
+    addAndMakeVisible(ampComponent = new AmpComponent(owner));
 
 	// add the midi keyboard component..
 	addAndMakeVisible(keyboardComponent);
@@ -158,7 +158,7 @@ void NoisemakerAudioProcessorEditor::updateTimecodeDisplay(AudioPlayHead::Curren
 // Combobox Listener
 void NoisemakerAudioProcessorEditor::comboBoxChanged(ComboBox* comboBoxThatHasChanged)
 {
-	processor.setWaveform((Waveform)(comboBoxThatHasChanged->getSelectedId() - 1));
+    processor.setWaveform((Waveform)(std::max(0, comboBoxThatHasChanged->getSelectedId() - 1)));
 }
 
 

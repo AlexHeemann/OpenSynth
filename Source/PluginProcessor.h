@@ -117,16 +117,14 @@ public:
 	int lastUIWidth, lastUIHeight;
 
 	// Our parameters
-	AudioParameterFloat* gainParam;
-	AudioParameterFloat* delayParam;
-	AudioParameterFloat* filterFrequencyParam;
-	AudioParameterFloat* envAttackParam;
-	AudioParameterFloat* envDecayParam;
+    AudioParameterFloat* level;
+    AudioParameterFloat* attackRate;
+    AudioParameterFloat* decayRate;
+    AudioParameterFloat* releaseRate;
+    AudioParameterFloat* sustainLevel;
+    AudioParameterFloat* envelopeAmount;
 
 	HashMap<int, ModulationParameter> modulationMatrix;
-    
-    EnvelopeGenerator ampEnvelope;
-    AmpProcessor ampProcessor;
 
 	void addModulatorWithId(ModulatorType type, uint32 id);
 	void removeModulatorWithId(uint32 id);

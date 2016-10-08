@@ -20,13 +20,13 @@ public:
     AmpProcessor();
     virtual ~AmpProcessor() {};
     
-    void process(AudioBuffer<float>& buffer, MidiBuffer& midiMessages, AudioBuffer<float>& delayBuffer)
+    void renderNextBlock(AudioBuffer<float>& outputBuffer, AudioBuffer<float>& delayBuffer, int startSample, int numSamples)
     {
-        processBuffer(buffer, midiMessages, delayBuffer);
+        processBuffer(outputBuffer, delayBuffer, startSample, numSamples);
     }
-    void process(AudioBuffer<double>& buffer, MidiBuffer& midiMessages, AudioBuffer<double>& delayBuffer)
+    void renderNextBlock(AudioBuffer<double>& outputBuffer, AudioBuffer<double>& delayBuffer, int startSample, int numSamples)
     {
-        processBuffer(buffer, midiMessages, delayBuffer);
+        processBuffer(outputBuffer, delayBuffer, startSample, numSamples);
     }
     
     void setEnvelopeGenerator(EnvelopeGenerator* envelopeGenerator);
@@ -37,7 +37,7 @@ private:
     EnvelopeGenerator* envelopeGenerator;
     
     template <typename FloatType>
-    void processBuffer(AudioBuffer<FloatType>& buffer, MidiBuffer& midiMessages, AudioBuffer<FloatType>& delayBuffer);
+    void processBuffer(AudioBuffer<FloatType>& buffer, AudioBuffer<FloatType>& delayBuffer, int startSample, int numSamples);
 };
 
 

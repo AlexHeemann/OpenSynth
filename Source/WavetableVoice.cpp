@@ -17,12 +17,15 @@ WavetableVoice::WavetableVoice(Wavetable& wavetable) : phaseIncrement(0.0), wave
 
 WavetableVoice::~WavetableVoice()
 {
-    
+    delete envelopeGenerator;
 }
 
 void WavetableVoice::setEnvelopeGenerator(EnvelopeGenerator* envelopeGenerator)
 {
     this->envelopeGenerator = envelopeGenerator;
+    this->envelopeGenerator->setSampleRate(getSampleRate());
+    this->envelopeGenerator->resetEnvelope();
+    ampProcessor.setEnvelopeGenerator(envelopeGenerator);
 }
 
 void WavetableVoice::setWavetable(Wavetable& wavetable)
@@ -43,7 +46,10 @@ void WavetableVoice::startNote(int midiNoteNumber, float velocity,
     
     phaseIncrement = frqRad * frequency;
     
-    envelopeGenerator->resetEnvelope();
+    if (envelopeGenerator != nullptr)
+    {
+        envelopeGenerator->resetEnvelope();
+    }
 }
 
 void WavetableVoice::stopNote(float velocity, bool allowTailOff)
@@ -73,6 +79,11 @@ void WavetableVoice::stopNote(float velocity, bool allowTailOff)
 template <typename FloatType>
 void WavetableVoice::processBlock(AudioBuffer<FloatType>& outputBuffer, int startSample, int numSamples)
 {
+    envelopeGenerator->calculateEnvelopeBuffer(numSamples);
+    // This buffer is used to calculate all the samples for this voice, it then gets added to the overall output buffer of the synth
+    AudioBuffer<FloatType> localBuffer = AudioBuffer<FloatType>(outputBuffer.getNumChannels(), outputBuffer.getNumSamples());
+    localBuffer.clear();
+    
     if (phaseIncrement != 0.0)
     {
         float* subtable = wavetable.getSubtableForFrequency(frequency);
@@ -80,48 +91,60 @@ void WavetableVoice::processBlock(AudioBuffer<FloatType>& outputBuffer, int star
         double twoPi = 2.0 * double_Pi;
         if (releaseCounter > 0)
         {
-            while (--numSamples >= 0)
+            for (int sampleIdx = 0; sampleIdx < numSamples; sampleIdx++)
             {
                 int index = (int)((currentPhase / twoPi) * tableSize);
                 FloatType currentSample = level * subtable[index];
                 
-                for (int i = outputBuffer.getNumChannels(); --i >= 0;)
-                    outputBuffer.addSample(i, startSample, currentSample);
+                for (int channel = 0; channel < localBuffer.getNumChannels(); channel++)
+                {
+                    localBuffer.setSample(channel, sampleIdx, currentSample);
+                }
                 
                 currentPhase += phaseIncrement;
                 if (currentPhase >= twoPi)
                 {
                     currentPhase -= twoPi;
                 }
-                ++startSample;
                 releaseCounter--;
                 
                 if (releaseCounter <= 0)
                 {
                     clearCurrentNote();
-                    currentPhase = 0.0;
                     phaseIncrement = 0.0;
+                    currentPhase = 0.0;
                     break;
                 }
             }
         }
         else
         {
-            while (--numSamples >= 0)
+            for (int sampleIdx = 0; sampleIdx < numSamples; sampleIdx++)
             {
                 int index = (int)((currentPhase / twoPi) * tableSize);
                 FloatType currentSample = level * subtable[index];
                 
-                for (int i = outputBuffer.getNumChannels(); --i >= 0;)
-                    outputBuffer.addSample(i, startSample, currentSample);
+                for (int channel = 0; channel < localBuffer.getNumChannels(); channel++)
+                {
+                    localBuffer.setSample(channel, sampleIdx, currentSample);
+                }
                 
                 currentPhase += phaseIncrement;
                 if (currentPhase >= twoPi)
                 {
                     currentPhase -= twoPi;
                 }
-                ++startSample;
             }
+        }
+        ampProcessor.renderNextBlock(localBuffer, localBuffer, startSample, numSamples);
+    }
+    
+    // Add samples from this voice to the output buffer
+    for (int sampleIdx = 0; sampleIdx < numSamples; sampleIdx++)
+    {
+        for (int channel = 0; channel < outputBuffer.getNumChannels(); channel++)
+        {
+            outputBuffer.addSample(channel, startSample + sampleIdx, localBuffer.getSample(channel, sampleIdx));
         }
     }
 }

@@ -12,7 +12,6 @@
 
 AmpProcessor::AmpProcessor()
 {
-    level = new AudioParameterFloat("gain", "Gain", 0.0f, 1.0f, 0.9f);
 }
 
 void AmpProcessor::setEnvelopeGenerator(EnvelopeGenerator* envelopeGenerator)
@@ -26,32 +25,27 @@ EnvelopeGenerator* AmpProcessor::getEnvelopeGenerator()
 }
 
 template <typename FloatType>
-void AmpProcessor::processBuffer(AudioBuffer<FloatType> &buffer, juce::MidiBuffer &midiMessages, AudioBuffer<FloatType> &delayBuffer)
+void AmpProcessor::processBuffer(AudioBuffer<FloatType> &buffer, AudioBuffer<FloatType>& delayBuffer, int startSample, int numSamples)
 {
-    bool isModulated = envelopeGenerator != nullptr;
-    if (isModulated)
-    {
-        envelopeGenerator->calculateEnvelopeBuffer(buffer.getNumSamples());
-    }
+    bool isModulated = envelopeGenerator != nullptr && envelopeGenerator->envelopeBuffer.size() >= numSamples;
     
     for (int channel = 0; channel < buffer.getNumChannels(); ++channel)
     {
         FloatType* const channelData = buffer.getWritePointer(channel);
-        isModulated = isModulated && envelopeGenerator->envelopeBuffer.size() >= buffer.getNumSamples();
         const float localLevel = level->get();
         if (isModulated)
         {
-            std::vector<double> envelopeBuffer = envelopeGenerator->envelopeBuffer;
-            for (int sample = 0; sample < buffer.getNumSamples(); sample++)
+            std::vector<double>& envelopeBuffer = envelopeGenerator->envelopeBuffer;
+            for (int sample = 0; sample < numSamples; sample++)
             {
-                channelData[sample] *= localLevel * envelopeBuffer[sample];
+                channelData[sample + startSample] *= localLevel * envelopeBuffer[sample];
             }
         }
         else
         {
-            for (int sample = 0; sample < buffer.getNumSamples(); sample++)
+            for (int sample = 0; sample < numSamples; sample++)
             {
-                channelData[sample] *= localLevel;
+                channelData[sample + startSample] *= localLevel;
             }
         }
     }

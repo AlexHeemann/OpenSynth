@@ -12,7 +12,7 @@
 #include "AmpComponent.h"
 
 //==============================================================================
-AmpComponent::AmpComponent(AmpProcessor &processor) : processor(processor)
+AmpComponent::AmpComponent(NoisemakerAudioProcessor &processor) : processor(processor)
 {
     // In your constructor, you should add any child components, and
     // initialise any special settings that your component needs.
@@ -21,17 +21,14 @@ AmpComponent::AmpComponent(AmpProcessor &processor) : processor(processor)
     addAndMakeVisible(gainKnob = new ParameterSlider(*processor.level));
     gainKnob->setSliderStyle(Slider::Rotary);
     
-    if (processor.getEnvelopeGenerator() != nullptr)
-    {
-        addAndMakeVisible(attackSlider = new ParameterSlider(*processor.getEnvelopeGenerator()->attackRate));
-        attackSlider->setSliderStyle(Slider::LinearVertical);
-        addAndMakeVisible(decaySlider = new ParameterSlider(*processor.getEnvelopeGenerator()->decayRate));
-        decaySlider->setSliderStyle(Slider::LinearVertical);
-        addAndMakeVisible(sustainSlider = new ParameterSlider(*processor.getEnvelopeGenerator()->sustainLevel));
-        sustainSlider->setSliderStyle(Slider::LinearVertical);
-        addAndMakeVisible(releaseSlider = new ParameterSlider(*processor.getEnvelopeGenerator()->releaseRate));
-        releaseSlider->setSliderStyle(Slider::LinearVertical);
-    }
+    addAndMakeVisible(attackSlider = new ParameterSlider(*processor.attackRate));
+    attackSlider->setSliderStyle(Slider::LinearVertical);
+    addAndMakeVisible(decaySlider = new ParameterSlider(*processor.decayRate));
+    decaySlider->setSliderStyle(Slider::LinearVertical);
+    addAndMakeVisible(sustainSlider = new ParameterSlider(*processor.sustainLevel));
+    sustainSlider->setSliderStyle(Slider::LinearVertical);
+    addAndMakeVisible(releaseSlider = new ParameterSlider(*processor.releaseRate));
+    releaseSlider->setSliderStyle(Slider::LinearVertical);
 }
 
 AmpComponent::~AmpComponent()

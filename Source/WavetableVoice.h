@@ -14,6 +14,7 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "Wavetable.h"
 #include "EnvelopeGenerator.h"
+#include "AmpProcessor.h"
 
 class WavetableSound : public SynthesiserSound
 {
@@ -64,6 +65,8 @@ public:
      */
     void setWavetable(Wavetable& wavetable);
     
+    AmpProcessor& getAmpProcessor() { return ampProcessor; }
+    
 private:
     
     template <typename FloatType>
@@ -71,6 +74,7 @@ private:
     double currentPhase, phaseIncrement, level, frequency;
     Wavetable& wavetable;
     EnvelopeGenerator* envelopeGenerator;
+    AmpProcessor ampProcessor;
     int releaseCounter;
 };
 

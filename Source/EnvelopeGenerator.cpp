@@ -12,11 +12,6 @@
 
 EnvelopeGenerator::EnvelopeGenerator() : currentAmp(0.0), sampleRate(0.0), durationInSec(2.0), envInc(0.0)
 {
-    attackRate = new AudioParameterFloat("attack", "Envelope Attack", 0.0f, 3.0f, 1.0f);
-    decayRate = new AudioParameterFloat("decay", "Envelope Decay", 0.0f, 3.0f, 1.0f);
-    releaseRate = new AudioParameterFloat("release", "Envelope Release", 0.0f, 3.0f, 1.0f);
-    sustainLevel = new AudioParameterFloat("sustain", "Envelope Sustain", 0.0f, 1.0f, 1.0f);
-    resetEnvelope();
 	attackSegment.setCurvature(EnvelopeSegment::EnvelopeCurvatureExponential);
 	decaySegment.setCurvature(EnvelopeSegment::EnvelopeCurvatureExponential);
     releaseSegment.setCurvature(EnvelopeSegment::EnvelopeCurvatureExponential);
@@ -97,7 +92,6 @@ void EnvelopeGenerator::resetEnvelope()
     attackSegment.setFinalAmp(1.0);
     decaySegment.setStartAmp(1.0);
     decaySegment.setFinalAmp(sustainLevel->get());
-    releaseSegment.setStartAmp(sustainLevel->get());
     releaseSegment.setFinalAmp(0.0);
 	attackSegment.resetSegment();
 	decaySegment.resetSegment();
@@ -111,13 +105,11 @@ void EnvelopeGenerator::resetEnvelope()
 void EnvelopeGenerator::setSampleRate(int sampleRate)
 {
 	this->sampleRate = sampleRate;
-	calculateDurations();
 }
 
 void EnvelopeGenerator::setDurationInSec(double durationInSec)
 {
 	this->durationInSec = durationInSec;
-	calculateDurations();
 }
 
 void EnvelopeGenerator::calculateDurations()

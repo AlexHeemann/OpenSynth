@@ -14,6 +14,7 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "AmpProcessor.h"
 #include "ParameterSlider.h"
+#include "PluginProcessor.h"
 
 //==============================================================================
 /*
@@ -21,7 +22,7 @@
 class AmpComponent    : public Component
 {
 public:
-    AmpComponent(AmpProcessor& processor);
+    AmpComponent(NoisemakerAudioProcessor& processor);
     ~AmpComponent();
 
     void paint (Graphics&) override;
@@ -30,7 +31,7 @@ public:
 private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AmpComponent)
     
-    AmpProcessor& processor;
+    NoisemakerAudioProcessor& processor;
     
     ScopedPointer<ParameterSlider> gainKnob;
     ScopedPointer<ParameterSlider> attackSlider;

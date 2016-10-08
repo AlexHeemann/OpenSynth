@@ -19,8 +19,8 @@ public:
     Processor() {};
     virtual ~Processor() {};
     
-    virtual void process(AudioBuffer<float>& buffer, MidiBuffer& midiMessages, AudioBuffer<float>& delayBuffer) = 0;
-    virtual void process(AudioBuffer<double>& buffer, MidiBuffer& midiMessages, AudioBuffer<double>& delayBuffer) = 0;
+    virtual void renderNextBlock(AudioBuffer<float>& outputBuffer, AudioBuffer<float>& delayBuffer, int startSample, int numSamples) = 0;
+    virtual void renderNextBlock(AudioBuffer<double>& outputBuffer, AudioBuffer<double>& delayBuffer, int startSample, int numSamples) = 0;
 };
 
 
