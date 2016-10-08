@@ -158,8 +158,8 @@ NoisemakerAudioProcessor::NoisemakerAudioProcessor() :
 	// so that we can easily access them later, but the base class will take care of
 	// deleting them for us.
 	addParameter(level = new AudioParameterFloat("gain", "Gain", 0.0f, 1.0f, 0.9f));
-    addParameter(attackRateAmp = new AudioParameterFloat("attack", "Envelope Attack", 0.0f, 3.0f, 1.0f));
-    addParameter(decayRateAmp = new AudioParameterFloat("decay", "Envelope Decay", 0.0f, 3.0f, 1.0f));
+    addParameter(attackRateAmp = new AudioParameterFloat("attack", "Envelope Attack", 0.0f, 3.0f, 0.0f));
+    addParameter(decayRateAmp = new AudioParameterFloat("decay", "Envelope Decay", 0.0f, 3.0f, 3.0f));
     addParameter(releaseRateAmp = new AudioParameterFloat("release", "Envelope Release", 0.0f, 3.0f, 1.0f));
     addParameter(sustainLevelAmp = new AudioParameterFloat("sustain", "Envelope Sustain", 0.0f, 1.0f, 1.0f));
     addParameter(filterFrequency = new AudioParameterFloat("filter_frequency", "Filter Frequency", 0.0f, 20000.0f, 10000.0f));
