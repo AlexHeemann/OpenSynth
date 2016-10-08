@@ -18,6 +18,7 @@ WavetableVoice::WavetableVoice(Wavetable& wavetable) : phaseIncrement(0.0), wave
 WavetableVoice::~WavetableVoice()
 {
     delete ampEnvelopeGenerator;
+    delete filterEnvelopeGenerator;
 }
 
 void WavetableVoice::setAmpEnvelopeGenerator(EnvelopeGenerator* ampEnvelopeGenerator)
