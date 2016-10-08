@@ -17,14 +17,20 @@ attackLabel(String::empty, "A"),
 decayLabel(String::empty, "D"),
 sustainLabel(String::empty, "S"),
 releaseLabel(String::empty, "R"),
-frequencyLabel(String::empty, "Frequency")
+frequencyLabel(String::empty, "Frequency"),
+envAmountLabel(String::empty, "Env Amount")
 {
-    setSize(160, 105);
+    setSize(160, 170);
     
     addAndMakeVisible(frequencyKnob = new ParameterSlider(*processor.filterFrequency));
     frequencyKnob->setSliderStyle(Slider::Rotary);
     frequencyKnob->setTextBoxStyle(juce::Slider::TextEntryBoxPosition::TextBoxBelow, false, 68, 15);
     frequencyLabel.attachToComponent(frequencyKnob, false);
+    
+    addAndMakeVisible(envelopeAmountKnob = new ParameterSlider(*processor.envelopeAmountFilter));
+    envelopeAmountKnob->setSliderStyle(Slider::Rotary);
+    envelopeAmountKnob->setTextBoxStyle(juce::Slider::TextEntryBoxPosition::NoTextBox, false, 0, 0);
+    envAmountLabel.attachToComponent(envelopeAmountKnob, false);
     
     addAndMakeVisible(attackSlider = new ParameterSlider(*processor.attackRateFilter));
     attackSlider->setSliderStyle(Slider::LinearVertical);
@@ -65,6 +71,7 @@ void FilterComponent::paint (Graphics& g)
     g.setFont (14.0f);
     
     frequencyKnob->setBounds(90, 22, 60, 70);
+    envelopeAmountKnob->setBounds(5, 125, 80, 45);
     attackSlider->setBounds(5, 22, 20, 80);
     decaySlider->setBounds(28, 22, 20, 80);
     sustainSlider->setBounds(51, 22, 20, 80);

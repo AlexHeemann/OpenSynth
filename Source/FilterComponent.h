@@ -31,11 +31,12 @@ private:
     NoisemakerAudioProcessor& processor;
     
     ScopedPointer<ParameterSlider> frequencyKnob;
+    ScopedPointer<ParameterSlider> envelopeAmountKnob;
     ScopedPointer<ParameterSlider> attackSlider;
     ScopedPointer<ParameterSlider> decaySlider;
     ScopedPointer<ParameterSlider> sustainSlider;
     ScopedPointer<ParameterSlider> releaseSlider;
-    Label attackLabel, decayLabel, sustainLabel, releaseLabel, frequencyLabel;
+    Label attackLabel, decayLabel, sustainLabel, releaseLabel, frequencyLabel, envAmountLabel;
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (FilterComponent)
 };
