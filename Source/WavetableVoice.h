@@ -30,7 +30,7 @@ public:
 class WavetableVoice : public SynthesiserVoice
 {
 public:
-    WavetableVoice(Wavetable& wavetable);
+    WavetableVoice(Wavetable* wavetable);
     virtual ~WavetableVoice();
     
     bool canPlaySound(SynthesiserSound* sound) override
@@ -66,7 +66,8 @@ public:
     /**
      * Set the wavetable to use for the voice
      */
-    void setWavetable(Wavetable& wavetable);
+    void setOsc1Wavetable(Wavetable* wavetable);
+    void setOsc2Wavetable(Wavetable* wavetable);
     
     AmpProcessor& getAmpProcessor() { return ampProcessor; }
     FilterProcessor& getFilterProcessor() { return filterProcessor; }
@@ -76,8 +77,9 @@ public:
     AudioParameterFloat* oscMix;
     
 private:
-    double currentPhase, phaseIncrement, level, frequency, frqRad;
-    Wavetable& wavetable;
+    double currentPhase1, currentPhase2, phaseIncrement1, phaseIncrement2, level, frequency1, frequency2, frqRad;
+    Wavetable* osc1Wavetable;
+    Wavetable* osc2Wavetable;
     EnvelopeGenerator* ampEnvelopeGenerator;
     EnvelopeGenerator* filterEnvelopeGenerator;
     AmpProcessor ampProcessor;

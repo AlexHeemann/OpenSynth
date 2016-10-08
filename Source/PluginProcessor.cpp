@@ -63,27 +63,27 @@ void NoisemakerAudioProcessor::initialiseSynthForWaveform(const Waveform wavefor
         {
             case WaveformSine:
             {
-                wavetableVoice = new WavetableVoice(sineWavetable);
+                wavetableVoice = new WavetableVoice(&sineWavetable);
                 break;
             }
             case WaveformSquare:
             {
-                wavetableVoice = new WavetableVoice(squareWavetable);
+                wavetableVoice = new WavetableVoice(&squareWavetable);
             }
                 break;
             case WaveformSawtooth:
             {
-                wavetableVoice = new WavetableVoice(sawtoothWavetable);
+                wavetableVoice = new WavetableVoice(&sawtoothWavetable);
             }
                 break;
             case WaveformTriangle:
             {
-                wavetableVoice = new WavetableVoice(sawtoothWavetable);
+                wavetableVoice = new WavetableVoice(&sawtoothWavetable);
             }
                 break;
             default:
             {
-                wavetableVoice = new WavetableVoice(sawtoothWavetable);
+                wavetableVoice = new WavetableVoice(&sawtoothWavetable);
             }
         }
         EnvelopeGenerator* ampEnvelopeGenerator = new EnvelopeGenerator();
@@ -103,6 +103,7 @@ void NoisemakerAudioProcessor::initialiseSynthForWaveform(const Waveform wavefor
         wavetableVoice->getFilterProcessor().envelopeAmount = envelopeAmountFilter;
         wavetableVoice->osc1Semi = osc1Semi;
         wavetableVoice->osc2Semi = osc2Semi;
+        wavetableVoice->oscMix = oscMix;
         synth.addVoice(wavetableVoice);
 	}
 
@@ -392,9 +393,39 @@ void NoisemakerAudioProcessor::setStateInformation(const void* data, int sizeInB
 	}
 }
 
-void NoisemakerAudioProcessor::setWaveform(Waveform waveform)
+void NoisemakerAudioProcessor::setWaveformForOscillator(Waveform waveform, int oscillator)
 {
-	initialiseSynthForWaveform(waveform, 8);
+    Wavetable* wavetable = nullptr;
+    switch (waveform) {
+        case WaveformSine:
+            wavetable = &sineWavetable;
+            break;
+        case WaveformSawtooth:
+            wavetable = &sawtoothWavetable;
+            break;
+        case WaveformSquare:
+            wavetable = &squareWavetable;
+            break;
+        case WaveformTriangle:
+            wavetable = &sineWavetable;
+            break;
+    }
+    
+    for (int voiceIdx = 0; voiceIdx < synth.getNumVoices(); voiceIdx++)
+    {
+        WavetableVoice* voice = dynamic_cast<WavetableVoice*>(synth.getVoice(voiceIdx));
+        if (voice != nullptr)
+        {
+            if (oscillator == 1)
+            {
+                voice->setOsc1Wavetable(wavetable);
+            }
+            else if (oscillator == 2)
+            {
+                voice->setOsc2Wavetable(wavetable);
+            }
+        }
+    }
 }
 
 //==============================================================================

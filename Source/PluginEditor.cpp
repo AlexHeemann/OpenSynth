@@ -32,16 +32,6 @@ NoisemakerAudioProcessorEditor::NoisemakerAudioProcessorEditor (NoisemakerAudioP
 	// add the midi keyboard component..
 	addAndMakeVisible(keyboardComponent);
 
-	waveformBox = new ComboBox("Waveform");
-	waveformBox->setText("Waveform");
-	waveformBox->addItem("Sine", 1);
-	waveformBox->addItem("Square", 2);
-	waveformBox->addItem("Sawtooth", 3);
-    waveformBox->addItem("Triangle", 4);
-
-	waveformBox->addListener(this);
-	addAndMakeVisible(waveformBox);
-
 	// add the triangular resizer component for the bottom-right of the UI
 	addAndMakeVisible(resizer = new ResizableCornerComponent(this, &resizeLimits));
 	resizeLimits.setSizeLimits(200, 150, 800, 300);
@@ -67,16 +57,12 @@ void NoisemakerAudioProcessorEditor::paint(Graphics& g)
 
 void NoisemakerAudioProcessorEditor::resized()
 {
-	// This lays out our child components...
-
 	Rectangle<int> r(getLocalBounds().reduced(8));
-
-    waveformBox->setBounds(10, 8, 120, 25);
 	keyboardComponent.setBounds(r.removeFromBottom(70));
     
     ampComponent->setTopLeftPosition(r.getWidth() - ampComponent->getWidth(), r.getY());
     filterComponent->setTopLeftPosition(r.getWidth() - ampComponent->getWidth() - filterComponent->getWidth() - 10, r.getY());
-    oscillatorComponent->setTopLeftPosition(r.getX(), r.getY() + 50);
+    oscillatorComponent->setTopLeftPosition(r.getX(), r.getY());
 }
 
 //==============================================================================
@@ -150,10 +136,5 @@ void NoisemakerAudioProcessorEditor::updateTimecodeDisplay(AudioPlayHead::Curren
 }
 
 //==============================================================================
-// Combobox Listener
-void NoisemakerAudioProcessorEditor::comboBoxChanged(ComboBox* comboBoxThatHasChanged)
-{
-    processor.setWaveform((Waveform)(std::max(0, comboBoxThatHasChanged->getSelectedId() - 1)));
-}
 
 

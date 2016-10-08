@@ -10,7 +10,7 @@
 
 #include "WavetableVoice.h"
 
-WavetableVoice::WavetableVoice(Wavetable& wavetable) : phaseIncrement(0.0), wavetable(wavetable)
+WavetableVoice::WavetableVoice(Wavetable* wavetable) : phaseIncrement1(0.0), phaseIncrement2(0.0), osc1Wavetable(wavetable), osc2Wavetable(wavetable)
 {
     
 }
@@ -37,20 +37,27 @@ void WavetableVoice::setFilterEnvelopeGenerator(EnvelopeGenerator *filterEnvelop
     filterProcessor.setEnvelopeGenerator(filterEnvelopeGenerator);
 }
 
-void WavetableVoice::setWavetable(Wavetable& wavetable)
+void WavetableVoice::setOsc1Wavetable(Wavetable* wavetable)
 {
-    this->wavetable = wavetable;
+    this->osc1Wavetable = wavetable;
+}
+
+void WavetableVoice::setOsc2Wavetable(Wavetable* wavetable)
+{
+    this->osc2Wavetable = wavetable;
 }
 
 void WavetableVoice::startNote(int midiNoteNumber, float velocity,
                SynthesiserSound* sound,
                int currentPitchWheelPosition)
 {
-    currentPhase = 0.0;
+    currentPhase1 = 0.0;
+    currentPhase2 = 0.0;
     level = velocity * 0.15;
     releaseCounter = 0;
     
-    frequency = MidiMessage::getMidiNoteInHertz(midiNoteNumber);
+    frequency1 = MidiMessage::getMidiNoteInHertz(midiNoteNumber);
+    frequency2 = frequency1;
     frqRad = (2.0 * double_Pi) / getSampleRate();
     
     calculatePhaseIncrement();
@@ -67,7 +74,8 @@ void WavetableVoice::startNote(int midiNoteNumber, float velocity,
 
 void WavetableVoice::calculatePhaseIncrement()
 {
-    phaseIncrement = frqRad * frequency;
+    phaseIncrement1 = frqRad * frequency1;
+    phaseIncrement2 = frqRad * frequency2;
 }
 
 void WavetableVoice::stopNote(float velocity, bool allowTailOff)
@@ -90,8 +98,10 @@ void WavetableVoice::stopNote(float velocity, bool allowTailOff)
     {
         // we're being told to stop playing immediately, so reset everything..
         clearCurrentNote();
-        phaseIncrement = 0.0;
-        currentPhase = 0.0;
+        phaseIncrement1 = 0.0;
+        currentPhase1 = 0.0;
+        phaseIncrement2 = 0.0;
+        currentPhase2 = 0.0;
     }
 }
 
@@ -103,43 +113,59 @@ void WavetableVoice::processBlock(AudioBuffer<FloatType>& outputBuffer, int star
     // This buffer is used to calculate all the samples for this voice, it then gets added to the overall output buffer of the synth
     AudioBuffer<FloatType> localBuffer = AudioBuffer<FloatType>(outputBuffer.getNumChannels(), outputBuffer.getNumSamples());
     localBuffer.clear();
+    float localOscMix = oscMix->get();
  
     int currentNote = getCurrentlyPlayingNote();
     if (currentNote >= 0)
     {
-        frequency = MidiMessage::getMidiNoteInHertz(currentNote + osc1Semi->get());
+        frequency1 = MidiMessage::getMidiNoteInHertz(currentNote + osc1Semi->get());
+        frequency2 = MidiMessage::getMidiNoteInHertz(currentNote + osc2Semi->get());
         calculatePhaseIncrement();
     }
     
-    if (phaseIncrement != 0.0)
+    if (phaseIncrement1 != 0.0 && phaseIncrement2 != 0.0)
     {
-        float* subtable = wavetable.getSubtableForFrequency(frequency);
-        int tableSize = wavetable.getTableSize();
+        float* subtable1 = osc1Wavetable->getSubtableForFrequency(frequency1);
+        int tableSize1 = osc1Wavetable->getTableSize();
+        
+        float* subtable2 = osc2Wavetable->getSubtableForFrequency(frequency2);
+        int tableSize2 = osc2Wavetable->getTableSize();
+        
         double twoPi = 2.0 * double_Pi;
         if (releaseCounter > 0)
         {
             for (int sampleIdx = 0; sampleIdx < numSamples; sampleIdx++)
             {
-                int index = (int)((currentPhase / twoPi) * tableSize);
-                FloatType currentSample = level * subtable[index];
+                int index1 = (int)((currentPhase1 / twoPi) * tableSize1);
+                FloatType currentSample1 = level * subtable1[index1] * (1 - localOscMix);
+                
+                int index2 = (int)((currentPhase2 / twoPi) * tableSize2);
+                FloatType currentSample2 = level * subtable2[index2] * localOscMix;
                 
                 for (int channel = 0; channel < localBuffer.getNumChannels(); channel++)
                 {
-                    localBuffer.setSample(channel, sampleIdx, currentSample);
+                    localBuffer.setSample(channel, sampleIdx, currentSample1 + currentSample2);
                 }
                 
-                currentPhase += phaseIncrement;
-                if (currentPhase >= twoPi)
+                currentPhase1 += phaseIncrement1;
+                if (currentPhase1 >= twoPi)
                 {
-                    currentPhase -= twoPi;
+                    currentPhase1 -= twoPi;
+                }
+                currentPhase2 += phaseIncrement2;
+                if (currentPhase2 >= twoPi)
+                {
+                    currentPhase2 -= twoPi;
                 }
                 releaseCounter--;
                 
                 if (releaseCounter <= 0)
                 {
                     clearCurrentNote();
-                    phaseIncrement = 0.0;
-                    currentPhase = 0.0;
+                    phaseIncrement1 = 0.0;
+                    currentPhase1 = 0.0;
+                    phaseIncrement2 = 0.0;
+                    currentPhase2 = 0.0;
                     break;
                 }
             }
@@ -148,18 +174,26 @@ void WavetableVoice::processBlock(AudioBuffer<FloatType>& outputBuffer, int star
         {
             for (int sampleIdx = 0; sampleIdx < numSamples; sampleIdx++)
             {
-                int index = (int)((currentPhase / twoPi) * tableSize);
-                FloatType currentSample = level * subtable[index];
+                int index1 = (int)((currentPhase1 / twoPi) * tableSize1);
+                FloatType currentSample1 = level * subtable1[index1] * (1 - localOscMix);
+                
+                int index2 = (int)((currentPhase2 / twoPi) * tableSize2);
+                FloatType currentSample2 = level * subtable2[index2] * localOscMix;
                 
                 for (int channel = 0; channel < localBuffer.getNumChannels(); channel++)
                 {
-                    localBuffer.setSample(channel, sampleIdx, currentSample);
+                    localBuffer.setSample(channel, sampleIdx, currentSample1 + currentSample2);
                 }
                 
-                currentPhase += phaseIncrement;
-                if (currentPhase >= twoPi)
+                currentPhase1 += phaseIncrement1;
+                if (currentPhase1 >= twoPi)
                 {
-                    currentPhase -= twoPi;
+                    currentPhase1 -= twoPi;
+                }
+                currentPhase2 += phaseIncrement2;
+                if (currentPhase2 >= twoPi)
+                {
+                    currentPhase2 -= twoPi;
                 }
             }
         }

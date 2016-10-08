@@ -149,6 +149,23 @@ void OscillatorComponent::resized()
     //[/UserResized]
 }
 
+Waveform OscillatorComponent::waveformForId(int waveformId)
+{
+    switch (waveformId)
+    {
+        case 1:
+            return WaveformSine;
+        case 2:
+            return WaveformSawtooth;
+        case 3:
+            return WaveformSquare;
+        case 4:
+            return WaveformSine;
+        default:
+            return  WaveformSine;
+    }
+}
+
 void OscillatorComponent::comboBoxChanged (ComboBox* comboBoxThatHasChanged)
 {
     //[UsercomboBoxChanged_Pre]
@@ -157,11 +174,13 @@ void OscillatorComponent::comboBoxChanged (ComboBox* comboBoxThatHasChanged)
     if (comboBoxThatHasChanged == osc1ComboBox)
     {
         //[UserComboBoxCode_osc1ComboBox] -- add your combo box handling code here..
+        processor.setWaveformForOscillator(waveformForId(comboBoxThatHasChanged->getSelectedId()), 1);
         //[/UserComboBoxCode_osc1ComboBox]
     }
     else if (comboBoxThatHasChanged == osc2ComboBox)
     {
         //[UserComboBoxCode_osc2ComboBox] -- add your combo box handling code here..
+        processor.setWaveformForOscillator(waveformForId(comboBoxThatHasChanged->getSelectedId()), 2);
         //[/UserComboBoxCode_osc2ComboBox]
     }
 

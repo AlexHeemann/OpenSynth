@@ -23,7 +23,7 @@ class ParameterSlider;
 //==============================================================================
 /**
 */
-class NoisemakerAudioProcessorEditor  : public AudioProcessorEditor, public DragAndDropContainer, private Timer, private ComboBox::Listener
+class NoisemakerAudioProcessorEditor  : public AudioProcessorEditor, public DragAndDropContainer, private Timer
 {
 public:
     NoisemakerAudioProcessorEditor (NoisemakerAudioProcessor&);
@@ -63,8 +63,6 @@ private:
 	}
 
 	void updateTimecodeDisplay(AudioPlayHead::CurrentPositionInfo);
-
-	virtual void comboBoxChanged(ComboBox* comboBoxThatHasChanged);
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (NoisemakerAudioProcessorEditor)
 };

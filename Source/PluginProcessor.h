@@ -81,7 +81,7 @@ public:
     void getStateInformation (MemoryBlock& destData) override;
     void setStateInformation (const void* data, int sizeInBytes) override;
 
-	void setWaveform(Waveform waveform);
+	void setWaveformForOscillator(Waveform waveform, int oscillator);
 
 	// this is kept up to date with the midi messages that arrive, and the UI component
 	// registers with it so it can represent the incoming messages
