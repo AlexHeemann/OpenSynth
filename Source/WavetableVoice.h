@@ -58,8 +58,10 @@ public:
         processBlock(outputBuffer, startSample, numSamples);
     }
     
-    void setEnvelopeGenerator(EnvelopeGenerator *envelopeGenerator);
-    EnvelopeGenerator* getEnvelopeGenerator() const { return envelopeGenerator; };
+    void setAmpEnvelopeGenerator(EnvelopeGenerator* ampEnvelopeGenerator);
+    EnvelopeGenerator* getAmpEnvelopeGenerator() const { return ampEnvelopeGenerator; };
+    void setFilterEnvelopeGenerator(EnvelopeGenerator* filterEnvelopeGenerator);
+    EnvelopeGenerator* getFilterEnvelopeGenerator() const { return filterEnvelopeGenerator; };
     
     /**
      * Set the wavetable to use for the voice
@@ -75,7 +77,8 @@ private:
     void processBlock(AudioBuffer<FloatType>& outputBuffer, int startSample, int numSamples);
     double currentPhase, phaseIncrement, level, frequency;
     Wavetable& wavetable;
-    EnvelopeGenerator* envelopeGenerator;
+    EnvelopeGenerator* ampEnvelopeGenerator;
+    EnvelopeGenerator* filterEnvelopeGenerator;
     AmpProcessor ampProcessor;
     FilterProcessor filterProcessor;
     int releaseCounter;

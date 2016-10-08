@@ -163,6 +163,10 @@ NoisemakerAudioProcessor::NoisemakerAudioProcessor() :
     addParameter(releaseRateAmp = new AudioParameterFloat("release", "Envelope Release", 0.0f, 3.0f, 1.0f));
     addParameter(sustainLevelAmp = new AudioParameterFloat("sustain", "Envelope Sustain", 0.0f, 1.0f, 1.0f));
     addParameter(filterFrequency = new AudioParameterFloat("filter_frequency", "Filter Frequency", 1.0f, 20000.0f, 10000.0f));
+    addParameter(attackRateFilter = new AudioParameterFloat("attack", "Envelope Attack", 0.0f, 3.0f, 1.0f));
+    addParameter(decayRateFilter = new AudioParameterFloat("decay", "Envelope Decay", 0.0f, 3.0f, 1.0f));
+    addParameter(releaseRateFilter = new AudioParameterFloat("release", "Envelope Release", 0.0f, 3.0f, 1.0f));
+    addParameter(sustainLevelFilter = new AudioParameterFloat("sustain", "Envelope Sustain", 0.0f, 1.0f, 1.0f));
     
 	//initialiseLowPassFilter();
 	initialiseSynthForWaveform(WaveformSawtooth, 8);
@@ -206,12 +210,18 @@ void NoisemakerAudioProcessor::initialiseSynthForWaveform(const Waveform wavefor
                 wavetableVoice = new WavetableVoice(sawtoothWavetable);
             }
         }
-        EnvelopeGenerator* envelopeGenerator = new EnvelopeGenerator();
-        envelopeGenerator->attackRate = attackRateAmp;
-        envelopeGenerator->decayRate = decayRateAmp;
-        envelopeGenerator->sustainLevel = sustainLevelAmp;
-        envelopeGenerator->releaseRate = releaseRateAmp;
-        wavetableVoice->setEnvelopeGenerator(envelopeGenerator);
+        EnvelopeGenerator* ampEnvelopeGenerator = new EnvelopeGenerator();
+        ampEnvelopeGenerator->attackRate = attackRateAmp;
+        ampEnvelopeGenerator->decayRate = decayRateAmp;
+        ampEnvelopeGenerator->sustainLevel = sustainLevelAmp;
+        ampEnvelopeGenerator->releaseRate = releaseRateAmp;
+        wavetableVoice->setAmpEnvelopeGenerator(ampEnvelopeGenerator);
+        EnvelopeGenerator* filterEnvelopeGenerator = new EnvelopeGenerator();
+        filterEnvelopeGenerator->attackRate = attackRateFilter;
+        filterEnvelopeGenerator->decayRate = decayRateFilter;
+        filterEnvelopeGenerator->sustainLevel = sustainLevelFilter;
+        filterEnvelopeGenerator->releaseRate = releaseRateFilter;
+        wavetableVoice->setFilterEnvelopeGenerator(filterEnvelopeGenerator);
         wavetableVoice->getAmpProcessor().level = level;
         wavetableVoice->getFilterProcessor().frequency = filterFrequency;
         synth.addVoice(wavetableVoice);
@@ -319,10 +329,18 @@ void NoisemakerAudioProcessor::prepareToPlay (double sampleRate, int samplesPerB
     for (int voiceIdx = 0; voiceIdx < synth.getNumVoices(); voiceIdx++)
     {
         WavetableVoice* voice = dynamic_cast<WavetableVoice*>(synth.getVoice(voiceIdx));
-        if (voice != nullptr && voice->getEnvelopeGenerator() != nullptr)
+        if (voice != nullptr)
         {
-            voice->getEnvelopeGenerator()->setSampleRate(sampleRate);
-            voice->getEnvelopeGenerator()->resetEnvelope();
+            if (voice->getAmpEnvelopeGenerator() != nullptr)
+            {
+                voice->getAmpEnvelopeGenerator()->setSampleRate(sampleRate);
+                voice->getAmpEnvelopeGenerator()->resetEnvelope();
+            }
+            if (voice->getAmpEnvelopeGenerator() != nullptr)
+            {
+                voice->getFilterEnvelopeGenerator()->setSampleRate(sampleRate);
+                voice->getFilterEnvelopeGenerator()->resetEnvelope();
+            }
         }
     }
 	currentSampleRate = sampleRate;

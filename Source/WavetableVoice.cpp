@@ -17,16 +17,23 @@ WavetableVoice::WavetableVoice(Wavetable& wavetable) : phaseIncrement(0.0), wave
 
 WavetableVoice::~WavetableVoice()
 {
-    delete envelopeGenerator;
+    delete ampEnvelopeGenerator;
 }
 
-void WavetableVoice::setEnvelopeGenerator(EnvelopeGenerator* envelopeGenerator)
+void WavetableVoice::setAmpEnvelopeGenerator(EnvelopeGenerator* ampEnvelopeGenerator)
 {
-    this->envelopeGenerator = envelopeGenerator;
-    this->envelopeGenerator->setSampleRate(getSampleRate());
-    this->envelopeGenerator->resetEnvelope();
-    ampProcessor.setEnvelopeGenerator(envelopeGenerator);
-    filterProcessor.setEnvelopeGenerator(envelopeGenerator);
+    this->ampEnvelopeGenerator = ampEnvelopeGenerator;
+    this->ampEnvelopeGenerator->setSampleRate(getSampleRate());
+    this->ampEnvelopeGenerator->resetEnvelope();
+    ampProcessor.setEnvelopeGenerator(ampEnvelopeGenerator);
+}
+
+void WavetableVoice::setFilterEnvelopeGenerator(EnvelopeGenerator *filterEnvelopeGenerator)
+{
+    this->filterEnvelopeGenerator = filterEnvelopeGenerator;
+    this->filterEnvelopeGenerator->setSampleRate(getSampleRate());
+    this->filterEnvelopeGenerator->resetEnvelope();
+    filterProcessor.setEnvelopeGenerator(filterEnvelopeGenerator);
 }
 
 void WavetableVoice::setWavetable(Wavetable& wavetable)
@@ -47,15 +54,19 @@ void WavetableVoice::startNote(int midiNoteNumber, float velocity,
     
     phaseIncrement = frqRad * frequency;
     
-    if (envelopeGenerator != nullptr)
+    if (ampEnvelopeGenerator != nullptr)
     {
-        envelopeGenerator->resetEnvelope();
+        ampEnvelopeGenerator->resetEnvelope();
+    }
+    if (filterEnvelopeGenerator != nullptr)
+    {
+        filterEnvelopeGenerator->resetEnvelope();
     }
 }
 
 void WavetableVoice::stopNote(float velocity, bool allowTailOff)
 {
-    if (allowTailOff && envelopeGenerator != nullptr && envelopeGenerator->releaseRate->get() > 0)
+    if (allowTailOff && ampEnvelopeGenerator != nullptr && ampEnvelopeGenerator->releaseRate->get() > 0)
     {
         // start a tail-off by setting this flag. The render callback will pick up on
         // this and do a fade out, calling clearCurrentNote() when it's finished.
@@ -64,8 +75,9 @@ void WavetableVoice::stopNote(float velocity, bool allowTailOff)
         // stopNote method could be called more than once.
         if (releaseCounter == 0)
         {
-            releaseCounter = envelopeGenerator->releaseRate->get() * getSampleRate();
-            envelopeGenerator->setEnvelopeState(EnvelopeGenerator::EnvelopeStateRelease);
+            releaseCounter = ampEnvelopeGenerator->releaseRate->get() * getSampleRate();
+            ampEnvelopeGenerator->setEnvelopeState(EnvelopeGenerator::EnvelopeStateRelease);
+            filterEnvelopeGenerator->setEnvelopeState(EnvelopeGenerator::EnvelopeStateRelease);
         }
     }
     else
@@ -80,7 +92,8 @@ void WavetableVoice::stopNote(float velocity, bool allowTailOff)
 template <typename FloatType>
 void WavetableVoice::processBlock(AudioBuffer<FloatType>& outputBuffer, int startSample, int numSamples)
 {
-    envelopeGenerator->calculateEnvelopeBuffer(numSamples);
+    ampEnvelopeGenerator->calculateEnvelopeBuffer(numSamples);
+    filterEnvelopeGenerator->calculateEnvelopeBuffer(numSamples);
     // This buffer is used to calculate all the samples for this voice, it then gets added to the overall output buffer of the synth
     AudioBuffer<FloatType> localBuffer = AudioBuffer<FloatType>(outputBuffer.getNumChannels(), outputBuffer.getNumSamples());
     localBuffer.clear();
