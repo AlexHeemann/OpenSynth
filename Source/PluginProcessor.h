@@ -123,6 +123,7 @@ public:
     AudioParameterFloat* releaseRate;
     AudioParameterFloat* sustainLevel;
     AudioParameterFloat* envelopeAmount;
+    AudioParameterFloat* filterFrequency;
 
 	HashMap<int, ModulationParameter> modulationMatrix;
 

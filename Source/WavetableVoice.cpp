@@ -26,6 +26,7 @@ void WavetableVoice::setEnvelopeGenerator(EnvelopeGenerator* envelopeGenerator)
     this->envelopeGenerator->setSampleRate(getSampleRate());
     this->envelopeGenerator->resetEnvelope();
     ampProcessor.setEnvelopeGenerator(envelopeGenerator);
+    filterProcessor.setEnvelopeGenerator(envelopeGenerator);
 }
 
 void WavetableVoice::setWavetable(Wavetable& wavetable)
@@ -137,6 +138,7 @@ void WavetableVoice::processBlock(AudioBuffer<FloatType>& outputBuffer, int star
             }
         }
         ampProcessor.renderNextBlock(localBuffer, localBuffer, startSample, numSamples);
+        filterProcessor.renderNextBlock(localBuffer, localBuffer, startSample, numSamples);
     }
     
     // Add samples from this voice to the output buffer

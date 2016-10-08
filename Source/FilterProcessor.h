@@ -1,23 +1,24 @@
 /*
   ==============================================================================
 
-    AmpProcessor.h
-    Created: 6 Oct 2016 2:33:19pm
+    FilterProcessor.h
+    Created: 8 Oct 2016 2:44:22pm
     Author:  Alexander Heemann
 
   ==============================================================================
 */
 
-#ifndef AMPPROCESSOR_H_INCLUDED
-#define AMPPROCESSOR_H_INCLUDED
+#ifndef FILTERPROCESSOR_H_INCLUDED
+#define FILTERPROCESSOR_H_INCLUDED
 
 #include "Processor.h"
+#include "DspFilters/Dsp.h"
 
-class AmpProcessor : public Processor
+class FilterProcessor : public Processor
 {
 public:
-    AmpProcessor();
-    virtual ~AmpProcessor() {};
+    FilterProcessor();
+    virtual ~FilterProcessor() {};
     
     void renderNextBlock(AudioBuffer<float>& outputBuffer, AudioBuffer<float>& delayBuffer, int startSample, int numSamples)
     {
@@ -28,13 +29,16 @@ public:
         processBuffer(outputBuffer, delayBuffer, startSample, numSamples);
     }
     
-    AudioParameterFloat* level;
+    AudioParameterFloat* frequency;
     
 private:
     template <typename FloatType>
     void processBuffer(AudioBuffer<FloatType>& buffer, AudioBuffer<FloatType>& delayBuffer, int startSample, int numSamples);
+    void initialiseLowPassFilter(double frequency);
+    
+    // Contains filters for left and right channel
+    std::vector<Dsp::SmoothedFilterDesign<Dsp::RBJ::Design::LowPass, 1>> filters;
 };
 
 
-
-#endif  // AMPPROCESSOR_H_INCLUDED
+#endif  // FILTERPROCESSOR_H_INCLUDED

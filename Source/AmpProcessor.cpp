@@ -14,16 +14,6 @@ AmpProcessor::AmpProcessor()
 {
 }
 
-void AmpProcessor::setEnvelopeGenerator(EnvelopeGenerator* envelopeGenerator)
-{
-    this->envelopeGenerator = envelopeGenerator;
-}
-
-EnvelopeGenerator* AmpProcessor::getEnvelopeGenerator()
-{
-    return envelopeGenerator;
-}
-
 template <typename FloatType>
 void AmpProcessor::processBuffer(AudioBuffer<FloatType> &buffer, AudioBuffer<FloatType>& delayBuffer, int startSample, int numSamples)
 {

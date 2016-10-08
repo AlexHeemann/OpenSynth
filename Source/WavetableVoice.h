@@ -15,6 +15,7 @@
 #include "Wavetable.h"
 #include "EnvelopeGenerator.h"
 #include "AmpProcessor.h"
+#include "FilterProcessor.h"
 
 class WavetableSound : public SynthesiserSound
 {
@@ -66,6 +67,7 @@ public:
     void setWavetable(Wavetable& wavetable);
     
     AmpProcessor& getAmpProcessor() { return ampProcessor; }
+    FilterProcessor& getFilterProcessor() { return filterProcessor; }
     
 private:
     
@@ -75,6 +77,7 @@ private:
     Wavetable& wavetable;
     EnvelopeGenerator* envelopeGenerator;
     AmpProcessor ampProcessor;
+    FilterProcessor filterProcessor;
     int releaseCounter;
 };
 

@@ -12,6 +12,7 @@
 #define PROCESSOR_H_INCLUDED
 
 #include "../JuceLibraryCode/JuceHeader.h"
+#include "EnvelopeGenerator.h"
 
 class Processor
 {
@@ -21,6 +22,12 @@ public:
     
     virtual void renderNextBlock(AudioBuffer<float>& outputBuffer, AudioBuffer<float>& delayBuffer, int startSample, int numSamples) = 0;
     virtual void renderNextBlock(AudioBuffer<double>& outputBuffer, AudioBuffer<double>& delayBuffer, int startSample, int numSamples) = 0;
+    
+    virtual void setEnvelopeGenerator(EnvelopeGenerator* envelopeGenerator) { this->envelopeGenerator = envelopeGenerator; };
+    virtual EnvelopeGenerator* getEnvelopeGenerator() const { return envelopeGenerator; };
+    
+protected:
+    EnvelopeGenerator* envelopeGenerator;
 };
 
 

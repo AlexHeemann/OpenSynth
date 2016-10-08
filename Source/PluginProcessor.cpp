@@ -162,6 +162,7 @@ NoisemakerAudioProcessor::NoisemakerAudioProcessor() :
     addParameter(decayRate = new AudioParameterFloat("decay", "Envelope Decay", 0.0f, 3.0f, 1.0f));
     addParameter(releaseRate = new AudioParameterFloat("release", "Envelope Release", 0.0f, 3.0f, 1.0f));
     addParameter(sustainLevel = new AudioParameterFloat("sustain", "Envelope Sustain", 0.0f, 1.0f, 1.0f));
+    addParameter(filterFrequency = new AudioParameterFloat("filter_frequency", "Filter Frequency", 1.0f, 20000.0f, 10000.0f));
     
 	//initialiseLowPassFilter();
 	initialiseSynthForWaveform(WaveformSawtooth, 8);
@@ -194,6 +195,7 @@ void NoisemakerAudioProcessor::initialiseSynthForWaveform(const Waveform wavefor
                 envelopeGenerator->releaseRate = releaseRate;
                 squareWaveVoice->setEnvelopeGenerator(envelopeGenerator);
                 squareWaveVoice->getAmpProcessor().level = level;
+                squareWaveVoice->getFilterProcessor().frequency = filterFrequency;
                 synth.addVoice(squareWaveVoice);
             }
             break;
@@ -207,6 +209,7 @@ void NoisemakerAudioProcessor::initialiseSynthForWaveform(const Waveform wavefor
                 envelopeGenerator->releaseRate = releaseRate;
                 sawtoothVoice->setEnvelopeGenerator(envelopeGenerator);
                 sawtoothVoice->getAmpProcessor().level = level;
+                sawtoothVoice->getFilterProcessor().frequency = filterFrequency;
                 synth.addVoice(sawtoothVoice);
             }
 			break;
