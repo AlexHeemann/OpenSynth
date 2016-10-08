@@ -175,7 +175,6 @@ NoisemakerAudioProcessor::NoisemakerAudioProcessor() :
 
 NoisemakerAudioProcessor::~NoisemakerAudioProcessor()
 {
-	removeAllModulators();
 }
 
 void NoisemakerAudioProcessor::initialiseSynthForWaveform(const Waveform waveform, const int numVoices)
@@ -418,59 +417,11 @@ void NoisemakerAudioProcessor::process(AudioBuffer<FloatType>& buffer,
 	// add messages to the buffer if the user is clicking on the on-screen keys
 	keyboardState.processNextMidiBuffer(midiMessages, 0, numSamples, true);
 
-    /*
-	// Update filter frequency
-	for (int filterId = 0; filterId < filters.size(); ++filterId)
-	{
-		double filterModulation = 1.0;
-		ModulationParameter modParam = modulationMatrix[ParameterTypeFilterFrequency];
-		uint32 modId = modParam.modulatorId;
-		EnvelopeGenerator* envGenerator = nullptr;
-		if (modulatorsById.contains(modId))
-		{
-			envGenerator = modulatorsById[modId];
-		}
-
-		bool isModulated = modParam.isModulated && envGenerator != nullptr;
-		if (isModulated)
-		{
-			filterModulation = envGenerator->envelopeBuffer[0];
-		}
-		filters[filterId].setParam(Dsp::ParamID::idFrequency, filterFrequencyParam->get() * filterModulation);
-	}
-     */
-
 	// and now get our synth to process these midi events and generate its output.
 	synth.renderNextBlock(buffer, midiMessages, 0, numSamples);
 
 	// Now ask the host for the current time so we can store it to be displayed later...
 	updateCurrentTimeInfoFromHost();
-}
-
-template <typename FloatType>
-void NoisemakerAudioProcessor::applyGain(AudioBuffer<FloatType>& buffer, AudioBuffer<FloatType>& delayBuffer)
-{
-	ignoreUnused(delayBuffer);
-	const float gainLevel = level->get();
-	ModulationParameter modParam = modulationMatrix[ParameterTypeGain];
-	uint32 modId = modParam.modulatorId;
-	EnvelopeGenerator* envGenerator = nullptr;
-	if (modulatorsById.contains(modId))
-	{
-		envGenerator = modulatorsById[modId];
-	}
-	
-	bool isModulated = modParam.isModulated && envGenerator != nullptr;
-
-	for (int channel = 0; channel < buffer.getNumChannels(); ++channel)
-	{
-		FloatType* const channelData = buffer.getWritePointer(channel);
-		isModulated = isModulated && envGenerator->envelopeBuffer.size() >= buffer.getNumSamples();
-		for (int sample = 0; sample < buffer.getNumSamples(); sample++)
-		{
-			channelData[sample] *= (gainLevel * (isModulated ? envGenerator->envelopeBuffer[sample] : 1.0));
-		}
-	}
 }
 
 template <typename FloatType>
@@ -499,19 +450,6 @@ void NoisemakerAudioProcessor::applyDelay(AudioBuffer<FloatType>& buffer, AudioB
 	}
 
 	delayPosition = delayPos;
-}
-
-template <typename FloatType>
-void NoisemakerAudioProcessor::applyFilter(AudioBuffer<FloatType>& buffer, AudioBuffer<FloatType>& delayBuffer)
-{
-	ignoreUnused(delayBuffer);
-	for (int channel = 0; channel < buffer.getNumChannels(); channel++)
-	{
-		FloatType* writePointer = buffer.getWritePointer(channel);
-		FloatType* audioData[1];
-		audioData[0] = writePointer;
-		filters[channel].process(buffer.getNumSamples(), audioData);
-	}
 }
 
 void NoisemakerAudioProcessor::updateCurrentTimeInfoFromHost()
@@ -592,36 +530,6 @@ void NoisemakerAudioProcessor::setStateInformation(const void* data, int sizeInB
 void NoisemakerAudioProcessor::setWaveform(Waveform waveform)
 {
 	initialiseSynthForWaveform(waveform, 8);
-}
-
-void NoisemakerAudioProcessor::addModulatorWithId(ModulatorType type, uint32 id)
-{
-
-}
-
-void NoisemakerAudioProcessor::removeModulatorWithId(uint32 id)
-{
-	if (modulatorsById.contains(id))
-	{
-		EnvelopeGenerator* modulator = modulatorsById[id];
-		modulatorsById.remove(id);
-		delete modulator;
-	}
-}
-
-void NoisemakerAudioProcessor::removeAllModulators()
-{
-	HashMap<int, EnvelopeGenerator*>::Iterator i(modulatorsById);
-	std::vector<int> keys;
-	
-	while (i.next())
-	{
-		keys.push_back(i.getKey());
-	}
-	for (int key : keys)
-	{
-		removeModulatorWithId(key);
-	}
 }
 
 //==============================================================================

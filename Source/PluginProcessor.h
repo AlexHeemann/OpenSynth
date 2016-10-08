@@ -27,26 +27,6 @@ typedef enum
     WaveformTriangle,
 } Waveform;
 
-typedef enum
-{
-	ParameterTypeGain,
-	ParameterTypeFilterFrequency
-} ParameterType;
-
-typedef enum
-{
-	ModulatorTypeEnvelope,
-	ModulatorTypeLFO,
-} ModulatorType;
-
-struct ModulationParameter
-{
-	bool isModulated;
-	uint32 modulatorId;
-	double start;
-	double end;
-};
-
 //==============================================================================
 /**
 */
@@ -128,12 +108,6 @@ public:
     AudioParameterFloat* sustainLevelFilter;
     AudioParameterFloat* envelopeAmountFilter;
     AudioParameterFloat* filterFrequency;
-
-	HashMap<int, ModulationParameter> modulationMatrix;
-
-	void addModulatorWithId(ModulatorType type, uint32 id);
-	void removeModulatorWithId(uint32 id);
-	void removeAllModulators();
 
 private:
     //==============================================================================

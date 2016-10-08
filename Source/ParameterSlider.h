@@ -60,21 +60,15 @@ public:
     
     virtual bool isInterestedInDragSource(const SourceDetails& dragSourceDetails) override
     {
-        return dragSourceDetails.description.equals(1) && (parameterType == ParameterTypeGain || parameterType == ParameterTypeFilterFrequency);
+        return true;
     }
     
     virtual void itemDropped(const SourceDetails& dragSourceDetails) override
     {
         setColour(rotarySliderFillColourId, originalSliderFillColour);
-        ModulationParameter modParam;
-        modParam.isModulated = true;
-        modParam.modulatorId = static_cast<uint32>(int(dragSourceDetails.description));
-        modulationMatrix->set(parameterType, modParam);
     }
     
     AudioProcessorParameter& param;
-    ParameterType parameterType;
-    HashMap<int, ModulationParameter>* modulationMatrix;
     
 private:
     Colour originalSliderFillColour;

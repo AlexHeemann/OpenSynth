@@ -41,12 +41,6 @@ NoisemakerAudioProcessorEditor::NoisemakerAudioProcessorEditor (NoisemakerAudioP
 	waveformBox->addListener(this);
 	addAndMakeVisible(waveformBox);
 
-	envelopeConnector = new ModulationConnector();
-	envelopeConnector->setModulationId(1);
-	addAndMakeVisible(envelopeConnector);
-
-	processor.addModulatorWithId(ModulatorTypeEnvelope, 1);
-
 	// add the triangular resizer component for the bottom-right of the UI
 	addAndMakeVisible(resizer = new ResizableCornerComponent(this, &resizeLimits));
 	resizeLimits.setSizeLimits(200, 150, 800, 300);
