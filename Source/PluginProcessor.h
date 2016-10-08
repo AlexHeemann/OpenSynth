@@ -108,6 +108,10 @@ public:
     AudioParameterFloat* sustainLevelFilter;
     AudioParameterFloat* envelopeAmountFilter;
     AudioParameterFloat* filterFrequency;
+    
+    // Oscillator Parameters
+    AudioParameterInt* osc1Semi;
+    AudioParameterInt* osc2Semi;
 
 private:
     //==============================================================================

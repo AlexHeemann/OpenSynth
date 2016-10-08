@@ -12,6 +12,10 @@
               companyName="Alexander Heemann">
   <MAINGROUP id="A4iQ36" name="Noisemaker">
     <GROUP id="{115CB73A-FD2A-ACC8-26C7-8F73C7C67676}" name="Source">
+      <FILE id="s2OOqc" name="OscillatorComponent.cpp" compile="1" resource="0"
+            file="Source/OscillatorComponent.cpp"/>
+      <FILE id="JCceLk" name="OscillatorComponent.h" compile="0" resource="0"
+            file="Source/OscillatorComponent.h"/>
       <FILE id="uWDXtE" name="FilterComponent.cpp" compile="1" resource="0"
             file="Source/FilterComponent.cpp"/>
       <FILE id="Ov2O5v" name="FilterComponent.h" compile="0" resource="0"

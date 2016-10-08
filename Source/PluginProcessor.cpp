@@ -14,137 +14,6 @@
 #include "WavetableVoice.h"
 
 //==============================================================================
-/** A demo synth sound that's just a basic sine wave.. */
-class SineWaveSound : public SynthesiserSound
-{
-public:
-	SineWaveSound() {}
-
-	bool appliesToNote(int /*midiNoteNumber*/) override { return true; }
-	bool appliesToChannel(int /*midiChannel*/) override { return true; }
-};
-
-//==============================================================================
-/** A simple demo synth voice that just plays a sine wave.. */
-class SineWaveVoice : public SynthesiserVoice
-{
-public:
-	SineWaveVoice()
-		: angleDelta(0.0),
-		tailOff(0.0)
-	{
-	}
-
-	bool canPlaySound(SynthesiserSound* sound) override
-	{
-		return dynamic_cast<SineWaveSound*> (sound) != nullptr;
-	}
-
-	void startNote(int midiNoteNumber, float velocity,
-		SynthesiserSound* /*sound*/,
-		int /*currentPitchWheelPosition*/) override
-	{
-		currentAngle = 0.0;
-		level = velocity * 0.15;
-		tailOff = 0.0;
-
-		double cyclesPerSecond = MidiMessage::getMidiNoteInHertz(midiNoteNumber);
-		double cyclesPerSample = cyclesPerSecond / getSampleRate();
-
-		angleDelta = cyclesPerSample * 2.0 * double_Pi;
-	}
-
-	void stopNote(float /*velocity*/, bool allowTailOff) override
-	{
-		if (allowTailOff)
-		{
-			// start a tail-off by setting this flag. The render callback will pick up on
-			// this and do a fade out, calling clearCurrentNote() when it's finished.
-
-			if (tailOff == 0.0) // we only need to begin a tail-off if it's not already doing so - the
-								// stopNote method could be called more than once.
-				tailOff = 1.0;
-		}
-		else
-		{
-			// we're being told to stop playing immediately, so reset everything..
-
-			clearCurrentNote();
-			angleDelta = 0.0;
-		}
-	}
-
-	void pitchWheelMoved(int /*newValue*/) override
-	{
-		// can't be bothered implementing this for the demo!
-	}
-
-	void controllerMoved(int /*controllerNumber*/, int /*newValue*/) override
-	{
-		// not interested in controllers in this case.
-	}
-
-	void renderNextBlock(AudioBuffer<float>& outputBuffer, int startSample, int numSamples) override
-	{
-		processBlock(outputBuffer, startSample, numSamples);
-	}
-
-	void renderNextBlock(AudioBuffer<double>& outputBuffer, int startSample, int numSamples) override
-	{
-		processBlock(outputBuffer, startSample, numSamples);
-	}
-
-private:
-
-	template <typename FloatType>
-	void processBlock(AudioBuffer<FloatType>& outputBuffer, int startSample, int numSamples)
-	{
-		if (angleDelta != 0.0)
-		{
-			if (tailOff > 0)
-			{
-				while (--numSamples >= 0)
-				{
-					const FloatType currentSample =
-						static_cast<FloatType> (std::sin(currentAngle) * level * tailOff);
-
-					for (int i = outputBuffer.getNumChannels(); --i >= 0;)
-						outputBuffer.addSample(i, startSample, currentSample);
-
-					currentAngle += angleDelta;
-					++startSample;
-
-					tailOff *= 0.99;
-
-					if (tailOff <= 0.005)
-					{
-						clearCurrentNote();
-
-						angleDelta = 0.0;
-						break;
-					}
-				}
-			}
-			else
-			{
-				while (--numSamples >= 0)
-				{
-					const FloatType currentSample = static_cast<FloatType> (std::sin(currentAngle) * level);
-
-					for (int i = outputBuffer.getNumChannels(); --i >= 0;)
-						outputBuffer.addSample(i, startSample, currentSample);
-
-					currentAngle += angleDelta;
-					++startSample;
-				}
-			}
-		}
-	}
-
-	double currentAngle, angleDelta, level, tailOff;
-};
-
-//==============================================================================
 NoisemakerAudioProcessor::NoisemakerAudioProcessor() :
 	lastUIWidth(600),
 	lastUIHeight(260),
@@ -169,6 +38,8 @@ NoisemakerAudioProcessor::NoisemakerAudioProcessor() :
     addParameter(decayRateFilter = new AudioParameterFloat("decay", "Envelope Decay", 0.0f, 3.0f, 1.0f));
     addParameter(releaseRateFilter = new AudioParameterFloat("release", "Envelope Release", 0.0f, 3.0f, 1.0f));
     addParameter(sustainLevelFilter = new AudioParameterFloat("sustain", "Envelope Sustain", 0.0f, 1.0f, 1.0f));
+    addParameter(osc1Semi = new AudioParameterInt("osc1semi", "Osc 1 Semi", -10, 0, 10));
+    addParameter(osc2Semi = new AudioParameterInt("osc2semi", "Osc 2 Semi", -10, 0, 10));
     
 	//initialiseLowPassFilter();
 	initialiseSynthForWaveform(WaveformSawtooth, 8);
@@ -184,7 +55,6 @@ void NoisemakerAudioProcessor::initialiseSynthForWaveform(const Waveform wavefor
 	synth.clearSounds();
 	synth.clearVoices();
 
-	// Add some voices...
 	for (int i = numVoices; --i >= 0;)
 	{
         WavetableVoice* wavetableVoice;
@@ -231,25 +101,9 @@ void NoisemakerAudioProcessor::initialiseSynthForWaveform(const Waveform wavefor
         wavetableVoice->getFilterProcessor().frequency = filterFrequency;
         wavetableVoice->getFilterProcessor().envelopeAmount = envelopeAmountFilter;
         synth.addVoice(wavetableVoice);
-
 	}
 
-	// ..and give the synth a sound to play
-	switch (waveform)
-	{
-	case WaveformSine:
-	case WaveformSquare:
-		synth.addSound(new WavetableSound());
-		break;
-	case WaveformSawtooth:
-		synth.addSound(new WavetableSound());
-		break;
-    case WaveformTriangle:
-        synth.addSound(new TriangleWaveSound());
-        break;
-	default:
-		synth.addSound(new SineWaveSound());
-	}
+    synth.addSound(new WavetableSound());
 }
 
 void NoisemakerAudioProcessor::initialiseLowPassFilter()

@@ -16,6 +16,7 @@
 #include "ModulationConnector.h"
 #include "AmpComponent.h"
 #include "FilterComponent.h"
+#include "OscillatorComponent.h"
 
 class ParameterSlider;
 
@@ -50,6 +51,7 @@ private:
 	ScopedPointer<ModulationConnector> envelopeConnector;
     ScopedPointer<AmpComponent> ampComponent;
     ScopedPointer<FilterComponent> filterComponent;
+    ScopedPointer<OscillatorComponent> oscillatorComponent;
 	ComponentBoundsConstrainer resizeLimits;
 
 	AudioPlayHead::CurrentPositionInfo lastDisplayedPosition;
