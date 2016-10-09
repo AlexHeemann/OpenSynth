@@ -1,12 +1,3 @@
-/*
-  ==============================================================================
-
-    This file was auto-generated!
-
-    It contains the basic framework code for a JUCE plugin processor.
-
-  ==============================================================================
-*/
 
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
@@ -47,7 +38,7 @@ NoisemakerAudioProcessor::NoisemakerAudioProcessor() :
     addParameter(releaseRateFilter = new AudioParameterFloat("release", "Envelope Release", 0.0f, 3.0f, 1.0f));
     releaseRateFilter->range.skew = 0.5;
     addParameter(sustainLevelFilter = new AudioParameterFloat("sustain", "Envelope Sustain", 0.0f, 1.0f, 1.0f));
-    addParameter(filterResonance = new AudioParameterFloat("resonance", "Filter Resonance", 1.0f, 15.0f, 1.0f));
+    addParameter(filterResonance = new AudioParameterFloat("resonance", "Filter Resonance", 1.0f, 10.0f, 1.0f));
     
     addParameter(osc1Semi = new AudioParameterInt("osc1semi", "Osc 1 Semi", -36, 36, 0));
     addParameter(osc2Semi = new AudioParameterInt("osc2semi", "Osc 2 Semi", -36, 36, 0));
@@ -55,7 +46,6 @@ NoisemakerAudioProcessor::NoisemakerAudioProcessor() :
     addParameter(osc2Cents = new AudioParameterInt("osc2cents", "Osc 2 Cents", -30, 30, 0));
     addParameter(oscMix = new AudioParameterFloat("oscMix", "Osc Mix", 0.0f, 1.0f, 0.0f));
     
-	//initialiseLowPassFilter();
 	initialiseSynthForWaveform(WaveformSawtooth, 8);
 	keyboardState.addListener(this);
 }
@@ -125,25 +115,6 @@ void NoisemakerAudioProcessor::initialiseSynthForWaveform(const Waveform wavefor
 
     synth.addSound(new WavetableSound());
 }
-
-void NoisemakerAudioProcessor::initialiseLowPassFilter()
-{
-}
-
-void NoisemakerAudioProcessor::initialiseLowPassFilter(double frequency)
-{
-	filters.clear();
-	for (int filter = 0; filter < 2; filter++)
-	{ 
-		Dsp::SmoothedFilterDesign <Dsp::RBJ::Design::LowPass, 1> f(1024);
-		Dsp::Params params;
-		params[0] = 44100; // sample rate
-		params[1] = 500; // cutoff frequency
-		params[2] = 1.25; // Q
-		f.setParams(params);
-		filters.push_back(f);
-	}
-};
 
 //==============================================================================
 const String NoisemakerAudioProcessor::getName() const

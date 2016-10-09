@@ -141,14 +141,12 @@ private:
 	std::vector<Dsp::SmoothedFilterDesign<Dsp::RBJ::Design::LowPass, 1>> filters;
 
 	void initialiseSynthForWaveform(const Waveform waveform, const int numVoices);
-	void initialiseLowPassFilter();
-	void initialiseLowPassFilter(double frequency);
 	void updateCurrentTimeInfoFromHost();
 
 	virtual void handleNoteOn(MidiKeyboardState* source,
-		int midiChannel, int midiNoteNumber, float velocity);
+		int midiChannel, int midiNoteNumber, float velocity) override;
 	virtual void handleNoteOff(MidiKeyboardState* source,
-		int midiChannel, int midiNoteNumber, float velocity);
+		int midiChannel, int midiNoteNumber, float velocity) override;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (NoisemakerAudioProcessor)
 };
