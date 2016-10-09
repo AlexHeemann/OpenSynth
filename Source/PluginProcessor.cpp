@@ -29,15 +29,25 @@ NoisemakerAudioProcessor::NoisemakerAudioProcessor() :
 	// deleting them for us.
 	addParameter(level = new AudioParameterFloat("gain", "Gain", 0.0f, 1.0f, 0.9f));
     addParameter(attackRateAmp = new AudioParameterFloat("attack", "Envelope Attack", 0.0f, 3.0f, 0.0f));
+    attackRateAmp->range.skew = 0.5;
     addParameter(decayRateAmp = new AudioParameterFloat("decay", "Envelope Decay", 0.0f, 3.0f, 3.0f));
+    decayRateAmp->range.skew = 0.5;
     addParameter(releaseRateAmp = new AudioParameterFloat("release", "Envelope Release", 0.0f, 3.0f, 1.0f));
+    releaseRateAmp->range.skew = 0.5;
     addParameter(sustainLevelAmp = new AudioParameterFloat("sustain", "Envelope Sustain", 0.0f, 1.0f, 1.0f));
+    
     addParameter(filterFrequency = new AudioParameterFloat("filter_frequency", "Filter Frequency", 0.0f, 20000.0f, 10000.0f));
-    addParameter(envelopeAmountFilter = new AudioParameterFloat("env_amount_filter", "Envelope Amount", 0.0f, 20000.0f, 0.0f));
+    filterFrequency->range.skew = 0.25;
+    addParameter(envelopeAmountFilter = new AudioParameterFloat("env_amount_filter", "Envelope Amount", 0.0f, 1.0f, 0.0f));
+    
     addParameter(attackRateFilter = new AudioParameterFloat("attack", "Envelope Attack", 0.0f, 3.0f, 1.0f));
+    attackRateFilter->range.skew = 0.5;
     addParameter(decayRateFilter = new AudioParameterFloat("decay", "Envelope Decay", 0.0f, 3.0f, 1.0f));
+    decayRateFilter->range.skew = 0.5;
     addParameter(releaseRateFilter = new AudioParameterFloat("release", "Envelope Release", 0.0f, 3.0f, 1.0f));
+    releaseRateFilter->range.skew = 0.5;
     addParameter(sustainLevelFilter = new AudioParameterFloat("sustain", "Envelope Sustain", 0.0f, 1.0f, 1.0f));
+    
     addParameter(osc1Semi = new AudioParameterInt("osc1semi", "Osc 1 Semi", -36, 36, 0));
     addParameter(osc2Semi = new AudioParameterInt("osc2semi", "Osc 2 Semi", -36, 36, 0));
     addParameter(osc1Cents = new AudioParameterInt("osc1cents", "Osc 1 Cents", -30, 30, 0));

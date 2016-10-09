@@ -25,7 +25,6 @@ envAmountLabel(String::empty, "Env Amount")
     addAndMakeVisible(frequencyKnob = new ParameterSlider(*processor.filterFrequency));
     frequencyKnob->setSliderStyle(Slider::Rotary);
     frequencyKnob->setTextBoxStyle(juce::Slider::TextEntryBoxPosition::TextBoxBelow, false, 68, 15);
-    frequencyKnob->setSkewFactor(0.5);
     frequencyLabel.attachToComponent(frequencyKnob, false);
     
     addAndMakeVisible(envelopeAmountKnob = new ParameterSlider(*processor.envelopeAmountFilter));
