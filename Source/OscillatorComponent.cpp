@@ -142,6 +142,8 @@ OscillatorComponent::OscillatorComponent (NoisemakerAudioProcessor& processor)
 
 
     //[Constructor] You can add your own custom stuff here..
+    osc1ComboBox->setSelectedId(2);
+    osc2ComboBox->setSelectedId(2);
     //[/Constructor]
 }
 
