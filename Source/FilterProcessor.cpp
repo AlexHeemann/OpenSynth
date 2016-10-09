@@ -49,7 +49,7 @@ void FilterProcessor::initialiseLowPassFilter(double frequency)
         Dsp::SmoothedFilterDesign <Dsp::RBJ::Design::LowPass, 1> f(1024);
         Dsp::Params params;
         params[0] = 44100; // sample rate
-        params[1] = 500; // cutoff frequency
+        params[1] = frequency; // cutoff frequency
         params[2] = 1.0; // Q
         f.setParams(params);
         filters.push_back(f);
