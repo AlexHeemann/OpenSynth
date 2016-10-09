@@ -37,7 +37,7 @@ private:
     ScopedPointer<ParameterSlider> decaySlider;
     ScopedPointer<ParameterSlider> sustainSlider;
     ScopedPointer<ParameterSlider> releaseSlider;
-    Label attackLabel, decayLabel, sustainLabel, releaseLabel, frequencyLabel, envAmountLabel;
+    Label attackLabel, decayLabel, sustainLabel, releaseLabel, frequencyLabel, envAmountLabel, resonanceLabel;
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (FilterComponent)
 };
