@@ -36,6 +36,11 @@ void FilterProcessor::processBuffer(AudioBuffer<FloatType> &buffer, AudioBuffer<
     }
 }
 
+void FilterProcessor::resetFilter()
+{
+    initialiseLowPassFilter(frequency->get());
+}
+
 void FilterProcessor::initialiseLowPassFilter(double frequency)
 {
     filters.clear();

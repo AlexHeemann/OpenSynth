@@ -70,6 +70,7 @@ void WavetableVoice::startNote(int midiNoteNumber, float velocity,
     {
         filterEnvelopeGenerator->resetEnvelope();
     }
+    filterProcessor.resetFilter();
 }
 
 void WavetableVoice::calculatePhaseIncrement()

@@ -29,6 +29,8 @@ public:
         processBuffer(outputBuffer, delayBuffer, startSample, numSamples);
     }
     
+    void resetFilter();
+    
     AudioParameterFloat* frequency;
     AudioParameterFloat* envelopeAmount;
     AudioParameterFloat* resonance;
