@@ -118,8 +118,15 @@ void WavetableVoice::processBlock(AudioBuffer<FloatType>& outputBuffer, int star
     int currentNote = getCurrentlyPlayingNote();
     if (currentNote >= 0)
     {
-        frequency1 = MidiMessage::getMidiNoteInHertz(currentNote + osc1Semi->get());
-        frequency2 = MidiMessage::getMidiNoteInHertz(currentNote + osc2Semi->get());
+        int osc1Note = currentNote + osc1Semi->get();
+        int osc2Note = currentNote + osc2Semi->get();
+        
+        frequency1 = MidiMessage::getMidiNoteInHertz(osc1Note);
+        frequency1 += (MidiMessage::getMidiNoteInHertz(osc1Note + 1) - MidiMessage::getMidiNoteInHertz(osc1Note)) * (osc1Cents->get()/100.0);
+        
+        frequency2 = MidiMessage::getMidiNoteInHertz(osc2Note);
+        frequency2 += (MidiMessage::getMidiNoteInHertz(osc2Note + 1) - MidiMessage::getMidiNoteInHertz(osc2Note)) * (osc2Cents->get()/100.0);
+        
         calculatePhaseIncrement();
     }
     

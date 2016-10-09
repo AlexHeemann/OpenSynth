@@ -113,6 +113,8 @@ public:
     AudioParameterFloat* oscMix;
     AudioParameterInt* osc1Semi;
     AudioParameterInt* osc2Semi;
+    AudioParameterInt* osc1Cents;
+    AudioParameterInt* osc2Cents;
 
 private:
     //==============================================================================

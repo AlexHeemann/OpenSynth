@@ -40,6 +40,8 @@ NoisemakerAudioProcessor::NoisemakerAudioProcessor() :
     addParameter(sustainLevelFilter = new AudioParameterFloat("sustain", "Envelope Sustain", 0.0f, 1.0f, 1.0f));
     addParameter(osc1Semi = new AudioParameterInt("osc1semi", "Osc 1 Semi", -36, 36, 0));
     addParameter(osc2Semi = new AudioParameterInt("osc2semi", "Osc 2 Semi", -36, 36, 0));
+    addParameter(osc1Cents = new AudioParameterInt("osc1cents", "Osc 1 Cents", -30, 30, 0));
+    addParameter(osc2Cents = new AudioParameterInt("osc2cents", "Osc 2 Cents", -30, 30, 0));
     addParameter(oscMix = new AudioParameterFloat("oscMix", "Osc Mix", 0.0f, 1.0f, 0.0f));
     
 	//initialiseLowPassFilter();
@@ -103,6 +105,8 @@ void NoisemakerAudioProcessor::initialiseSynthForWaveform(const Waveform wavefor
         wavetableVoice->getFilterProcessor().envelopeAmount = envelopeAmountFilter;
         wavetableVoice->osc1Semi = osc1Semi;
         wavetableVoice->osc2Semi = osc2Semi;
+        wavetableVoice->osc1Cents = osc1Cents;
+        wavetableVoice->osc2Cents = osc2Cents;
         wavetableVoice->oscMix = oscMix;
         synth.addVoice(wavetableVoice);
 	}

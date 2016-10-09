@@ -37,8 +37,7 @@
                                                                     //[/Comments]
 */
 class OscillatorComponent  : public Component,
-                             public ComboBoxListener,
-                             public SliderListener
+                             public ComboBoxListener
 {
 public:
     //==============================================================================
@@ -52,7 +51,6 @@ public:
     void paint (Graphics& g) override;
     void resized() override;
     void comboBoxChanged (ComboBox* comboBoxThatHasChanged) override;
-    void sliderValueChanged (Slider* sliderThatWasMoved) override;
 
 
 
@@ -70,6 +68,12 @@ private:
     ScopedPointer<Label> titleLabel;
     ScopedPointer<ParameterSlider> osc1SemiSlider;
     ScopedPointer<ParameterSlider> osc2SemiSlider;
+    ScopedPointer<ParameterSlider> osc1CentSlider;
+    ScopedPointer<ParameterSlider> osc2SemiSlider2;
+    ScopedPointer<Label> osc1SemiLabel;
+    ScopedPointer<Label> osc1CentsLabel;
+    ScopedPointer<Label> osc2SemiLabel;
+    ScopedPointer<Label> osc2CentsLabel;
 
 
     //==============================================================================

@@ -22,7 +22,6 @@ public:
     : Slider(p.getName(256)), param(p)
     {
         setRange(0.0, 1.0, 0.0);
-        startTimerHz(30);
         updateSliderPos();
     }
     
