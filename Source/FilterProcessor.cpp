@@ -25,6 +25,7 @@ void FilterProcessor::processBuffer(AudioBuffer<FloatType> &buffer, AudioBuffer<
     {
         float newKnobValue = std::min(1.0f, frequency->range.convertTo0to1(frequency->get()) + envelopeAmount->get() * filterModulation);
         filters[filterIdx].setParam(Dsp::ParamID::idFrequency, std::fmax(0.0f, std::fmin(frequency->range.end, frequency->range.convertFrom0to1(newKnobValue))));
+        filters[filterIdx].setParam(Dsp::ParamID::idQ, resonance->get());
     }
     for (int channel = 0; channel < buffer.getNumChannels(); channel++)
     {
@@ -44,7 +45,7 @@ void FilterProcessor::initialiseLowPassFilter(double frequency)
         Dsp::Params params;
         params[0] = 44100; // sample rate
         params[1] = 500; // cutoff frequency
-        params[2] = 1.25; // Q
+        params[2] = 1.0; // Q
         f.setParams(params);
         filters.push_back(f);
     }

@@ -32,6 +32,7 @@ private:
     
     ScopedPointer<ParameterSlider> frequencyKnob;
     ScopedPointer<ParameterSlider> envelopeAmountKnob;
+    ScopedPointer<ParameterSlider> resonanceKnob;
     ScopedPointer<ParameterSlider> attackSlider;
     ScopedPointer<ParameterSlider> decaySlider;
     ScopedPointer<ParameterSlider> sustainSlider;

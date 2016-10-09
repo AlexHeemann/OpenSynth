@@ -31,6 +31,7 @@ public:
     
     AudioParameterFloat* frequency;
     AudioParameterFloat* envelopeAmount;
+    AudioParameterFloat* resonance;
     
 private:
     template <typename FloatType>

@@ -32,6 +32,10 @@ envAmountLabel(String::empty, "Env Amount")
     envelopeAmountKnob->setTextBoxStyle(juce::Slider::TextEntryBoxPosition::NoTextBox, false, 0, 0);
     envAmountLabel.attachToComponent(envelopeAmountKnob, false);
     
+    addAndMakeVisible(resonanceKnob = new ParameterSlider(*processor.filterResonance));
+    resonanceKnob->setSliderStyle(Slider::Rotary);
+    resonanceKnob->setTextBoxStyle(juce::Slider::TextEntryBoxPosition::NoTextBox, false, 0, 0);
+    
     addAndMakeVisible(attackSlider = new ParameterSlider(*processor.attackRateFilter));
     attackSlider->setSliderStyle(Slider::LinearVertical);
     attackLabel.attachToComponent(attackSlider, false);
@@ -72,6 +76,7 @@ void FilterComponent::paint (Graphics& g)
     
     frequencyKnob->setBounds(90, 22, 60, 70);
     envelopeAmountKnob->setBounds(5, 125, 80, 45);
+    resonanceKnob->setBounds(90, 125, 80, 45);
     attackSlider->setBounds(5, 22, 20, 80);
     decaySlider->setBounds(28, 22, 20, 80);
     sustainSlider->setBounds(51, 22, 20, 80);

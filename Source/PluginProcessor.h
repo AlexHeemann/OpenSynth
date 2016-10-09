@@ -108,6 +108,7 @@ public:
     AudioParameterFloat* sustainLevelFilter;
     AudioParameterFloat* envelopeAmountFilter;
     AudioParameterFloat* filterFrequency;
+    AudioParameterFloat* filterResonance;
     
     // Oscillator Parameters
     AudioParameterFloat* oscMix;
