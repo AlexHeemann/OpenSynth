@@ -145,10 +145,13 @@ void WavetableVoice::processBlock(AudioBuffer<FloatType>& outputBuffer, int star
             for (int sampleIdx = 0; sampleIdx < numSamples; sampleIdx++)
             {
                 int index1 = (int)((currentPhase1 / twoPi) * tableSize1);
-                FloatType currentSample1 = level * subtable1[index1] * (1 - localOscMix);
+                // Interpolate for better accuracy
+                float index1Fractional = ((currentPhase1 / twoPi) * tableSize1) - index1;
+                FloatType currentSample1 = level * (subtable1[index1] + ((subtable1[(index1 + 1) % tableSize1] - subtable1[index1]) * index1Fractional)) * (1 - localOscMix);
                 
                 int index2 = (int)((currentPhase2 / twoPi) * tableSize2);
-                FloatType currentSample2 = level * subtable2[index2] * localOscMix;
+                float index2Fractional = ((currentPhase2 / twoPi) * tableSize2) - index2;
+                FloatType currentSample2 = level * (subtable2[index2] + ((subtable2[(index2 + 1) % tableSize2] - subtable2[index2]) * index2Fractional)) * localOscMix;
                 
                 for (int channel = 0; channel < localBuffer.getNumChannels(); channel++)
                 {
