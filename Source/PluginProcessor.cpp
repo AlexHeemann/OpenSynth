@@ -6,6 +6,16 @@
 
 //==============================================================================
 NoisemakerAudioProcessor::NoisemakerAudioProcessor() :
+#ifndef JucePlugin_PreferredChannelConfigurations
+AudioProcessor (BusesProperties()
+#if ! JucePlugin_IsMidiEffect
+#if ! JucePlugin_IsSynth
+                .withInput  ("Input",  AudioChannelSet::stereo(), true)
+#endif
+                .withOutput ("Output", AudioChannelSet::stereo(), true)
+#endif
+                ),
+#endif
 	lastUIWidth(600),
 	lastUIHeight(260),
 	delayPosition(0),
@@ -229,27 +239,26 @@ void NoisemakerAudioProcessor::reset()
 }
 
 #ifndef JucePlugin_PreferredChannelConfigurations
-bool NoisemakerAudioProcessor::setPreferredBusArrangement (bool isInput, int bus, const AudioChannelSet& preferredSet)
+bool NoisemakerAudioProcessor::isBusesLayoutSupported (const BusesLayout& layouts) const
 {
-    // Reject any bus arrangements that are not compatible with your plugin
-
-    const int numChannels = preferredSet.size();
-
-   #if JucePlugin_IsMidiEffect
-    if (numChannels != 0)
+#if JucePlugin_IsMidiEffect
+    ignoreUnused (layouts);
+    return true;
+#else
+    // This is the place where you check if the layout is supported.
+    // In this template code we only support mono or stereo.
+    if (layouts.getMainOutputChannelSet() != AudioChannelSet::mono()
+        && layouts.getMainOutputChannelSet() != AudioChannelSet::stereo())
         return false;
-   #elif JucePlugin_IsSynth
-    if (isInput || (numChannels != 1 && numChannels != 2))
+    
+    // This checks if the input layout matches the output layout
+#if ! JucePlugin_IsSynth
+    if (layouts.getMainOutputChannelSet() != layouts.getMainInputChannelSet())
         return false;
-   #else
-    if (numChannels != 1 && numChannels != 2)
-        return false;
-
-    if (! AudioProcessor::setPreferredBusArrangement (! isInput, bus, preferredSet))
-        return false;
-   #endif
-
-    return AudioProcessor::setPreferredBusArrangement (isInput, bus, preferredSet);
+#endif
+    
+    return true;
+#endif
 }
 #endif
 

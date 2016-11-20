@@ -43,7 +43,7 @@ public:
 	void reset() override;
 
    #ifndef JucePlugin_PreferredChannelConfigurations
-    bool setPreferredBusArrangement (bool isInput, int bus, const AudioChannelSet& preferredSet) override;
+    bool isBusesLayoutSupported (const BusesLayout& layouts) const override;
    #endif
 
 	//==============================================================================
