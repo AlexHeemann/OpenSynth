@@ -16,7 +16,7 @@ FilterProcessor::FilterProcessor()
 }
 
 template <typename FloatType>
-void FilterProcessor::processBuffer(AudioBuffer<FloatType> &buffer, AudioBuffer<FloatType>& delayBuffer, int startSample, int numSamples)
+void FilterProcessor::processBuffer(AudioBuffer<FloatType> &buffer, int startSample, int numSamples)
 {
     bool isModulated = envelopeGenerator != nullptr && envelopeGenerator->envelopeBuffer.size() >= numSamples && numSamples > 0;
     float filterModulation = isModulated ? envelopeGenerator->envelopeBuffer[0] : 1.0;

@@ -20,13 +20,13 @@ public:
     FilterProcessor();
     virtual ~FilterProcessor() {};
     
-    void renderNextBlock(AudioBuffer<float>& outputBuffer, AudioBuffer<float>& delayBuffer, int startSample, int numSamples)
+    void renderNextBlock(AudioBuffer<float>& outputBuffer, int startSample, int numSamples)
     {
-        processBuffer(outputBuffer, delayBuffer, startSample, numSamples);
+        processBuffer(outputBuffer, startSample, numSamples);
     }
-    void renderNextBlock(AudioBuffer<double>& outputBuffer, AudioBuffer<double>& delayBuffer, int startSample, int numSamples)
+    void renderNextBlock(AudioBuffer<double>& outputBuffer, int startSample, int numSamples)
     {
-        processBuffer(outputBuffer, delayBuffer, startSample, numSamples);
+        processBuffer(outputBuffer, startSample, numSamples);
     }
     
     void resetFilter();
@@ -37,7 +37,7 @@ public:
     
 private:
     template <typename FloatType>
-    void processBuffer(AudioBuffer<FloatType>& buffer, AudioBuffer<FloatType>& delayBuffer, int startSample, int numSamples);
+    void processBuffer(AudioBuffer<FloatType>& buffer, int startSample, int numSamples);
     void initialiseLowPassFilter(double frequency);
     
     // Contains filters for left and right channel

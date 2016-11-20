@@ -20,8 +20,8 @@ public:
     Processor() {};
     virtual ~Processor() {};
     
-    virtual void renderNextBlock(AudioBuffer<float>& outputBuffer, AudioBuffer<float>& delayBuffer, int startSample, int numSamples) = 0;
-    virtual void renderNextBlock(AudioBuffer<double>& outputBuffer, AudioBuffer<double>& delayBuffer, int startSample, int numSamples) = 0;
+    virtual void renderNextBlock(AudioBuffer<float>& outputBuffer, int startSample, int numSamples) = 0;
+    virtual void renderNextBlock(AudioBuffer<double>& outputBuffer, int startSample, int numSamples) = 0;
     
     virtual void setEnvelopeGenerator(EnvelopeGenerator* envelopeGenerator) { this->envelopeGenerator = envelopeGenerator; };
     virtual EnvelopeGenerator* getEnvelopeGenerator() const { return envelopeGenerator; };

@@ -15,7 +15,7 @@ AmpProcessor::AmpProcessor()
 }
 
 template <typename FloatType>
-void AmpProcessor::processBuffer(AudioBuffer<FloatType> &buffer, AudioBuffer<FloatType>& delayBuffer, int startSample, int numSamples)
+void AmpProcessor::processBuffer(AudioBuffer<FloatType> &buffer, int startSample, int numSamples)
 {
     bool isModulated = envelopeGenerator != nullptr && envelopeGenerator->envelopeBuffer.size() >= numSamples;
     
