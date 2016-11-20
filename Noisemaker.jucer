@@ -8,10 +8,18 @@
               pluginCode="Nois" pluginChannelConfigs="" pluginIsSynth="1" pluginWantsMidiIn="1"
               pluginProducesMidiOut="1" pluginIsMidiEffectPlugin="0" pluginEditorRequiresKeys="1"
               pluginAUExportPrefix="NoisemakerAU" pluginRTASCategory="" aaxIdentifier="com.yourcompany.Noisemaker"
-              pluginAAXCategory="AAX_ePlugInCategory_Dynamics" jucerVersion="4.2.4"
+              pluginAAXCategory="AAX_ePlugInCategory_Dynamics" jucerVersion="4.3.0"
               companyName="Alexander Heemann">
   <MAINGROUP id="A4iQ36" name="Noisemaker">
     <GROUP id="{115CB73A-FD2A-ACC8-26C7-8F73C7C67676}" name="Source">
+      <FILE id="GbfvHU" name="DelayProcessor.cpp" compile="1" resource="0"
+            file="Source/DelayProcessor.cpp"/>
+      <FILE id="HMEf0p" name="DelayProcessor.h" compile="0" resource="0"
+            file="Source/DelayProcessor.h"/>
+      <FILE id="SZ7r5V" name="DelayComponent.cpp" compile="1" resource="0"
+            file="Source/DelayComponent.cpp"/>
+      <FILE id="t80nrW" name="DelayComponent.h" compile="0" resource="0"
+            file="Source/DelayComponent.h"/>
       <FILE id="s2OOqc" name="OscillatorComponent.cpp" compile="1" resource="0"
             file="Source/OscillatorComponent.cpp"/>
       <FILE id="JCceLk" name="OscillatorComponent.h" compile="0" resource="0"

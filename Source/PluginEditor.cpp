@@ -28,6 +28,7 @@ NoisemakerAudioProcessorEditor::NoisemakerAudioProcessorEditor (NoisemakerAudioP
     addAndMakeVisible(ampComponent = new AmpComponent(owner));
     addAndMakeVisible(filterComponent = new FilterComponent(owner));
     addAndMakeVisible(oscillatorComponent = new OscillatorComponent(owner));
+    addAndMakeVisible(delayComponent = new DelayComponent(owner));
 
 	// add the midi keyboard component..
 	addAndMakeVisible(keyboardComponent);
@@ -63,6 +64,7 @@ void NoisemakerAudioProcessorEditor::resized()
     ampComponent->setTopLeftPosition(r.getWidth() - ampComponent->getWidth(), r.getY());
     filterComponent->setTopLeftPosition(r.getWidth() - ampComponent->getWidth() - filterComponent->getWidth() - 10, r.getY());
     oscillatorComponent->setTopLeftPosition(r.getX(), r.getY());
+    delayComponent->setTopLeftPosition(ampComponent->getX(), ampComponent->getY() + ampComponent->getHeight() + 10);
 }
 
 //==============================================================================

@@ -18,6 +18,7 @@
 #include "SquareWavetable.h"
 #include "SineWavetable.h"
 #include "AmpProcessor.h"
+#include "DelayProcessor.h"
 
 typedef enum 
 {
@@ -96,12 +97,14 @@ public:
 	// resized.
 	int lastUIWidth, lastUIHeight;
 
-	// Our parameters
+	// Gain parameters
     AudioParameterFloat* level;
     AudioParameterFloat* attackRateAmp;
     AudioParameterFloat* decayRateAmp;
     AudioParameterFloat* releaseRateAmp;
     AudioParameterFloat* sustainLevelAmp;
+    
+    // Filter Parameters
     AudioParameterFloat* attackRateFilter;
     AudioParameterFloat* decayRateFilter;
     AudioParameterFloat* releaseRateFilter;
@@ -109,6 +112,12 @@ public:
     AudioParameterFloat* envelopeAmountFilter;
     AudioParameterFloat* filterFrequency;
     AudioParameterFloat* filterResonance;
+    
+    // Delay Parameters
+    AudioParameterFloat* delayTime;
+    AudioParameterFloat* delayFeedback;
+    AudioParameterFloat* delaySpread;
+    AudioParameterFloat* delayMix;
     
     // Oscillator Parameters
     AudioParameterFloat* oscMix;
@@ -137,6 +146,9 @@ private:
     SawtoothWavetable sawtoothWavetable;
     SquareWavetable squareWavetable;
     SineWavetable sineWavetable;
+    
+    DelayProcessor delayProcessor;
+    
 	// Contains filters for left and right channel
 	std::vector<Dsp::SmoothedFilterDesign<Dsp::RBJ::Design::LowPass, 1>> filters;
 

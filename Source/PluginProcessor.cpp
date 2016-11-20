@@ -23,7 +23,7 @@ AudioProcessor (BusesProperties()
     squareWavetable(SquareWavetable(40.0, 4096, getSampleRate())),
     sineWavetable(SineWavetable(40.0, 4096, getSampleRate()))
 {
-	lastPosInfo.resetToDefault();
+    lastPosInfo.resetToDefault();
     
 	// This creates our parameters. We'll keep some raw pointers to them in this class,
 	// so that we can easily access them later, but the base class will take care of
@@ -40,7 +40,7 @@ AudioProcessor (BusesProperties()
     addParameter(filterFrequency = new AudioParameterFloat("filter_frequency", "Filter Frequency", 0.0f, 20000.0f, 10000.0f));
     filterFrequency->range.skew = 0.25;
     addParameter(envelopeAmountFilter = new AudioParameterFloat("env_amount_filter", "Envelope Amount", 0.0f, 1.0f, 0.0f));
-    
+     
     addParameter(attackRateFilter = new AudioParameterFloat("attack", "Envelope Attack", 0.0f, 3.0f, 1.0f));
     attackRateFilter->range.skew = 0.5;
     addParameter(decayRateFilter = new AudioParameterFloat("decay", "Envelope Decay", 0.0f, 3.0f, 1.0f));
@@ -55,6 +55,16 @@ AudioProcessor (BusesProperties()
     addParameter(osc1Cents = new AudioParameterInt("osc1cents", "Osc 1 Cents", -30, 30, 0));
     addParameter(osc2Cents = new AudioParameterInt("osc2cents", "Osc 2 Cents", -30, 30, 0));
     addParameter(oscMix = new AudioParameterFloat("oscMix", "Osc Mix", 0.0f, 1.0f, 0.0f));
+    
+    // Delay
+    addParameter(delayTime = new AudioParameterFloat("delayTime", "Delay Time", 0.0f, 1.0f, 0.0f));
+    addParameter(delayFeedback = new AudioParameterFloat("delayFeedback", "Delay Feedback", 0.0f, 1.0f, 0.0f));
+    addParameter(delaySpread = new AudioParameterFloat("delaySpread", "Delay Spread", 0.0f, 1.0f, 0.0f));
+    addParameter(delayMix = new AudioParameterFloat("delayMix", "Delay Mix", 0.0f, 1.0f, 0.0f));
+    
+    delayProcessor.delayMix = delayMix;
+    delayProcessor.delayTime = delayTime;
+    delayProcessor.delayLevel = delayFeedback;
     
 	initialiseSynthForWaveform(WaveformSawtooth, 8);
 	keyboardState.addListener(this);
@@ -120,6 +130,7 @@ void NoisemakerAudioProcessor::initialiseSynthForWaveform(const Waveform wavefor
         wavetableVoice->osc1Cents = osc1Cents;
         wavetableVoice->osc2Cents = osc2Cents;
         wavetableVoice->oscMix = oscMix;
+        
         synth.addVoice(wavetableVoice);
 	}
 
@@ -207,7 +218,9 @@ void NoisemakerAudioProcessor::prepareToPlay (double sampleRate, int samplesPerB
     }
 	currentSampleRate = sampleRate;
 	keyboardState.reset();
-	//initialiseLowPassFilter();
+    delayProcessor.setIsUsingDoublePrecision(isUsingDoublePrecision());
+    delayProcessor.setSampleRate(sampleRate);
+    delayProcessor.reset();
 
 	if (isUsingDoublePrecision())
 	{
@@ -281,6 +294,8 @@ void NoisemakerAudioProcessor::process(AudioBuffer<FloatType>& buffer,
 
 	// and now get our synth to process these midi events and generate its output.
 	synth.renderNextBlock(buffer, midiMessages, 0, numSamples);
+    
+    delayProcessor.renderNextBlock(buffer, 0, numSamples);
 
 	// Now ask the host for the current time so we can store it to be displayed later...
 	updateCurrentTimeInfoFromHost();
