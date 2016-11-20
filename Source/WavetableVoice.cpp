@@ -12,7 +12,6 @@
 
 WavetableVoice::WavetableVoice(Wavetable* wavetable) : phaseIncrement1(0.0), phaseIncrement2(0.0), osc1Wavetable(wavetable), osc2Wavetable(wavetable)
 {
-    
 }
 
 WavetableVoice::~WavetableVoice()
@@ -208,9 +207,10 @@ void WavetableVoice::processBlock(AudioBuffer<FloatType>& outputBuffer, int star
                 }
             }
         }
-        ampProcessor.renderNextBlock(localBuffer, localBuffer, startSample, numSamples);
-        filterProcessor.renderNextBlock(localBuffer, localBuffer, startSample, numSamples);
     }
+    
+    ampProcessor.renderNextBlock(localBuffer, startSample, numSamples);
+    filterProcessor.renderNextBlock(localBuffer, startSample, numSamples);
     
     // Add samples from this voice to the output buffer
     for (int sampleIdx = 0; sampleIdx < numSamples; sampleIdx++)

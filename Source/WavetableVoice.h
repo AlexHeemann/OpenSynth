@@ -84,8 +84,11 @@ private:
     Wavetable* osc2Wavetable;
     EnvelopeGenerator* ampEnvelopeGenerator;
     EnvelopeGenerator* filterEnvelopeGenerator;
+    
+    // Processors
     AmpProcessor ampProcessor;
     FilterProcessor filterProcessor;
+    
     int releaseCounter;
     
     template <typename FloatType>
