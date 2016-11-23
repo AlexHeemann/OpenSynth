@@ -118,6 +118,7 @@ public:
     AudioParameterFloat* delayFeedback;
     AudioParameterFloat* delaySpread;
     AudioParameterFloat* delayMix;
+    AudioParameterBool* delayEnabled;
     
     // Oscillator Parameters
     AudioParameterFloat* oscMix;

@@ -37,7 +37,8 @@
                                                                     //[/Comments]
 */
 class DelayComponent  : public Component,
-                        public SliderListener
+                        public SliderListener,
+                        public ButtonListener
 {
 public:
     //==============================================================================
@@ -51,6 +52,7 @@ public:
     void paint (Graphics& g) override;
     void resized() override;
     void sliderValueChanged (Slider* sliderThatWasMoved) override;
+    void buttonClicked (Button* buttonThatWasClicked) override;
 
 
 
@@ -69,6 +71,7 @@ private:
     ScopedPointer<Label> spreadLabel;
     ScopedPointer<Label> mixLabel;
     ScopedPointer<Label> delayTitleLabel;
+    ScopedPointer<ToggleButton> delayToggleButton;
 
 
     //==============================================================================

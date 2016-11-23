@@ -57,14 +57,16 @@ AudioProcessor (BusesProperties()
     addParameter(oscMix = new AudioParameterFloat("oscMix", "Osc Mix", 0.0f, 1.0f, 0.0f));
     
     // Delay
-    addParameter(delayTime = new AudioParameterFloat("delayTime", "Delay Time", 0.0f, 1.0f, 0.0f));
-    addParameter(delayFeedback = new AudioParameterFloat("delayFeedback", "Delay Feedback", 0.0f, 1.0f, 0.0f));
+    addParameter(delayTime = new AudioParameterFloat("delayTime", "Delay Time", 0.0f, 1.0f, 0.5f));
+    addParameter(delayFeedback = new AudioParameterFloat("delayFeedback", "Delay Feedback", 0.0f, 1.0f, 0.5f));
     addParameter(delaySpread = new AudioParameterFloat("delaySpread", "Delay Spread", 0.0f, 1.0f, 0.0f));
     addParameter(delayMix = new AudioParameterFloat("delayMix", "Delay Mix", 0.0f, 1.0f, 0.0f));
+    addParameter(delayEnabled = new AudioParameterBool("delayEnabled", "Delay Enabled", false));
     
     delayProcessor.delayMix = delayMix;
     delayProcessor.delayTime = delayTime;
     delayProcessor.delayLevel = delayFeedback;
+    delayProcessor.delaySpread = delaySpread;
     
 	initialiseSynthForWaveform(WaveformSawtooth, 8);
 	keyboardState.addListener(this);
@@ -295,7 +297,10 @@ void NoisemakerAudioProcessor::process(AudioBuffer<FloatType>& buffer,
 	// and now get our synth to process these midi events and generate its output.
 	synth.renderNextBlock(buffer, midiMessages, 0, numSamples);
     
-    delayProcessor.renderNextBlock(buffer, 0, numSamples);
+    if (delayEnabled->get())
+    {
+        delayProcessor.renderNextBlock(buffer, 0, numSamples);
+    }
 
 	// Now ask the host for the current time so we can store it to be displayed later...
 	updateCurrentTimeInfoFromHost();

@@ -28,7 +28,7 @@
 
 //==============================================================================
 DelayComponent::DelayComponent (NoisemakerAudioProcessor& processor)
-: processor(processor)
+    : processor(processor)
 {
     //[Constructor_pre] You can add your own custom stuff here..
     addAndMakeVisible(timeKnob = new ParameterSlider(*processor.delayTime));
@@ -99,11 +99,15 @@ DelayComponent::DelayComponent (NoisemakerAudioProcessor& processor)
     delayTitleLabel->setColour (TextEditor::textColourId, Colours::black);
     delayTitleLabel->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
+    addAndMakeVisible (delayToggleButton = new ToggleButton ("Delay Toggle Button"));
+    delayToggleButton->setButtonText (String());
+    delayToggleButton->addListener (this);
+
 
     //[UserPreSize]
     //[/UserPreSize]
 
-    setSize (120, 150);
+    setSize (120, 85);
 
 
     //[Constructor] You can add your own custom stuff here..
@@ -124,6 +128,7 @@ DelayComponent::~DelayComponent()
     spreadLabel = nullptr;
     mixLabel = nullptr;
     delayTitleLabel = nullptr;
+    delayToggleButton = nullptr;
 
 
     //[Destructor]. You can add your own custom destruction code here..
@@ -161,6 +166,7 @@ void DelayComponent::resized()
     spreadLabel->setBounds (0, 128, 56, 16);
     mixLabel->setBounds (75, 128, 32, 16);
     delayTitleLabel->setBounds (38, 4, 48, 16);
+    delayToggleButton->setBounds (8, 0, 150, 24);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -195,6 +201,22 @@ void DelayComponent::sliderValueChanged (Slider* sliderThatWasMoved)
     //[/UsersliderValueChanged_Post]
 }
 
+void DelayComponent::buttonClicked (Button* buttonThatWasClicked)
+{
+    //[UserbuttonClicked_Pre]
+    //[/UserbuttonClicked_Pre]
+
+    if (buttonThatWasClicked == delayToggleButton)
+    {
+        //[UserButtonCode_delayToggleButton] -- add your button handler code here..
+        processor.delayEnabled->setValueNotifyingHost(buttonThatWasClicked->getToggleState());
+        //[/UserButtonCode_delayToggleButton]
+    }
+
+    //[UserbuttonClicked_Post]
+    //[/UserbuttonClicked_Post]
+}
+
 
 
 //[MiscUserCode] You can add your own definitions of your custom methods or any other code here...
@@ -212,8 +234,9 @@ BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="DelayComponent" componentName=""
                  parentClasses="public Component" constructorParams="NoisemakerAudioProcessor&amp; processor"
-                 variableInitialisers="" snapPixels="8" snapActive="1" snapShown="1"
-                 overlayOpacity="0.330" fixedSize="1" initialWidth="120" initialHeight="150">
+                 variableInitialisers="processor(processor)" snapPixels="8" snapActive="1"
+                 snapShown="1" overlayOpacity="0.330" fixedSize="1" initialWidth="120"
+                 initialHeight="85">
   <BACKGROUND backgroundColour="ffffffff">
     <RECT pos="0 0 120 24" fill="solid: ffd2691e" hasStroke="0"/>
   </BACKGROUND>
@@ -261,6 +284,9 @@ BEGIN_JUCER_METADATA
          outlineCol="0" edTextCol="ff000000" edBkgCol="0" labelText="Delay"
          editableSingleClick="0" editableDoubleClick="0" focusDiscardsChanges="0"
          fontname="Default font" fontsize="15" bold="0" italic="0" justification="33"/>
+  <TOGGLEBUTTON name="Delay Toggle Button" id="8f4c7bd269ee1c38" memberName="delayToggleButton"
+                virtualName="" explicitFocusOrder="0" pos="8 0 150 24" buttonText=""
+                connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA
