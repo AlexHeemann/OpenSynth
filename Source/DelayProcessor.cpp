@@ -72,30 +72,41 @@ void DelayProcessor::processBuffer(AudioBuffer<FloatType> &buffer, AudioBuffer<F
 {
     const float localDelayLevel = delayLevel->get();
     const float localMix = delayMix->get();
+    const float spread = delaySpread->get();
     setDelayTimeInSeconds(delayTime->get());
     
     int delayPos = 0;
+    int localActiveChannel = activeChannel;
     
     for (int channel = 0; channel < buffer.getNumChannels(); ++channel)
     {
         FloatType* const channelData = buffer.getWritePointer(channel);
         FloatType* const delayData = delayBuffer.getWritePointer(jmin(channel, delayBuffer.getNumChannels() - 1));
         delayPos = delayPosition;
+        localActiveChannel = activeChannel;
         
         for (int i = startSample; i < numSamples; ++i)
         {
-            const float dryMix = (1.0 - localMix);
-            const float wetMix = localMix;
+            float delayChannelLevel = 1.0;
+            if (localActiveChannel != channel)
+            {
+                delayChannelLevel = 1.0 - spread;
+            }
+            
+            //const float dryMix = (1.0 - localMix);
+            //const float wetMix = localMix;
             channelData[i] = channelData[i] + delayData[delayPos] * localDelayLevel;
-            delayData[delayPos] = channelData[i];
+            delayData[delayPos] = channelData[i] * delayChannelLevel;
             
             delayPos++;
             if (delayPos >= delayTimeInSamples || delayPos >= delayBuffer.getNumSamples())
             {
                 delayPos = 0;
+                localActiveChannel = (localActiveChannel + 1) % buffer.getNumChannels();
             }
         }
     }
     
+    activeChannel = localActiveChannel;
     delayPosition = delayPos;
 }

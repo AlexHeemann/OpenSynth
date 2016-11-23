@@ -41,6 +41,7 @@ public:
     AudioParameterFloat* delayLevel;
     AudioParameterFloat* delayMix;
     AudioParameterFloat* delayTime;
+    AudioParameterFloat* delaySpread;
     
 private:
     template <typename FloatType>
@@ -57,6 +58,8 @@ private:
     float maxDelayLength = 0.0f;
     bool isUsingDoublePrecision = false;
     int delayLengthInSamples = 0;
+    int activeChannel = 0;
+    bool shouldChangeActiveChannel = false;
 };
 
 #endif  // DELAYPROCESSOR_H_INCLUDED
