@@ -19,14 +19,14 @@ ReverbProcessor::ReverbProcessor()
 template <typename FloatType>
 void ReverbProcessor::processBuffer(AudioBuffer<FloatType>& buffer, int startSample, int numSamples)
 {
-//    ReverbDouble::Parameters parameters;
-//    parameters.roomSize = reverbSize->get();
-//    parameters.damping = reverbDamping->get();
-//    parameters.dryLevel = reverbDryLevel->get();
-//    parameters.wetLevel = reverbWetLevel->get();
-//    parameters.width = reverbWidth->get();
-//    
-//    reverb.setParameters(parameters);
+    ReverbDouble::Parameters parameters;
+    parameters.roomSize = reverbSize->get();
+    parameters.damping = reverbDamping->get();
+    parameters.dryLevel = reverbDryLevel->get();
+    parameters.wetLevel = reverbWetLevel->get();
+    parameters.width = reverbWidth->get();
+    
+    reverb.setParameters(parameters);
     
     if (buffer.getNumChannels() >= 2)
     {
