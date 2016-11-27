@@ -12,6 +12,15 @@
               companyName="Alexander Heemann">
   <MAINGROUP id="A4iQ36" name="Noisemaker">
     <GROUP id="{115CB73A-FD2A-ACC8-26C7-8F73C7C67676}" name="Source">
+      <FILE id="xph2il" name="Reverb.h" compile="0" resource="0" file="Source/Reverb.h"/>
+      <FILE id="RIIIxX" name="ReverbProcessor.cpp" compile="1" resource="0"
+            file="Source/ReverbProcessor.cpp"/>
+      <FILE id="NkmP5T" name="ReverbProcessor.h" compile="0" resource="0"
+            file="Source/ReverbProcessor.h"/>
+      <FILE id="Xsnjns" name="ReverbComponent.cpp" compile="1" resource="0"
+            file="Source/ReverbComponent.cpp"/>
+      <FILE id="ClPSKw" name="ReverbComponent.h" compile="0" resource="0"
+            file="Source/ReverbComponent.h"/>
       <FILE id="GbfvHU" name="DelayProcessor.cpp" compile="1" resource="0"
             file="Source/DelayProcessor.cpp"/>
       <FILE id="HMEf0p" name="DelayProcessor.h" compile="0" resource="0"

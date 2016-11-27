@@ -68,6 +68,20 @@ AudioProcessor (BusesProperties()
     delayProcessor.delayLevel = delayFeedback;
     delayProcessor.delaySpread = delaySpread;
     
+    // Reverb
+    addParameter(reverbSize = new AudioParameterFloat("reverbSize", "Reverb Size", 0.0f, 1.0f, 0.0f));
+    addParameter(reverbDamping = new AudioParameterFloat("reverbDamping", "Reverb Damping", 0.0f, 1.0f, 0.0f));
+    addParameter(reverbDryLevel = new AudioParameterFloat("reverbDryLevel", "Reverb Dry Level", 0.0f, 1.0f, 0.0f));
+    addParameter(reverbWetLevel = new AudioParameterFloat("reverbWetLevel", "Reverb Wet Level", 0.0f, 1.0f, 0.0f));
+    addParameter(reverbWidth = new AudioParameterFloat("reverbWidth", "Reverb Width", 0.0f, 1.0f, 0.0f));
+    addParameter(reverbEnabled = new AudioParameterBool("reverbEnabled", "Reverb Enabled", false));
+    
+    reverbProcessor.reverbSize = reverbSize;
+    reverbProcessor.reverbDamping = reverbDamping;
+    reverbProcessor.reverbDryLevel = reverbDryLevel;
+    reverbProcessor.reverbWetLevel = reverbWetLevel;
+    reverbProcessor.reverbWidth = reverbWidth;
+    
 	initialiseSynthForWaveform(WaveformSawtooth, 8);
 	keyboardState.addListener(this);
 }
@@ -223,6 +237,8 @@ void NoisemakerAudioProcessor::prepareToPlay (double sampleRate, int samplesPerB
     delayProcessor.setIsUsingDoublePrecision(isUsingDoublePrecision());
     delayProcessor.setSampleRate(sampleRate);
     delayProcessor.reset();
+    reverbProcessor.setSampleRate(sampleRate);
+    reverbProcessor.reset();
 
 	if (isUsingDoublePrecision())
 	{
@@ -300,6 +316,10 @@ void NoisemakerAudioProcessor::process(AudioBuffer<FloatType>& buffer,
     if (delayEnabled->get())
     {
         delayProcessor.renderNextBlock(buffer, 0, numSamples);
+    }
+    //if (reverbEnabled->get())
+    {
+        reverbProcessor.renderNextBlock(buffer, 0, numSamples);
     }
 
 	// Now ask the host for the current time so we can store it to be displayed later...

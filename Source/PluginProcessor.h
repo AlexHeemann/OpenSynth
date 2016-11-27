@@ -19,6 +19,7 @@
 #include "SineWavetable.h"
 #include "AmpProcessor.h"
 #include "DelayProcessor.h"
+#include "ReverbProcessor.h"
 
 typedef enum 
 {
@@ -127,6 +128,14 @@ public:
     AudioParameterInt* osc1Cents;
     AudioParameterInt* osc2Cents;
 
+    // Reverb Parameters
+    AudioParameterFloat* reverbSize;
+    AudioParameterFloat* reverbDamping;
+    AudioParameterFloat* reverbWetLevel;
+    AudioParameterFloat* reverbDryLevel;
+    AudioParameterFloat* reverbWidth;
+    AudioParameterBool* reverbEnabled;
+    
 private:
     //==============================================================================
 	template <typename FloatType>
@@ -149,6 +158,7 @@ private:
     SineWavetable sineWavetable;
     
     DelayProcessor delayProcessor;
+    ReverbProcessor reverbProcessor;
     
 	// Contains filters for left and right channel
 	std::vector<Dsp::SmoothedFilterDesign<Dsp::RBJ::Design::LowPass, 1>> filters;
