@@ -69,11 +69,11 @@ AudioProcessor (BusesProperties()
     delayProcessor.delaySpread = delaySpread;
     
     // Reverb
-    addParameter(reverbSize = new AudioParameterFloat("reverbSize", "Reverb Size", 0.0f, 1.0f, 0.0f));
-    addParameter(reverbDamping = new AudioParameterFloat("reverbDamping", "Reverb Damping", 0.0f, 1.0f, 0.0f));
-    addParameter(reverbDryLevel = new AudioParameterFloat("reverbDryLevel", "Reverb Dry Level", 0.0f, 1.0f, 0.0f));
-    addParameter(reverbWetLevel = new AudioParameterFloat("reverbWetLevel", "Reverb Wet Level", 0.0f, 1.0f, 0.0f));
-    addParameter(reverbWidth = new AudioParameterFloat("reverbWidth", "Reverb Width", 0.0f, 1.0f, 0.0f));
+    addParameter(reverbSize = new AudioParameterFloat("reverbSize", "Reverb Size", 0.0f, 1.0f, 0.5f));
+    addParameter(reverbDamping = new AudioParameterFloat("reverbDamping", "Reverb Damping", 0.0f, 1.0f, 0.5f));
+    addParameter(reverbDryLevel = new AudioParameterFloat("reverbDryLevel", "Reverb Dry Level", 0.0f, 1.0f, 0.4f));
+    addParameter(reverbWetLevel = new AudioParameterFloat("reverbWetLevel", "Reverb Wet Level", 0.0f, 1.0f, 0.33f));
+    addParameter(reverbWidth = new AudioParameterFloat("reverbWidth", "Reverb Width", 0.0f, 1.0f, 0.2f));
     addParameter(reverbEnabled = new AudioParameterBool("reverbEnabled", "Reverb Enabled", false));
     
     reverbProcessor.reverbSize = reverbSize;
@@ -317,7 +317,7 @@ void NoisemakerAudioProcessor::process(AudioBuffer<FloatType>& buffer,
     {
         delayProcessor.renderNextBlock(buffer, 0, numSamples);
     }
-    //if (reverbEnabled->get())
+    if (reverbEnabled->get())
     {
         reverbProcessor.renderNextBlock(buffer, 0, numSamples);
     }

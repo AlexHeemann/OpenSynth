@@ -36,7 +36,8 @@
     Describe your class and how it works here!
                                                                     //[/Comments]
 */
-class ReverbComponent  : public Component
+class ReverbComponent  : public Component,
+                         public ButtonListener
 {
 public:
     //==============================================================================
@@ -49,6 +50,7 @@ public:
 
     void paint (Graphics& g) override;
     void resized() override;
+    void buttonClicked (Button* buttonThatWasClicked) override;
 
 
 
@@ -69,6 +71,7 @@ private:
     ScopedPointer<Label> wetLabel;
     ScopedPointer<Label> dryLabel;
     ScopedPointer<Label> widthLabel;
+    ScopedPointer<ToggleButton> reverbToggleButton;
 
 
     //==============================================================================

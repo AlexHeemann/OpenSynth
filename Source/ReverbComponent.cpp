@@ -47,23 +47,23 @@ ReverbComponent::ReverbComponent (NoisemakerAudioProcessor& processor)
     reverbTitleLabel->setColour (TextEditor::textColourId, Colours::black);
     reverbTitleLabel->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
-    reverbSizeKnob->setRange (0, 10, 0);
+    reverbSizeKnob->setRange (0, 1, 0);
     reverbSizeKnob->setSliderStyle (Slider::Rotary);
     reverbSizeKnob->setTextBoxStyle (Slider::NoTextBox, false, 80, 20);
 
-    reverbDampingKnob->setRange (0, 10, 0);
+    reverbDampingKnob->setRange (0, 1, 0);
     reverbDampingKnob->setSliderStyle (Slider::Rotary);
     reverbDampingKnob->setTextBoxStyle (Slider::NoTextBox, false, 80, 20);
 
-    reverbWetKnob->setRange (0, 10, 0);
+    reverbWetKnob->setRange (0, 1, 0);
     reverbWetKnob->setSliderStyle (Slider::Rotary);
     reverbWetKnob->setTextBoxStyle (Slider::NoTextBox, false, 80, 20);
 
-    reverbDryKnob->setRange (0, 10, 0);
+    reverbDryKnob->setRange (0, 1, 0);
     reverbDryKnob->setSliderStyle (Slider::Rotary);
     reverbDryKnob->setTextBoxStyle (Slider::NoTextBox, false, 80, 20);
 
-    reverbWidthKnob->setRange (0, 10, 0);
+    reverbWidthKnob->setRange (0, 1, 0);
     reverbWidthKnob->setSliderStyle (Slider::Rotary);
     reverbWidthKnob->setTextBoxStyle (Slider::NoTextBox, false, 80, 20);
 
@@ -107,6 +107,10 @@ ReverbComponent::ReverbComponent (NoisemakerAudioProcessor& processor)
     widthLabel->setColour (TextEditor::textColourId, Colours::black);
     widthLabel->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
+    addAndMakeVisible (reverbToggleButton = new ToggleButton ("Enabled Toggle Button"));
+    reverbToggleButton->setButtonText (String());
+    reverbToggleButton->addListener (this);
+
 
     //[UserPreSize]
     //[/UserPreSize]
@@ -134,6 +138,7 @@ ReverbComponent::~ReverbComponent()
     wetLabel = nullptr;
     dryLabel = nullptr;
     widthLabel = nullptr;
+    reverbToggleButton = nullptr;
 
 
     //[Destructor]. You can add your own custom destruction code here..
@@ -152,6 +157,8 @@ void ReverbComponent::paint (Graphics& g)
     g.fillRect (0, 0, 120, 24);
 
     //[UserPaint] Add your own custom painting code here..
+    g.setColour (Colours::grey);
+    g.drawRect (getLocalBounds(), 1);
     //[/UserPaint]
 }
 
@@ -171,8 +178,25 @@ void ReverbComponent::resized()
     wetLabel->setBounds (16, 124, 31, 14);
     dryLabel->setBounds (72, 125, 31, 13);
     widthLabel->setBounds (13, 179, 40, 16);
+    reverbToggleButton->setBounds (6, 0, 90, 24);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
+}
+
+void ReverbComponent::buttonClicked (Button* buttonThatWasClicked)
+{
+    //[UserbuttonClicked_Pre]
+    //[/UserbuttonClicked_Pre]
+
+    if (buttonThatWasClicked == reverbToggleButton)
+    {
+        //[UserButtonCode_reverbToggleButton] -- add your button handler code here..
+        processor.reverbEnabled->setValueNotifyingHost(buttonThatWasClicked->getToggleState());
+        //[/UserButtonCode_reverbToggleButton]
+    }
+
+    //[UserbuttonClicked_Post]
+    //[/UserbuttonClicked_Post]
 }
 
 
@@ -205,27 +229,27 @@ BEGIN_JUCER_METADATA
          fontsize="15" bold="0" italic="0" justification="33"/>
   <SLIDER name="Reverb Size Knob" id="5d03a43546f16b0c" memberName="reverbSizeKnob"
           virtualName="ParameterSlider" explicitFocusOrder="0" pos="8 29 48 40"
-          min="0" max="10" int="0" style="Rotary" textBoxPos="NoTextBox"
+          min="0" max="1" int="0" style="Rotary" textBoxPos="NoTextBox"
           textBoxEditable="1" textBoxWidth="80" textBoxHeight="20" skewFactor="1"
           needsCallback="0"/>
   <SLIDER name="Reverb Damping Knob" id="ecdb649a28f7ae4a" memberName="reverbDampingKnob"
           virtualName="ParameterSlider" explicitFocusOrder="0" pos="64 29 48 40"
-          min="0" max="10" int="0" style="Rotary" textBoxPos="NoTextBox"
+          min="0" max="1" int="0" style="Rotary" textBoxPos="NoTextBox"
           textBoxEditable="1" textBoxWidth="80" textBoxHeight="20" skewFactor="1"
           needsCallback="0"/>
   <SLIDER name="Reverb Wet Knob" id="2a8fd0bbf6143a9" memberName="reverbWetKnob"
           virtualName="ParameterSlider" explicitFocusOrder="0" pos="8 88 48 40"
-          min="0" max="10" int="0" style="Rotary" textBoxPos="NoTextBox"
+          min="0" max="1" int="0" style="Rotary" textBoxPos="NoTextBox"
           textBoxEditable="1" textBoxWidth="80" textBoxHeight="20" skewFactor="1"
           needsCallback="0"/>
   <SLIDER name="Reverb Dry Knob" id="eb94a868ca3f79c0" memberName="reverbDryKnob"
           virtualName="ParameterSlider" explicitFocusOrder="0" pos="64 88 48 40"
-          min="0" max="10" int="0" style="Rotary" textBoxPos="NoTextBox"
+          min="0" max="1" int="0" style="Rotary" textBoxPos="NoTextBox"
           textBoxEditable="1" textBoxWidth="80" textBoxHeight="20" skewFactor="1"
           needsCallback="0"/>
   <SLIDER name="Reverb Width Knob" id="4472b5792035d16d" memberName="reverbWidthKnob"
           virtualName="ParameterSlider" explicitFocusOrder="0" pos="8 144 48 40"
-          min="0" max="10" int="0" style="Rotary" textBoxPos="NoTextBox"
+          min="0" max="1" int="0" style="Rotary" textBoxPos="NoTextBox"
           textBoxEditable="1" textBoxWidth="80" textBoxHeight="20" skewFactor="1"
           needsCallback="0"/>
   <LABEL name="Size Label" id="da35f56642f1beea" memberName="sizeLabel"
@@ -253,6 +277,9 @@ BEGIN_JUCER_METADATA
          edBkgCol="0" labelText="Width" editableSingleClick="0" editableDoubleClick="0"
          focusDiscardsChanges="0" fontname="Default font" fontsize="13"
          bold="0" italic="0" justification="33"/>
+  <TOGGLEBUTTON name="Enabled Toggle Button" id="57b1784b8a594edf" memberName="reverbToggleButton"
+                virtualName="" explicitFocusOrder="0" pos="6 0 90 24" buttonText=""
+                connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA
