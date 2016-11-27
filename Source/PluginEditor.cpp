@@ -29,6 +29,7 @@ NoisemakerAudioProcessorEditor::NoisemakerAudioProcessorEditor (NoisemakerAudioP
     addAndMakeVisible(filterComponent = new FilterComponent(owner));
     addAndMakeVisible(oscillatorComponent = new OscillatorComponent(owner));
     addAndMakeVisible(delayComponent = new DelayComponent(owner));
+    addAndMakeVisible(reverbComponent = new ReverbComponent(owner));
 
 	// add the midi keyboard component..
 	addAndMakeVisible(keyboardComponent);
@@ -37,8 +38,8 @@ NoisemakerAudioProcessorEditor::NoisemakerAudioProcessorEditor (NoisemakerAudioP
 	addAndMakeVisible(resizer = new ResizableCornerComponent(this, &resizeLimits));
 	resizeLimits.setSizeLimits(200, 150, 800, 300);
 
-	// set our component's initial size to be the last one that was stored in the filter's settings
-	setSize(600, 400);
+	// set our component's size
+	setSize(600, 410);
 
 	// start a timer which will keep our timecode display updated
 	startTimerHz(30);
@@ -64,7 +65,8 @@ void NoisemakerAudioProcessorEditor::resized()
     ampComponent->setTopLeftPosition(r.getWidth() - ampComponent->getWidth(), r.getY());
     filterComponent->setTopLeftPosition(r.getWidth() - ampComponent->getWidth() - filterComponent->getWidth() - 10, r.getY());
     oscillatorComponent->setTopLeftPosition(r.getX(), r.getY());
-    delayComponent->setTopLeftPosition(ampComponent->getX(), ampComponent->getY() + ampComponent->getHeight() + 10);
+    delayComponent->setTopRightPosition(filterComponent->getX() + filterComponent->getWidth(), filterComponent->getY() + filterComponent->getHeight() + 10);
+    reverbComponent->setTopLeftPosition(ampComponent->getX(), ampComponent->getY() + ampComponent->getHeight() + 10);
 }
 
 //==============================================================================

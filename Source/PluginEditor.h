@@ -18,6 +18,7 @@
 #include "FilterComponent.h"
 #include "OscillatorComponent.h"
 #include "DelayComponent.h"
+#include "ReverbComponent.h"
 
 class ParameterSlider;
 
@@ -54,6 +55,7 @@ private:
     ScopedPointer<FilterComponent> filterComponent;
     ScopedPointer<OscillatorComponent> oscillatorComponent;
     ScopedPointer<DelayComponent> delayComponent;
+    ScopedPointer<ReverbComponent> reverbComponent;
 	ComponentBoundsConstrainer resizeLimits;
 
 	AudioPlayHead::CurrentPositionInfo lastDisplayedPosition;
