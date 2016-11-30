@@ -18,7 +18,7 @@
 //==============================================================================
 /*
 */
-class FilterComponent    : public Component
+class FilterComponent    : public Component, public ComboBoxListener
 {
 public:
     FilterComponent(NoisemakerAudioProcessor& processor);
@@ -26,8 +26,17 @@ public:
 
     void paint (Graphics&) override;
     void resized() override;
+    void comboBoxChanged (ComboBox* comboBoxThatHasChanged) override;
 
 private:
+    
+    typedef enum {
+        HighPass = 1,
+        LowPass = 2,
+        BandPass = 3,
+        AllPass = 4
+    } FilterType;
+    
     NoisemakerAudioProcessor& processor;
     
     ScopedPointer<ParameterSlider> frequencyKnob;
@@ -37,6 +46,7 @@ private:
     ScopedPointer<ParameterSlider> decaySlider;
     ScopedPointer<ParameterSlider> sustainSlider;
     ScopedPointer<ParameterSlider> releaseSlider;
+    ScopedPointer<ComboBox> filterTypeComboBox;
     Label attackLabel, decayLabel, sustainLabel, releaseLabel, frequencyLabel, envAmountLabel, resonanceLabel;
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (FilterComponent)

@@ -21,7 +21,7 @@ frequencyLabel(String::empty, "Frequency"),
 envAmountLabel(String::empty, "Env Amount"),
 resonanceLabel(String::empty, "Resonance")
 {
-    setSize(160, 170);
+    setSize(160, 220);
     
     addAndMakeVisible(frequencyKnob = new ParameterSlider(*processor.filterFrequency));
     frequencyKnob->setSliderStyle(Slider::Rotary);
@@ -53,6 +53,17 @@ resonanceLabel(String::empty, "Resonance")
     addAndMakeVisible(releaseSlider = new ParameterSlider(*processor.releaseRateFilter));
     releaseSlider->setSliderStyle(Slider::LinearVertical);
     releaseLabel.attachToComponent(releaseSlider, false);
+    
+    addAndMakeVisible (filterTypeComboBox = new ComboBox ("Osc 1 Combo Box"));
+    filterTypeComboBox->setEditableText (false);
+    filterTypeComboBox->setJustificationType (Justification::centredLeft);
+    filterTypeComboBox->setTextWhenNothingSelected (TRANS("Filter Type"));
+    filterTypeComboBox->setTextWhenNoChoicesAvailable (TRANS("(no choices)"));
+    filterTypeComboBox->addItem ("Low Pass", LowPass);
+    filterTypeComboBox->addItem ("High Pass", HighPass);
+    filterTypeComboBox->addItem ("Band Pass", BandPass);
+    filterTypeComboBox->addItem ("All Pass", AllPass);
+    filterTypeComboBox->addListener (this);
 }
 
 FilterComponent::~FilterComponent()
@@ -83,6 +94,7 @@ void FilterComponent::paint (Graphics& g)
     decaySlider->setBounds(28, 22, 20, 80);
     sustainSlider->setBounds(51, 22, 20, 80);
     releaseSlider->setBounds(69, 22, 20, 80);
+    filterTypeComboBox->setBounds(5, 180, 140, 25);
 }
 
 void FilterComponent::resized()
@@ -90,4 +102,22 @@ void FilterComponent::resized()
     // This method is where you should set the bounds of any child
     // components that your component contains..
 
+}
+
+void FilterComponent::comboBoxChanged (ComboBox* comboBoxThatHasChanged)
+{
+    if (comboBoxThatHasChanged == filterTypeComboBox)
+    {
+        switch (comboBoxThatHasChanged->getSelectedId())
+        {
+            case LowPass:
+                break;
+            case HighPass:
+                break;
+            case BandPass:
+                break;
+            case AllPass:
+                break;
+        }
+    }
 }
