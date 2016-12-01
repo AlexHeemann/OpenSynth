@@ -99,7 +99,7 @@ void FilterProcessor::initialiseHighPassFilter(double frequency)
 
 void FilterProcessor::initialiseBandPassFilter(double frequency)
 {
-    lowPassFilters.clear();
+    bandPassFilters.clear();
     for (int filter = 0; filter < 2; filter++)
     {
         Dsp::SmoothedFilterDesign <Dsp::RBJ::Design::BandPass1, 1> f(1024);
@@ -114,7 +114,7 @@ void FilterProcessor::initialiseBandPassFilter(double frequency)
 
 void FilterProcessor::initialiseAllPassFilter(double frequency)
 {
-    highPassFilters.clear();
+    allPassFilters.clear();
     for (int filter = 0; filter < 2; filter++)
     {
         Dsp::SmoothedFilterDesign<Dsp::RBJ::Design::AllPass, 1> f(1024);
