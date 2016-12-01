@@ -20,6 +20,7 @@
 #include "AmpProcessor.h"
 #include "DelayProcessor.h"
 #include "ReverbProcessor.h"
+#include "FilterProcessor.h"
 
 typedef enum 
 {
@@ -84,6 +85,7 @@ public:
     void setStateInformation (const void* data, int sizeInBytes) override;
 
 	void setWaveformForOscillator(Waveform waveform, int oscillator);
+    void setFilterType(FilterProcessor::FilterType filterType);
 
 	// this is kept up to date with the midi messages that arrive, and the UI component
 	// registers with it so it can represent the incoming messages

@@ -10,6 +10,7 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "FilterComponent.h"
+#include "FilterProcessor.h"
 
 //==============================================================================
 FilterComponent::FilterComponent(NoisemakerAudioProcessor &processor) : processor(processor),
@@ -59,10 +60,10 @@ resonanceLabel(String::empty, "Resonance")
     filterTypeComboBox->setJustificationType (Justification::centredLeft);
     filterTypeComboBox->setTextWhenNothingSelected (TRANS("Filter Type"));
     filterTypeComboBox->setTextWhenNoChoicesAvailable (TRANS("(no choices)"));
-    filterTypeComboBox->addItem ("Low Pass", LowPass);
-    filterTypeComboBox->addItem ("High Pass", HighPass);
-    filterTypeComboBox->addItem ("Band Pass", BandPass);
-    filterTypeComboBox->addItem ("All Pass", AllPass);
+    filterTypeComboBox->addItem ("Low Pass", FilterProcessor::LowPass);
+    filterTypeComboBox->addItem ("High Pass", FilterProcessor::HighPass);
+    filterTypeComboBox->addItem ("Band Pass", FilterProcessor::BandPass);
+    filterTypeComboBox->addItem ("All Pass", FilterProcessor::AllPass);
     filterTypeComboBox->addListener (this);
 }
 
@@ -110,13 +111,17 @@ void FilterComponent::comboBoxChanged (ComboBox* comboBoxThatHasChanged)
     {
         switch (comboBoxThatHasChanged->getSelectedId())
         {
-            case LowPass:
+            case FilterProcessor::LowPass:
+                processor.setFilterType(FilterProcessor::LowPass);
                 break;
-            case HighPass:
+            case FilterProcessor::HighPass:
+                processor.setFilterType(FilterProcessor::HighPass);
                 break;
-            case BandPass:
+            case FilterProcessor::BandPass:
+                processor.setFilterType(FilterProcessor::BandPass);
                 break;
-            case AllPass:
+            case FilterProcessor::AllPass:
+                processor.setFilterType(FilterProcessor::AllPass);
                 break;
         }
     }

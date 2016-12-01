@@ -464,6 +464,18 @@ void NoisemakerAudioProcessor::setWaveformForOscillator(Waveform waveform, int o
     }
 }
 
+void NoisemakerAudioProcessor::setFilterType(FilterProcessor::FilterType filterType)
+{
+    for (int voiceIdx = 0; voiceIdx < synth.getNumVoices(); voiceIdx++)
+    {
+        WavetableVoice* voice = dynamic_cast<WavetableVoice*>(synth.getVoice(voiceIdx));
+        if (voice != nullptr)
+        {
+            voice->getFilterProcessor().setActiveFilter(filterType);
+        }
+    }
+}
+
 //==============================================================================
 // This creates new instances of the plugin..
 AudioProcessor* JUCE_CALLTYPE createPluginFilter()

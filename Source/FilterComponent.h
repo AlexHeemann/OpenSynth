@@ -29,14 +29,6 @@ public:
     void comboBoxChanged (ComboBox* comboBoxThatHasChanged) override;
 
 private:
-    
-    typedef enum {
-        HighPass = 1,
-        LowPass = 2,
-        BandPass = 3,
-        AllPass = 4
-    } FilterType;
-    
     NoisemakerAudioProcessor& processor;
     
     ScopedPointer<ParameterSlider> frequencyKnob;
