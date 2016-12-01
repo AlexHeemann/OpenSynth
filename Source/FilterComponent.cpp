@@ -65,6 +65,7 @@ resonanceLabel(String::empty, "Resonance")
     filterTypeComboBox->addItem ("Band Pass", FilterProcessor::BandPass);
     filterTypeComboBox->addItem ("All Pass", FilterProcessor::AllPass);
     filterTypeComboBox->addListener (this);
+    filterTypeComboBox->setSelectedId(FilterProcessor::LowPass);
 }
 
 FilterComponent::~FilterComponent()
