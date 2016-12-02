@@ -39,7 +39,7 @@ NoisemakerAudioProcessorEditor::NoisemakerAudioProcessorEditor (NoisemakerAudioP
 	resizeLimits.setSizeLimits(200, 150, 800, 300);
 
 	// set our component's size
-	setSize(600, 410);
+	setSize(550, 410);
 
 	// start a timer which will keep our timecode display updated
 	startTimerHz(30);
@@ -62,10 +62,10 @@ void NoisemakerAudioProcessorEditor::resized()
 	Rectangle<int> r(getLocalBounds().reduced(8));
 	keyboardComponent.setBounds(r.removeFromBottom(70));
     
-    ampComponent->setTopLeftPosition(r.getWidth() - ampComponent->getWidth(), r.getY());
-    filterComponent->setTopLeftPosition(r.getWidth() - ampComponent->getWidth() - filterComponent->getWidth() - 10, r.getY());
     oscillatorComponent->setTopLeftPosition(r.getX(), r.getY());
+    filterComponent->setTopLeftPosition(oscillatorComponent->getX() + oscillatorComponent->getWidth() + 10, oscillatorComponent->getY());
     delayComponent->setTopRightPosition(filterComponent->getX() + filterComponent->getWidth(), filterComponent->getY() + filterComponent->getHeight() + 10);
+    ampComponent->setTopLeftPosition(filterComponent->getX() + filterComponent->getWidth() + 10, filterComponent->getY());
     reverbComponent->setTopLeftPosition(ampComponent->getX(), ampComponent->getY() + ampComponent->getHeight() + 10);
 }
 
