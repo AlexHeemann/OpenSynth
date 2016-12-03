@@ -21,7 +21,7 @@
 class AmpComponent    : public Component
 {
 public:
-    AmpComponent(NoisemakerAudioProcessor& processor);
+    AmpComponent(OpenSynthAudioProcessor& processor);
     ~AmpComponent();
 
     void paint (Graphics&) override;
@@ -30,7 +30,7 @@ public:
 private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AmpComponent)
     
-    NoisemakerAudioProcessor& processor;
+    OpenSynthAudioProcessor& processor;
     
     ScopedPointer<ParameterSlider> gainKnob;
     ScopedPointer<ParameterSlider> attackSlider;

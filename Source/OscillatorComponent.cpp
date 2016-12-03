@@ -27,7 +27,7 @@
 //[/MiscUserDefs]
 
 //==============================================================================
-OscillatorComponent::OscillatorComponent (NoisemakerAudioProcessor& processor)
+OscillatorComponent::OscillatorComponent (OpenSynthAudioProcessor& processor)
     : processor(processor)
 {
     //[Constructor_pre] You can add your own custom stuff here..
@@ -272,7 +272,7 @@ Waveform OscillatorComponent::waveformForId(int waveformId)
 BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="OscillatorComponent" componentName=""
-                 parentClasses="public Component" constructorParams="NoisemakerAudioProcessor&amp; processor"
+                 parentClasses="public Component" constructorParams="OpenSynthAudioProcessor&amp; processor"
                  variableInitialisers="processor(processor)" snapPixels="8" snapActive="1"
                  snapShown="1" overlayOpacity="0.330" fixedSize="1" initialWidth="210"
                  initialHeight="260">

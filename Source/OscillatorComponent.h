@@ -41,7 +41,7 @@ class OscillatorComponent  : public Component,
 {
 public:
     //==============================================================================
-    OscillatorComponent (NoisemakerAudioProcessor& processor);
+    OscillatorComponent (OpenSynthAudioProcessor& processor);
     ~OscillatorComponent();
 
     //==============================================================================
@@ -56,7 +56,7 @@ public:
 
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
-    NoisemakerAudioProcessor& processor;
+    OpenSynthAudioProcessor& processor;
     Waveform waveformForId(int waveformId);
     //[/UserVariables]
 

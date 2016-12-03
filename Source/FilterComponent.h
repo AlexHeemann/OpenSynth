@@ -21,7 +21,7 @@
 class FilterComponent    : public Component, public ComboBoxListener
 {
 public:
-    FilterComponent(NoisemakerAudioProcessor& processor);
+    FilterComponent(OpenSynthAudioProcessor& processor);
     ~FilterComponent();
 
     void paint (Graphics&) override;
@@ -29,7 +29,7 @@ public:
     void comboBoxChanged (ComboBox* comboBoxThatHasChanged) override;
 
 private:
-    NoisemakerAudioProcessor& processor;
+    OpenSynthAudioProcessor& processor;
     
     ScopedPointer<ParameterSlider> frequencyKnob;
     ScopedPointer<ParameterSlider> envelopeAmountKnob;

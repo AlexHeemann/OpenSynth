@@ -42,7 +42,7 @@ class DelayComponent  : public Component,
 {
 public:
     //==============================================================================
-    DelayComponent (NoisemakerAudioProcessor& processor);
+    DelayComponent (OpenSynthAudioProcessor& processor);
     ~DelayComponent();
 
     //==============================================================================
@@ -58,7 +58,7 @@ public:
 
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
-    NoisemakerAudioProcessor& processor;
+    OpenSynthAudioProcessor& processor;
     //[/UserVariables]
 
     //==============================================================================

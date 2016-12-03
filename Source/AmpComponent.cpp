@@ -12,7 +12,7 @@
 #include "AmpComponent.h"
 
 //==============================================================================
-AmpComponent::AmpComponent(NoisemakerAudioProcessor &processor) : processor(processor),
+AmpComponent::AmpComponent(OpenSynthAudioProcessor &processor) : processor(processor),
                                                                   attackLabel(String::empty, "A"),
                                                                   decayLabel(String::empty, "D"),
                                                                   sustainLabel(String::empty, "S"),

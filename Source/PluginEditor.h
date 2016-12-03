@@ -25,11 +25,11 @@ class ParameterSlider;
 //==============================================================================
 /**
 */
-class NoisemakerAudioProcessorEditor  : public AudioProcessorEditor, public DragAndDropContainer, private Timer
+class OpenSynthAudioProcessorEditor  : public AudioProcessorEditor, public DragAndDropContainer, private Timer
 {
 public:
-    NoisemakerAudioProcessorEditor (NoisemakerAudioProcessor&);
-    ~NoisemakerAudioProcessorEditor();
+    OpenSynthAudioProcessorEditor (OpenSynthAudioProcessor&);
+    ~OpenSynthAudioProcessorEditor();
 
     //==============================================================================
     void paint (Graphics&) override;
@@ -43,7 +43,7 @@ private:
     // This reference is provided as a quick way for your editor to
     // access the processor object that created it.
 
-    NoisemakerAudioProcessor& processor;
+    OpenSynthAudioProcessor& processor;
 	MidiKeyboardComponent keyboardComponent;
 
 	Label timecodeDisplayLabel, gainLabel, delayLabel, filterLabel, envAttackLabel, envDecayLabel;
@@ -61,14 +61,14 @@ private:
 	AudioPlayHead::CurrentPositionInfo lastDisplayedPosition;
 
 	//==============================================================================
-	NoisemakerAudioProcessor& getProcessor() const
+	OpenSynthAudioProcessor& getProcessor() const
 	{
-		return static_cast<NoisemakerAudioProcessor&> (processor);
+		return static_cast<OpenSynthAudioProcessor&> (processor);
 	}
 
 	void updateTimecodeDisplay(AudioPlayHead::CurrentPositionInfo);
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (NoisemakerAudioProcessorEditor)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (OpenSynthAudioProcessorEditor)
 };
 
 

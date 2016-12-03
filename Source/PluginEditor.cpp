@@ -13,7 +13,7 @@
 #include "ParameterSlider.h"
 
 //==============================================================================
-NoisemakerAudioProcessorEditor::NoisemakerAudioProcessorEditor (NoisemakerAudioProcessor& owner)
+OpenSynthAudioProcessorEditor::OpenSynthAudioProcessorEditor (OpenSynthAudioProcessor& owner)
     : AudioProcessorEditor (&owner), processor (owner),
 	keyboardComponent(owner.keyboardState, MidiKeyboardComponent::horizontalKeyboard),
 	timecodeDisplayLabel(String::empty),
@@ -45,19 +45,19 @@ NoisemakerAudioProcessorEditor::NoisemakerAudioProcessorEditor (NoisemakerAudioP
 	startTimerHz(30);
 }
 
-NoisemakerAudioProcessorEditor::~NoisemakerAudioProcessorEditor()
+OpenSynthAudioProcessorEditor::~OpenSynthAudioProcessorEditor()
 {
 }
 
 //==============================================================================
-void NoisemakerAudioProcessorEditor::paint(Graphics& g)
+void OpenSynthAudioProcessorEditor::paint(Graphics& g)
 {
 	g.setGradientFill(ColourGradient(Colours::white, 0, 0,
 		Colours::lightgrey, 0, (float)getHeight(), false));
 	g.fillAll();
 }
 
-void NoisemakerAudioProcessorEditor::resized()
+void OpenSynthAudioProcessorEditor::resized()
 {
 	Rectangle<int> r(getLocalBounds().reduced(8));
 	keyboardComponent.setBounds(r.removeFromBottom(70));
@@ -70,16 +70,16 @@ void NoisemakerAudioProcessorEditor::resized()
 }
 
 //==============================================================================
-void NoisemakerAudioProcessorEditor::timerCallback()
+void OpenSynthAudioProcessorEditor::timerCallback()
 {
 	updateTimecodeDisplay(getProcessor().lastPosInfo);
 }
 
-void NoisemakerAudioProcessorEditor::dragOperationStarted()
+void OpenSynthAudioProcessorEditor::dragOperationStarted()
 {
 }
 
-void NoisemakerAudioProcessorEditor::dragOperationEnded()
+void OpenSynthAudioProcessorEditor::dragOperationEnded()
 {
 }
 
@@ -114,7 +114,7 @@ static String quarterNotePositionToBarsBeatsString(double quarterNotes, int nume
 }
 
 // Updates the text in our position label.
-void NoisemakerAudioProcessorEditor::updateTimecodeDisplay(AudioPlayHead::CurrentPositionInfo pos)
+void OpenSynthAudioProcessorEditor::updateTimecodeDisplay(AudioPlayHead::CurrentPositionInfo pos)
 {
 	if (lastDisplayedPosition != pos)
 	{

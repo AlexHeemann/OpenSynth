@@ -33,12 +33,12 @@ typedef enum
 //==============================================================================
 /**
 */
-class NoisemakerAudioProcessor  : public AudioProcessor, private MidiKeyboardStateListener
+class OpenSynthAudioProcessor  : public AudioProcessor, private MidiKeyboardStateListener
 {
 public:
     //==============================================================================
-    NoisemakerAudioProcessor();
-    ~NoisemakerAudioProcessor();
+    OpenSynthAudioProcessor();
+    ~OpenSynthAudioProcessor();
 
     //==============================================================================
     void prepareToPlay (double sampleRate, int samplesPerBlock) override;
@@ -173,7 +173,7 @@ private:
 	virtual void handleNoteOff(MidiKeyboardState* source,
 		int midiChannel, int midiNoteNumber, float velocity) override;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (NoisemakerAudioProcessor)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (OpenSynthAudioProcessor)
 };
 
 

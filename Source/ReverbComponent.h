@@ -41,7 +41,7 @@ class ReverbComponent  : public Component,
 {
 public:
     //==============================================================================
-    ReverbComponent (NoisemakerAudioProcessor& processor);
+    ReverbComponent (OpenSynthAudioProcessor& processor);
     ~ReverbComponent();
 
     //==============================================================================
@@ -56,7 +56,7 @@ public:
 
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
-    NoisemakerAudioProcessor& processor;
+    OpenSynthAudioProcessor& processor;
     //[/UserVariables]
 
     //==============================================================================

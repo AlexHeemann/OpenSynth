@@ -13,7 +13,7 @@
 #include "FilterProcessor.h"
 
 //==============================================================================
-FilterComponent::FilterComponent(NoisemakerAudioProcessor &processor) : processor(processor),
+FilterComponent::FilterComponent(OpenSynthAudioProcessor &processor) : processor(processor),
 attackLabel(String::empty, "A"),
 decayLabel(String::empty, "D"),
 sustainLabel(String::empty, "S"),

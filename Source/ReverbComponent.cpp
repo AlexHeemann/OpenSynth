@@ -27,7 +27,7 @@
 //[/MiscUserDefs]
 
 //==============================================================================
-ReverbComponent::ReverbComponent (NoisemakerAudioProcessor& processor)
+ReverbComponent::ReverbComponent (OpenSynthAudioProcessor& processor)
     : processor(processor)
 {
     //[Constructor_pre] You can add your own custom stuff here..
@@ -215,7 +215,7 @@ void ReverbComponent::buttonClicked (Button* buttonThatWasClicked)
 BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="ReverbComponent" componentName=""
-                 parentClasses="public Component" constructorParams="NoisemakerAudioProcessor&amp; processor"
+                 parentClasses="public Component" constructorParams="OpenSynthAudioProcessor&amp; processor"
                  variableInitialisers="processor(processor)" snapPixels="8" snapActive="1"
                  snapShown="1" overlayOpacity="0.330" fixedSize="1" initialWidth="120"
                  initialHeight="200">

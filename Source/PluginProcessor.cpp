@@ -5,7 +5,7 @@
 #include "WavetableVoice.h"
 
 //==============================================================================
-NoisemakerAudioProcessor::NoisemakerAudioProcessor() :
+OpenSynthAudioProcessor::OpenSynthAudioProcessor() :
 #ifndef JucePlugin_PreferredChannelConfigurations
 AudioProcessor (BusesProperties()
 #if ! JucePlugin_IsMidiEffect
@@ -86,11 +86,11 @@ AudioProcessor (BusesProperties()
 	keyboardState.addListener(this);
 }
 
-NoisemakerAudioProcessor::~NoisemakerAudioProcessor()
+OpenSynthAudioProcessor::~OpenSynthAudioProcessor()
 {
 }
 
-void NoisemakerAudioProcessor::initialiseSynthForWaveform(const Waveform waveform, const int numVoices)
+void OpenSynthAudioProcessor::initialiseSynthForWaveform(const Waveform waveform, const int numVoices)
 {
 	synth.clearSounds();
 	synth.clearVoices();
@@ -154,12 +154,12 @@ void NoisemakerAudioProcessor::initialiseSynthForWaveform(const Waveform wavefor
 }
 
 //==============================================================================
-const String NoisemakerAudioProcessor::getName() const
+const String OpenSynthAudioProcessor::getName() const
 {
     return JucePlugin_Name;
 }
 
-bool NoisemakerAudioProcessor::acceptsMidi() const
+bool OpenSynthAudioProcessor::acceptsMidi() const
 {
    #if JucePlugin_WantsMidiInput
     return true;
@@ -168,7 +168,7 @@ bool NoisemakerAudioProcessor::acceptsMidi() const
    #endif
 }
 
-bool NoisemakerAudioProcessor::producesMidi() const
+bool OpenSynthAudioProcessor::producesMidi() const
 {
    #if JucePlugin_ProducesMidiOutput
     return true;
@@ -177,37 +177,37 @@ bool NoisemakerAudioProcessor::producesMidi() const
    #endif
 }
 
-double NoisemakerAudioProcessor::getTailLengthSeconds() const
+double OpenSynthAudioProcessor::getTailLengthSeconds() const
 {
     return 0.0;
 }
 
-int NoisemakerAudioProcessor::getNumPrograms()
+int OpenSynthAudioProcessor::getNumPrograms()
 {
     return 1;   // NB: some hosts don't cope very well if you tell them there are 0 programs,
                 // so this should be at least 1, even if you're not really implementing programs.
 }
 
-int NoisemakerAudioProcessor::getCurrentProgram()
+int OpenSynthAudioProcessor::getCurrentProgram()
 {
     return 0;
 }
 
-void NoisemakerAudioProcessor::setCurrentProgram (int index)
+void OpenSynthAudioProcessor::setCurrentProgram (int index)
 {
 }
 
-const String NoisemakerAudioProcessor::getProgramName (int index)
+const String OpenSynthAudioProcessor::getProgramName (int index)
 {
     return String();
 }
 
-void NoisemakerAudioProcessor::changeProgramName (int index, const String& newName)
+void OpenSynthAudioProcessor::changeProgramName (int index, const String& newName)
 {
 }
 
 //==============================================================================
-void NoisemakerAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
+void OpenSynthAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
     // Use this method as the place to do any pre-playback
     // initialisation that you need..
@@ -254,14 +254,14 @@ void NoisemakerAudioProcessor::prepareToPlay (double sampleRate, int samplesPerB
 	reset();
 }
 
-void NoisemakerAudioProcessor::releaseResources()
+void OpenSynthAudioProcessor::releaseResources()
 {
     // When playback stops, you can use this as an opportunity to free up any
     // spare memory, etc.
 	keyboardState.reset();
 }
 
-void NoisemakerAudioProcessor::reset()
+void OpenSynthAudioProcessor::reset()
 {
 	// Use this method as the place to clear any delay lines, buffers, etc, as it
 	// means there's been a break in the audio's continuity.
@@ -270,7 +270,7 @@ void NoisemakerAudioProcessor::reset()
 }
 
 #ifndef JucePlugin_PreferredChannelConfigurations
-bool NoisemakerAudioProcessor::isBusesLayoutSupported (const BusesLayout& layouts) const
+bool OpenSynthAudioProcessor::isBusesLayoutSupported (const BusesLayout& layouts) const
 {
 #if JucePlugin_IsMidiEffect
     ignoreUnused (layouts);
@@ -294,7 +294,7 @@ bool NoisemakerAudioProcessor::isBusesLayoutSupported (const BusesLayout& layout
 #endif
 
 template <typename FloatType>
-void NoisemakerAudioProcessor::process(AudioBuffer<FloatType>& buffer,
+void OpenSynthAudioProcessor::process(AudioBuffer<FloatType>& buffer,
 	MidiBuffer& midiMessages,
 	AudioBuffer<FloatType>& delayBuffer)
 {
@@ -327,7 +327,7 @@ void NoisemakerAudioProcessor::process(AudioBuffer<FloatType>& buffer,
 }
 
 template <typename FloatType>
-void NoisemakerAudioProcessor::applyDelay(AudioBuffer<FloatType>& buffer, AudioBuffer<FloatType>& delayBuffer)
+void OpenSynthAudioProcessor::applyDelay(AudioBuffer<FloatType>& buffer, AudioBuffer<FloatType>& delayBuffer)
 {
 	const int numSamples = buffer.getNumSamples();
 	//const float delayLevel = delayParam->get();
@@ -354,7 +354,7 @@ void NoisemakerAudioProcessor::applyDelay(AudioBuffer<FloatType>& buffer, AudioB
 	delayPosition = delayPos;
 }
 
-void NoisemakerAudioProcessor::updateCurrentTimeInfoFromHost()
+void OpenSynthAudioProcessor::updateCurrentTimeInfoFromHost()
 {
 	if (AudioPlayHead* ph = getPlayHead())
 	{
@@ -372,18 +372,18 @@ void NoisemakerAudioProcessor::updateCurrentTimeInfoFromHost()
 }
 
 //==============================================================================
-bool NoisemakerAudioProcessor::hasEditor() const
+bool OpenSynthAudioProcessor::hasEditor() const
 {
     return true; // (change this to false if you choose to not supply an editor)
 }
 
-AudioProcessorEditor* NoisemakerAudioProcessor::createEditor()
+AudioProcessorEditor* OpenSynthAudioProcessor::createEditor()
 {
-    return new NoisemakerAudioProcessorEditor (*this);
+    return new OpenSynthAudioProcessorEditor (*this);
 }
 
 //==============================================================================
-void NoisemakerAudioProcessor::getStateInformation(MemoryBlock& destData)
+void OpenSynthAudioProcessor::getStateInformation(MemoryBlock& destData)
 {
 	// You should use this method to store your parameters in the memory block.
 	// Here's an example of how you can use XML to make it easy and more robust:
@@ -404,7 +404,7 @@ void NoisemakerAudioProcessor::getStateInformation(MemoryBlock& destData)
 	copyXmlToBinary(xml, destData);
 }
 
-void NoisemakerAudioProcessor::setStateInformation(const void* data, int sizeInBytes)
+void OpenSynthAudioProcessor::setStateInformation(const void* data, int sizeInBytes)
 {
 	// You should use this method to restore your parameters from this memory block,
 	// whose contents will have been created by the getStateInformation() call.
@@ -429,7 +429,7 @@ void NoisemakerAudioProcessor::setStateInformation(const void* data, int sizeInB
 	}
 }
 
-void NoisemakerAudioProcessor::setWaveformForOscillator(Waveform waveform, int oscillator)
+void OpenSynthAudioProcessor::setWaveformForOscillator(Waveform waveform, int oscillator)
 {
     Wavetable* wavetable = nullptr;
     switch (waveform) {
@@ -464,7 +464,7 @@ void NoisemakerAudioProcessor::setWaveformForOscillator(Waveform waveform, int o
     }
 }
 
-void NoisemakerAudioProcessor::setFilterType(FilterProcessor::FilterType filterType)
+void OpenSynthAudioProcessor::setFilterType(FilterProcessor::FilterType filterType)
 {
     for (int voiceIdx = 0; voiceIdx < synth.getNumVoices(); voiceIdx++)
     {
@@ -480,17 +480,17 @@ void NoisemakerAudioProcessor::setFilterType(FilterProcessor::FilterType filterT
 // This creates new instances of the plugin..
 AudioProcessor* JUCE_CALLTYPE createPluginFilter()
 {
-    return new NoisemakerAudioProcessor();
+    return new OpenSynthAudioProcessor();
 }
 
 //==============================================================================
 // MidiKeyboardStateListener
-void NoisemakerAudioProcessor::handleNoteOn(MidiKeyboardState* source,
+void OpenSynthAudioProcessor::handleNoteOn(MidiKeyboardState* source,
 	int midiChannel, int midiNoteNumber, float velocity)
 {
 	
 }
 
-void NoisemakerAudioProcessor::handleNoteOff(MidiKeyboardState * source, int midiChannel, int midiNoteNumber, float velocity)
+void OpenSynthAudioProcessor::handleNoteOff(MidiKeyboardState * source, int midiChannel, int midiNoteNumber, float velocity)
 {
 }
