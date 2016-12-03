@@ -16,15 +16,10 @@ AudioProcessor (BusesProperties()
 #endif
                 ),
 #endif
-	lastUIWidth(600),
-	lastUIHeight(260),
-	delayPosition(0),
     sawtoothWavetable(SawtoothWavetable(40.0, 4096, getSampleRate())),
     squareWavetable(SquareWavetable(40.0, 4096, getSampleRate())),
     sineWavetable(SineWavetable(40.0, 4096, getSampleRate()))
 {
-    lastPosInfo.resetToDefault();
-    
 	// This creates our parameters. We'll keep some raw pointers to them in this class,
 	// so that we can easily access them later, but the base class will take care of
 	// deleting them for us.
@@ -240,17 +235,6 @@ void OpenSynthAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBl
     reverbProcessor.setSampleRate(sampleRate);
     reverbProcessor.reset();
 
-	if (isUsingDoublePrecision())
-	{
-		delayBufferDouble.setSize(2, 12000);
-		delayBufferFloat.setSize(1, 1);
-	}
-	else
-	{
-		delayBufferFloat.setSize(2, 12000);
-		delayBufferDouble.setSize(1, 1);
-	}
-
 	reset();
 }
 
@@ -265,8 +249,8 @@ void OpenSynthAudioProcessor::reset()
 {
 	// Use this method as the place to clear any delay lines, buffers, etc, as it
 	// means there's been a break in the audio's continuity.
-	delayBufferFloat.clear();
-	delayBufferDouble.clear();
+    delayProcessor.reset();
+    reverbProcessor.reset();
 }
 
 #ifndef JucePlugin_PreferredChannelConfigurations
@@ -295,8 +279,7 @@ bool OpenSynthAudioProcessor::isBusesLayoutSupported (const BusesLayout& layouts
 
 template <typename FloatType>
 void OpenSynthAudioProcessor::process(AudioBuffer<FloatType>& buffer,
-	MidiBuffer& midiMessages,
-	AudioBuffer<FloatType>& delayBuffer)
+	MidiBuffer& midiMessages)
 {
 	const int numSamples = buffer.getNumSamples();
 
@@ -321,54 +304,6 @@ void OpenSynthAudioProcessor::process(AudioBuffer<FloatType>& buffer,
     {
         reverbProcessor.renderNextBlock(buffer, 0, numSamples);
     }
-
-	// Now ask the host for the current time so we can store it to be displayed later...
-	updateCurrentTimeInfoFromHost();
-}
-
-template <typename FloatType>
-void OpenSynthAudioProcessor::applyDelay(AudioBuffer<FloatType>& buffer, AudioBuffer<FloatType>& delayBuffer)
-{
-	const int numSamples = buffer.getNumSamples();
-	//const float delayLevel = delayParam->get();
-
-	int delayPos = 0;
-
-	for (int channel = 0; channel < buffer.getNumChannels(); ++channel)
-	{
-		FloatType* const channelData = buffer.getWritePointer(channel);
-		FloatType* const delayData = delayBuffer.getWritePointer(jmin(channel, delayBuffer.getNumChannels() - 1));
-		delayPos = delayPosition;
-
-		for (int i = 0; i < numSamples; ++i)
-		{
-			const FloatType in = channelData[i];
-			channelData[i] += delayData[delayPos];
-			//delayData[delayPos] = (delayData[delayPos] + in) * delayLevel;
-
-			if (++delayPos >= delayBuffer.getNumSamples())
-				delayPos = 0;
-		}
-	}
-
-	delayPosition = delayPos;
-}
-
-void OpenSynthAudioProcessor::updateCurrentTimeInfoFromHost()
-{
-	if (AudioPlayHead* ph = getPlayHead())
-	{
-		AudioPlayHead::CurrentPositionInfo newTime;
-
-		if (ph->getCurrentPosition(newTime))
-		{
-			lastPosInfo = newTime;  // Successfully got the current time from the host..
-			return;
-		}
-	}
-
-	// If the host fails to provide the current time, we'll just reset our copy to a default..
-	lastPosInfo.resetToDefault();
 }
 
 //==============================================================================
@@ -389,11 +324,7 @@ void OpenSynthAudioProcessor::getStateInformation(MemoryBlock& destData)
 	// Here's an example of how you can use XML to make it easy and more robust:
 
 	// Create an outer XML element..
-	XmlElement xml("MYPLUGINSETTINGS");
-
-	// add some attributes to it..
-	xml.setAttribute("uiWidth", lastUIWidth);
-	xml.setAttribute("uiHeight", lastUIHeight);
+	XmlElement xml("OpenSynthPluginSettings");
 
 	// Store the values of all our parameters, using their param ID as the XML attribute
 	for (int i = 0; i < getNumParameters(); ++i)
@@ -415,12 +346,8 @@ void OpenSynthAudioProcessor::setStateInformation(const void* data, int sizeInBy
 	if (xmlState != nullptr)
 	{
 		// make sure that it's actually our type of XML object..
-		if (xmlState->hasTagName("MYPLUGINSETTINGS"))
+		if (xmlState->hasTagName("OpenSynthPluginSettings"))
 		{
-			// ok, now pull out our last window size..
-			lastUIWidth = xmlState->getIntAttribute("uiWidth", lastUIWidth);
-			lastUIHeight = xmlState->getIntAttribute("uiHeight", lastUIHeight);
-
 			// Now reload our parameters..
 			for (int i = 0; i < getNumParameters(); ++i)
 				if (AudioProcessorParameterWithID* p = dynamic_cast<AudioProcessorParameterWithID*> (getParameters().getUnchecked(i)))

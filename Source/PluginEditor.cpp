@@ -1,10 +1,6 @@
 /*
   ==============================================================================
 
-    This file was auto-generated!
-
-    It contains the basic framework code for a JUCE plugin editor.
-
   ==============================================================================
 */
 
@@ -16,7 +12,6 @@
 OpenSynthAudioProcessorEditor::OpenSynthAudioProcessorEditor (OpenSynthAudioProcessor& owner)
     : AudioProcessorEditor (&owner), processor (owner),
 	keyboardComponent(owner.keyboardState, MidiKeyboardComponent::horizontalKeyboard),
-	timecodeDisplayLabel(String::empty),
 	gainLabel(String::empty, "Gain:"),
 	delayLabel(String::empty, "Delay:"),
 	filterLabel(String::empty, "Filter:"),
@@ -40,9 +35,6 @@ OpenSynthAudioProcessorEditor::OpenSynthAudioProcessorEditor (OpenSynthAudioProc
 
 	// set our component's size
 	setSize(550, 410);
-
-	// start a timer which will keep our timecode display updated
-	startTimerHz(30);
 }
 
 OpenSynthAudioProcessorEditor::~OpenSynthAudioProcessorEditor()
@@ -70,10 +62,6 @@ void OpenSynthAudioProcessorEditor::resized()
 }
 
 //==============================================================================
-void OpenSynthAudioProcessorEditor::timerCallback()
-{
-	updateTimecodeDisplay(getProcessor().lastPosInfo);
-}
 
 void OpenSynthAudioProcessorEditor::dragOperationStarted()
 {
@@ -81,62 +69,6 @@ void OpenSynthAudioProcessorEditor::dragOperationStarted()
 
 void OpenSynthAudioProcessorEditor::dragOperationEnded()
 {
-}
-
-//==============================================================================
-// quick-and-dirty function to format a timecode string
-static String timeToTimecodeString(double seconds)
-{
-	const int millisecs = roundToInt(std::abs(seconds * 1000.0));
-
-	return String::formatted("%s%02d:%02d:%02d.%03d",
-		seconds < 0 ? "-" : "",
-		millisecs / 360000,
-		(millisecs / 60000) % 60,
-		(millisecs / 1000) % 60,
-		millisecs % 1000);
-}
-
-// quick-and-dirty function to format a bars/beats string
-static String quarterNotePositionToBarsBeatsString(double quarterNotes, int numerator, int denominator)
-{
-	if (numerator == 0 || denominator == 0)
-		return "1|1|000";
-
-	const int quarterNotesPerBar = (numerator * 4 / denominator);
-	const double beats = (fmod(quarterNotes, quarterNotesPerBar) / quarterNotesPerBar) * numerator;
-
-	const int bar = ((int)quarterNotes) / quarterNotesPerBar + 1;
-	const int beat = ((int)beats) + 1;
-	const int ticks = ((int)(fmod(beats, 1.0) * 960.0 + 0.5));
-
-	return String::formatted("%d|%d|%03d", bar, beat, ticks);
-}
-
-// Updates the text in our position label.
-void OpenSynthAudioProcessorEditor::updateTimecodeDisplay(AudioPlayHead::CurrentPositionInfo pos)
-{
-	if (lastDisplayedPosition != pos)
-	{
-		lastDisplayedPosition = pos;
-
-		MemoryOutputStream displayText;
-
-		displayText << "[" << SystemStats::getJUCEVersion() << "]   "
-			<< String(pos.bpm, 2) << " bpm, "
-			<< pos.timeSigNumerator << '/' << pos.timeSigDenominator
-			<< "  -  " << timeToTimecodeString(pos.timeInSeconds)
-			<< "  -  " << quarterNotePositionToBarsBeatsString(pos.ppqPosition,
-				pos.timeSigNumerator,
-				pos.timeSigDenominator);
-
-		if (pos.isRecording)
-			displayText << "  (recording)";
-		else if (pos.isPlaying)
-			displayText << "  (playing)";
-
-		timecodeDisplayLabel.setText(displayText.toString(), dontSendNotification);
-	}
 }
 
 //==============================================================================

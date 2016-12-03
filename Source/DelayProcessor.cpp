@@ -65,6 +65,8 @@ void DelayProcessor::resizeDelayBuffers(int size)
 void DelayProcessor::reset()
 {
     delayPosition = 0;
+    delayBufferFloat.clear();
+    delayBufferDouble.clear();
 }
 
 template <typename FloatType>

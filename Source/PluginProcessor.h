@@ -1,10 +1,6 @@
 /*
   ==============================================================================
 
-    This file was auto-generated!
-
-    It contains the basic framework code for a JUCE plugin processor.
-
   ==============================================================================
 */
 
@@ -53,13 +49,13 @@ public:
 	void processBlock(AudioBuffer<float>& buffer, MidiBuffer& midiMessages) override
 	{
 		jassert(!isUsingDoublePrecision());
-		process(buffer, midiMessages, delayBufferFloat);
+		process(buffer, midiMessages);
 	}
 
 	void processBlock(AudioBuffer<double>& buffer, MidiBuffer& midiMessages) override
 	{
 		jassert(isUsingDoublePrecision());
-		process(buffer, midiMessages, delayBufferDouble);
+		process(buffer, midiMessages);
 	}
 
     //==============================================================================
@@ -90,15 +86,6 @@ public:
 	// this is kept up to date with the midi messages that arrive, and the UI component
 	// registers with it so it can represent the incoming messages
 	MidiKeyboardState keyboardState;
-
-	// this keeps a copy of the last set of time info that was acquired during an audio
-	// callback - the UI component will read this and display it.
-	AudioPlayHead::CurrentPositionInfo lastPosInfo;
-
-	// these are used to persist the UI's size - the values are stored along with the
-	// filter's other parameters, and the UI component will update them when it gets
-	// resized.
-	int lastUIWidth, lastUIHeight;
 
 	// Gain parameters
     AudioParameterFloat* level;
@@ -141,17 +128,8 @@ public:
 private:
     //==============================================================================
 	template <typename FloatType>
-	void process(AudioBuffer<FloatType>& buffer, MidiBuffer& midiMessages, AudioBuffer<FloatType>& delayBuffer);
-	template <typename FloatType>
-	void applyGain(AudioBuffer<FloatType>&, AudioBuffer<FloatType>& delayBuffer);
-	template <typename FloatType>
-	void applyDelay(AudioBuffer<FloatType>&, AudioBuffer<FloatType>& delayBuffer);
-	template <typename FloatType>
-	void applyFilter(AudioBuffer<FloatType>&, AudioBuffer<FloatType>& delayBuffer);
-
-	AudioBuffer<float> delayBufferFloat;
-	AudioBuffer<double> delayBufferDouble;
-	int delayPosition;
+	void process(AudioBuffer<FloatType>& buffer, MidiBuffer& midiMessages);
+	
 	double currentSampleRate = 0;
 
 	Synthesiser synth;
@@ -161,12 +139,8 @@ private:
     
     DelayProcessor delayProcessor;
     ReverbProcessor reverbProcessor;
-    
-	// Contains filters for left and right channel
-	std::vector<Dsp::SmoothedFilterDesign<Dsp::RBJ::Design::LowPass, 1>> filters;
 
 	void initialiseSynthForWaveform(const Waveform waveform, const int numVoices);
-	void updateCurrentTimeInfoFromHost();
 
 	virtual void handleNoteOn(MidiKeyboardState* source,
 		int midiChannel, int midiNoteNumber, float velocity) override;

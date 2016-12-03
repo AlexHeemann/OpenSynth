@@ -1,10 +1,6 @@
 /*
   ==============================================================================
 
-    This file was auto-generated!
-
-    It contains the basic framework code for a JUCE plugin editor.
-
   ==============================================================================
 */
 
@@ -25,7 +21,7 @@ class ParameterSlider;
 //==============================================================================
 /**
 */
-class OpenSynthAudioProcessorEditor  : public AudioProcessorEditor, public DragAndDropContainer, private Timer
+class OpenSynthAudioProcessorEditor  : public AudioProcessorEditor, public DragAndDropContainer
 {
 public:
     OpenSynthAudioProcessorEditor (OpenSynthAudioProcessor&);
@@ -34,7 +30,6 @@ public:
     //==============================================================================
     void paint (Graphics&) override;
     void resized() override;
-	void timerCallback() override;
 
 	virtual void dragOperationStarted();
 	virtual void dragOperationEnded();
@@ -46,7 +41,7 @@ private:
     OpenSynthAudioProcessor& processor;
 	MidiKeyboardComponent keyboardComponent;
 
-	Label timecodeDisplayLabel, gainLabel, delayLabel, filterLabel, envAttackLabel, envDecayLabel;
+	Label gainLabel, delayLabel, filterLabel, envAttackLabel, envDecayLabel;
 	ScopedPointer<ParameterSlider> gainSlider, delaySlider, filterSlider, envAttackSlider, envDecaySlider;
 	ScopedPointer<ResizableCornerComponent> resizer;
 	ScopedPointer<ComboBox> waveformBox;
@@ -58,16 +53,12 @@ private:
     ScopedPointer<ReverbComponent> reverbComponent;
 	ComponentBoundsConstrainer resizeLimits;
 
-	AudioPlayHead::CurrentPositionInfo lastDisplayedPosition;
-
 	//==============================================================================
 	OpenSynthAudioProcessor& getProcessor() const
 	{
 		return static_cast<OpenSynthAudioProcessor&> (processor);
 	}
-
-	void updateTimecodeDisplay(AudioPlayHead::CurrentPositionInfo);
-
+    
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (OpenSynthAudioProcessorEditor)
 };
 
