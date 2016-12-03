@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="eS8Hhv" name="Noisemaker" projectType="audioplug" version="1.0.0"
-              bundleIdentifier="com.heemann.Noisemaker" includeBinaryInAppConfig="1"
+<JUCERPROJECT id="eS8Hhv" name="Open Synth" projectType="audioplug" version="1.0.0"
+              bundleIdentifier="com.alexheemann.opensynth" includeBinaryInAppConfig="1"
               buildVST="1" buildVST3="1" buildAU="1" buildAUv3="1" buildRTAS="0"
-              buildAAX="0" pluginName="Noisemaker" pluginDesc="Noisemaker"
+              buildAAX="0" pluginName="Open Synth" pluginDesc="Open Source Wavetable Synthesizer"
               pluginManufacturer="Alexander Heemann" pluginManufacturerCode="Alex"
-              pluginCode="Nois" pluginChannelConfigs="" pluginIsSynth="1" pluginWantsMidiIn="1"
+              pluginCode="OSYN" pluginChannelConfigs="" pluginIsSynth="1" pluginWantsMidiIn="1"
               pluginProducesMidiOut="1" pluginIsMidiEffectPlugin="0" pluginEditorRequiresKeys="1"
-              pluginAUExportPrefix="NoisemakerAU" pluginRTASCategory="" aaxIdentifier="com.yourcompany.Noisemaker"
+              pluginAUExportPrefix="OpenSynthAU" pluginRTASCategory="" aaxIdentifier="com.alexheemann.opensynth"
               pluginAAXCategory="AAX_ePlugInCategory_Dynamics" jucerVersion="4.3.0"
               companyName="Alexander Heemann">
-  <MAINGROUP id="A4iQ36" name="Noisemaker">
+  <MAINGROUP id="A4iQ36" name="Open Synth">
     <GROUP id="{115CB73A-FD2A-ACC8-26C7-8F73C7C67676}" name="Source">
       <FILE id="xph2il" name="Reverb.h" compile="0" resource="0" file="Source/Reverb.h"/>
       <FILE id="RIIIxX" name="ReverbProcessor.cpp" compile="1" resource="0"
