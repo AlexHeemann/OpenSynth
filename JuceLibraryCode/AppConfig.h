@@ -80,14 +80,6 @@
  //#define JUCE_USE_ANDROID_OPENSLES
 #endif
 
-#ifndef    JUCE_USE_CDREADER
- //#define JUCE_USE_CDREADER
-#endif
-
-#ifndef    JUCE_USE_CDBURNER
- //#define JUCE_USE_CDBURNER
-#endif
-
 //==============================================================================
 // juce_audio_formats flags:
 
@@ -131,6 +123,17 @@
 
 #ifndef    JUCE_PLUGINHOST_AU
  //#define JUCE_PLUGINHOST_AU
+#endif
+
+//==============================================================================
+// juce_audio_utils flags:
+
+#ifndef    JUCE_USE_CDREADER
+ //#define JUCE_USE_CDREADER
+#endif
+
+#ifndef    JUCE_USE_CDBURNER
+ //#define JUCE_USE_CDBURNER
 #endif
 
 //==============================================================================
@@ -254,10 +257,10 @@
  #define JucePlugin_Build_STANDALONE       1
 #endif
 #ifndef  JucePlugin_Name
- #define JucePlugin_Name                   "Noisemaker"
+ #define JucePlugin_Name                   "Open Synth"
 #endif
 #ifndef  JucePlugin_Desc
- #define JucePlugin_Desc                   "Noisemaker"
+ #define JucePlugin_Desc                   "Open Source Wavetable Synthesizer"
 #endif
 #ifndef  JucePlugin_Manufacturer
  #define JucePlugin_Manufacturer           "Alexander Heemann"
@@ -272,7 +275,7 @@
  #define JucePlugin_ManufacturerCode       0x416c6578 // 'Alex'
 #endif
 #ifndef  JucePlugin_PluginCode
- #define JucePlugin_PluginCode             0x4e6f6973 // 'Nois'
+ #define JucePlugin_PluginCode             0x4f53594e // 'OSYN'
 #endif
 #ifndef  JucePlugin_IsSynth
  #define JucePlugin_IsSynth                1
@@ -311,16 +314,16 @@
  #define JucePlugin_AUSubType              JucePlugin_PluginCode
 #endif
 #ifndef  JucePlugin_AUExportPrefix
- #define JucePlugin_AUExportPrefix         NoisemakerAU
+ #define JucePlugin_AUExportPrefix         OpenSynthAU
 #endif
 #ifndef  JucePlugin_AUExportPrefixQuoted
- #define JucePlugin_AUExportPrefixQuoted   "NoisemakerAU"
+ #define JucePlugin_AUExportPrefixQuoted   "OpenSynthAU"
 #endif
 #ifndef  JucePlugin_AUManufacturerCode
  #define JucePlugin_AUManufacturerCode     JucePlugin_ManufacturerCode
 #endif
 #ifndef  JucePlugin_CFBundleIdentifier
- #define JucePlugin_CFBundleIdentifier     com.heemann.Noisemaker
+ #define JucePlugin_CFBundleIdentifier     com.alexheemann.opensynth
 #endif
 #ifndef  JucePlugin_RTASCategory
  #define JucePlugin_RTASCategory           ePlugInCategory_SWGenerators
@@ -338,7 +341,7 @@
  #define JucePlugin_RTASDisableMultiMono   0
 #endif
 #ifndef  JucePlugin_AAXIdentifier
- #define JucePlugin_AAXIdentifier          com.yourcompany.Noisemaker
+ #define JucePlugin_AAXIdentifier          com.alexheemann.opensynth
 #endif
 #ifndef  JucePlugin_AAXManufacturerCode
  #define JucePlugin_AAXManufacturerCode    JucePlugin_ManufacturerCode
