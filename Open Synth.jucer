@@ -12,44 +12,48 @@
               companyName="Alexander Heemann">
   <MAINGROUP id="A4iQ36" name="Open Synth">
     <GROUP id="{115CB73A-FD2A-ACC8-26C7-8F73C7C67676}" name="Source">
-      <FILE id="xph2il" name="Reverb.h" compile="0" resource="0" file="Source/Reverb.h"/>
-      <FILE id="RIIIxX" name="ReverbProcessor.cpp" compile="1" resource="0"
-            file="Source/ReverbProcessor.cpp"/>
-      <FILE id="NkmP5T" name="ReverbProcessor.h" compile="0" resource="0"
-            file="Source/ReverbProcessor.h"/>
-      <FILE id="Xsnjns" name="ReverbComponent.cpp" compile="1" resource="0"
-            file="Source/ReverbComponent.cpp"/>
-      <FILE id="ClPSKw" name="ReverbComponent.h" compile="0" resource="0"
-            file="Source/ReverbComponent.h"/>
-      <FILE id="GbfvHU" name="DelayProcessor.cpp" compile="1" resource="0"
-            file="Source/DelayProcessor.cpp"/>
-      <FILE id="HMEf0p" name="DelayProcessor.h" compile="0" resource="0"
-            file="Source/DelayProcessor.h"/>
-      <FILE id="SZ7r5V" name="DelayComponent.cpp" compile="1" resource="0"
-            file="Source/DelayComponent.cpp"/>
-      <FILE id="t80nrW" name="DelayComponent.h" compile="0" resource="0"
-            file="Source/DelayComponent.h"/>
-      <FILE id="s2OOqc" name="OscillatorComponent.cpp" compile="1" resource="0"
-            file="Source/OscillatorComponent.cpp"/>
-      <FILE id="JCceLk" name="OscillatorComponent.h" compile="0" resource="0"
-            file="Source/OscillatorComponent.h"/>
-      <FILE id="uWDXtE" name="FilterComponent.cpp" compile="1" resource="0"
-            file="Source/FilterComponent.cpp"/>
-      <FILE id="Ov2O5v" name="FilterComponent.h" compile="0" resource="0"
-            file="Source/FilterComponent.h"/>
-      <FILE id="TTDL8o" name="FilterProcessor.cpp" compile="1" resource="0"
-            file="Source/FilterProcessor.cpp"/>
-      <FILE id="T1xaOF" name="FilterProcessor.h" compile="0" resource="0"
-            file="Source/FilterProcessor.h"/>
+      <GROUP id="{F2629644-6CD5-863D-1B69-9DB32FF9D900}" name="Processors">
+        <FILE id="HbSOEp" name="Processor.h" compile="0" resource="0" file="Source/Processor.h"/>
+        <FILE id="h6HzZR" name="AmpProcessor.cpp" compile="1" resource="0"
+              file="Source/AmpProcessor.cpp"/>
+        <FILE id="tZtJ1d" name="AmpProcessor.h" compile="0" resource="0" file="Source/AmpProcessor.h"/>
+        <FILE id="TTDL8o" name="FilterProcessor.cpp" compile="1" resource="0"
+              file="Source/FilterProcessor.cpp"/>
+        <FILE id="T1xaOF" name="FilterProcessor.h" compile="0" resource="0"
+              file="Source/FilterProcessor.h"/>
+        <FILE id="RIIIxX" name="ReverbProcessor.cpp" compile="1" resource="0"
+              file="Source/ReverbProcessor.cpp"/>
+        <FILE id="GbfvHU" name="DelayProcessor.cpp" compile="1" resource="0"
+              file="Source/DelayProcessor.cpp"/>
+        <FILE id="HMEf0p" name="DelayProcessor.h" compile="0" resource="0"
+              file="Source/DelayProcessor.h"/>
+        <FILE id="NkmP5T" name="ReverbProcessor.h" compile="0" resource="0"
+              file="Source/ReverbProcessor.h"/>
+      </GROUP>
+      <GROUP id="{BEF80EEF-EBC3-1FB7-6495-864F8FCB6E6C}" name="Components">
+        <FILE id="iEzddE" name="AmpComponent.cpp" compile="1" resource="0"
+              file="Source/AmpComponent.cpp"/>
+        <FILE id="RP9p3d" name="AmpComponent.h" compile="0" resource="0" file="Source/AmpComponent.h"/>
+        <FILE id="Xsnjns" name="ReverbComponent.cpp" compile="1" resource="0"
+              file="Source/ReverbComponent.cpp"/>
+        <FILE id="ClPSKw" name="ReverbComponent.h" compile="0" resource="0"
+              file="Source/ReverbComponent.h"/>
+        <FILE id="SZ7r5V" name="DelayComponent.cpp" compile="1" resource="0"
+              file="Source/DelayComponent.cpp"/>
+        <FILE id="t80nrW" name="DelayComponent.h" compile="0" resource="0"
+              file="Source/DelayComponent.h"/>
+        <FILE id="s2OOqc" name="OscillatorComponent.cpp" compile="1" resource="0"
+              file="Source/OscillatorComponent.cpp"/>
+        <FILE id="JCceLk" name="OscillatorComponent.h" compile="0" resource="0"
+              file="Source/OscillatorComponent.h"/>
+        <FILE id="uWDXtE" name="FilterComponent.cpp" compile="1" resource="0"
+              file="Source/FilterComponent.cpp"/>
+        <FILE id="Ov2O5v" name="FilterComponent.h" compile="0" resource="0"
+              file="Source/FilterComponent.h"/>
+      </GROUP>
+      <FILE id="xph2il" name="ReverbDouble.h" compile="0" resource="0" file="Source/ReverbDouble.h"/>
       <FILE id="ULM7gt" name="ParameterSlider.h" compile="0" resource="0"
             file="Source/ParameterSlider.h"/>
-      <FILE id="iEzddE" name="AmpComponent.cpp" compile="1" resource="0"
-            file="Source/AmpComponent.cpp"/>
-      <FILE id="RP9p3d" name="AmpComponent.h" compile="0" resource="0" file="Source/AmpComponent.h"/>
-      <FILE id="HbSOEp" name="Processor.h" compile="0" resource="0" file="Source/Processor.h"/>
-      <FILE id="h6HzZR" name="AmpProcessor.cpp" compile="1" resource="0"
-            file="Source/AmpProcessor.cpp"/>
-      <FILE id="tZtJ1d" name="AmpProcessor.h" compile="0" resource="0" file="Source/AmpProcessor.h"/>
       <GROUP id="{8C6B5EB4-14D6-B31F-0FAF-605FBB7D7ABC}" name="Wavetables">
         <FILE id="n6eNwb" name="SineWavetable.cpp" compile="1" resource="0"
               file="Source/SineWavetable.cpp"/>
