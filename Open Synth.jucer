@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="eS8Hhv" name="Open Synth" projectType="audioplug" version="1.0.0"
+<JUCERPROJECT id="eS8Hhv" name="Open Synth" projectType="audioplug" version="0.1.0"
               bundleIdentifier="com.alexheemann.opensynth" includeBinaryInAppConfig="1"
               buildVST="1" buildVST3="1" buildAU="1" buildAUv3="1" buildRTAS="0"
               buildAAX="0" pluginName="Open Synth" pluginDesc="Open Source Wavetable Synthesizer"
