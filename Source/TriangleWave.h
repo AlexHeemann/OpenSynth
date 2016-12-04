@@ -13,6 +13,8 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 
+// TODO: This sound is not yet wavetable based.
+
 class TriangleWaveSound : public SynthesiserSound
 {
 public:
@@ -23,7 +25,6 @@ public:
 };
 
 //==============================================================================
-/** A simple demo synth voice that just plays a sine wave.. */
 class TriangleWaveVoice : public SynthesiserVoice
 {
 public:
