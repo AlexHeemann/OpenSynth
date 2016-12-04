@@ -27,11 +27,11 @@ public:
     FilterProcessor();
     virtual ~FilterProcessor() {};
     
-    void renderNextBlock(AudioBuffer<float>& outputBuffer, int startSample, int numSamples)
+    void renderNextBlock(AudioBuffer<float>& outputBuffer, int startSample, int numSamples) override
     {
         processBuffer(outputBuffer, startSample, numSamples);
     }
-    void renderNextBlock(AudioBuffer<double>& outputBuffer, int startSample, int numSamples)
+    void renderNextBlock(AudioBuffer<double>& outputBuffer, int startSample, int numSamples) override
     {
         processBuffer(outputBuffer, startSample, numSamples);
     }

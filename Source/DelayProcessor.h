@@ -19,23 +19,23 @@ public:
     DelayProcessor();
     virtual ~DelayProcessor();
     
-    void renderNextBlock(AudioBuffer<float>& outputBuffer, int startSample, int numSamples)
+    void renderNextBlock(AudioBuffer<float>& outputBuffer, int startSample, int numSamples) override
     {
         processBuffer(outputBuffer, delayBufferFloat, startSample, numSamples);
     }
-    void renderNextBlock(AudioBuffer<double>& outputBuffer, int startSample, int numSamples)
+    void renderNextBlock(AudioBuffer<double>& outputBuffer, int startSample, int numSamples) override
     {
         processBuffer(outputBuffer, delayBufferDouble, startSample, numSamples);
     }
     
     void setIsUsingDoublePrecision(bool isUsingDoublePrecision);
-    bool getIsUsingDoublePrecision() { return isUsingDoublePrecision; };
+    const bool getIsUsingDoublePrecision() const { return isUsingDoublePrecision; };
     void setDelayLengthInSeconds(float delayLength);
-    float getDelayLengthInSeconds() { return delayLengthInSeconds; };
+    const float getDelayLengthInSeconds() const { return delayLengthInSeconds; };
     void setDelayTimeInSeconds(float delayTime);
-    int getDelayTimeInSeconds() { return delayTimeInSeconds; };
+    const int getDelayTimeInSeconds() const { return delayTimeInSeconds; };
     void setSampleRate(int sampleRate);
-    int getSampleRate() { return sampleRate; };
+    const int getSampleRate() const { return sampleRate; };
     void reset();
     
     AudioParameterFloat* delayLevel;

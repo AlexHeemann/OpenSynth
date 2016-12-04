@@ -20,9 +20,6 @@ AudioProcessor (BusesProperties()
     squareWavetable(SquareWavetable(40.0, 4096, getSampleRate())),
     sineWavetable(SineWavetable(40.0, 4096, getSampleRate()))
 {
-	// This creates our parameters. We'll keep some raw pointers to them in this class,
-	// so that we can easily access them later, but the base class will take care of
-	// deleting them for us.
 	addParameter(level = new AudioParameterFloat("gain", "Gain", 0.0f, 1.0f, 0.9f));
     addParameter(attackRateAmp = new AudioParameterFloat("attack", "Envelope Attack", 0.0f, 3.0f, 0.0f));
     attackRateAmp->range.skew = 0.5;

@@ -20,17 +20,17 @@ public:
     ReverbProcessor();
     virtual ~ReverbProcessor() {};
     
-    void renderNextBlock(AudioBuffer<float>& outputBuffer, int startSample, int numSamples)
+    void renderNextBlock(AudioBuffer<float>& outputBuffer, int startSample, int numSamples) override
     {
         processBuffer(outputBuffer, startSample, numSamples);
     }
-    void renderNextBlock(AudioBuffer<double>& outputBuffer, int startSample, int numSamples)
+    void renderNextBlock(AudioBuffer<double>& outputBuffer, int startSample, int numSamples) override
     {
         processBuffer(outputBuffer, startSample, numSamples);
     }
     
     void setSampleRate(const int sampleRate);
-    const int getSampleRate() { return sampleRate; };
+    const int getSampleRate() const { return sampleRate; };
     void reset();
     
     AudioParameterFloat* reverbSize;

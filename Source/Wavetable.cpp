@@ -30,7 +30,7 @@ Wavetable::~Wavetable()
 	free(subtables);
 }
 
-float* Wavetable::getSubtableForFrequency(float frequency)
+float* Wavetable::getSubtableForFrequency(float frequency) const
 {
 	int index = 8;
 	int highestFrequency = lowestFrequency * (1 << index);
@@ -49,7 +49,7 @@ float* Wavetable::getSubtableForFrequency(float frequency)
 	return subtables[index];
 }
 
-int Wavetable::getTableSize()
+int Wavetable::getTableSize() const
 {
     return tableSize;
 }
