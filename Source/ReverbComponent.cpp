@@ -27,15 +27,15 @@
 //[/MiscUserDefs]
 
 //==============================================================================
-ReverbComponent::ReverbComponent (OpenSynthAudioProcessor& processor)
-    : processor(processor)
+ReverbComponent::ReverbComponent (ReverbParameterContainer& parameterContainer)
+    : parameterContainer(parameterContainer)
 {
     //[Constructor_pre] You can add your own custom stuff here..
-    addAndMakeVisible (reverbSizeKnob = new ParameterSlider (*processor.reverbSize));
-    addAndMakeVisible (reverbDampingKnob = new ParameterSlider (*processor.reverbDamping));
-    addAndMakeVisible (reverbWetKnob = new ParameterSlider (*processor.reverbWetLevel));
-    addAndMakeVisible (reverbDryKnob = new ParameterSlider (*processor.reverbDryLevel));
-    addAndMakeVisible (reverbWidthKnob = new ParameterSlider (*processor.reverbWidth));
+    addAndMakeVisible (reverbSizeKnob = new ParameterSlider (*parameterContainer.getReverbSizeParameter()));
+    addAndMakeVisible (reverbDampingKnob = new ParameterSlider (*parameterContainer.getReverbDampingParameter()));
+    addAndMakeVisible (reverbWetKnob = new ParameterSlider (*parameterContainer.getReverbWetParameter()));
+    addAndMakeVisible (reverbDryKnob = new ParameterSlider (*parameterContainer.getReverbDryParameter()));
+    addAndMakeVisible (reverbWidthKnob = new ParameterSlider (*parameterContainer.getReverbWidthParameter()));
     //[/Constructor_pre]
 
     addAndMakeVisible (reverbTitleLabel = new Label ("Reverb Title Label",
@@ -191,7 +191,7 @@ void ReverbComponent::buttonClicked (Button* buttonThatWasClicked)
     if (buttonThatWasClicked == reverbToggleButton)
     {
         //[UserButtonCode_reverbToggleButton] -- add your button handler code here..
-        processor.reverbEnabled->setValueNotifyingHost(buttonThatWasClicked->getToggleState());
+        parameterContainer.getReverbEnabledParameter()->setValueNotifyingHost(buttonThatWasClicked->getToggleState());
         //[/UserButtonCode_reverbToggleButton]
     }
 
@@ -215,10 +215,10 @@ void ReverbComponent::buttonClicked (Button* buttonThatWasClicked)
 BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="ReverbComponent" componentName=""
-                 parentClasses="public Component" constructorParams="OpenSynthAudioProcessor&amp; processor"
-                 variableInitialisers="processor(processor)" snapPixels="8" snapActive="1"
-                 snapShown="1" overlayOpacity="0.330" fixedSize="1" initialWidth="120"
-                 initialHeight="200">
+                 parentClasses="public Component" constructorParams="ReverbParameterContainer&amp; parameterContainer"
+                 variableInitialisers="parameterContainer(parameterContainer)"
+                 snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
+                 fixedSize="1" initialWidth="120" initialHeight="200">
   <BACKGROUND backgroundColour="ffffffff">
     <RECT pos="0 0 120 24" fill="solid: ffd2691e" hasStroke="0"/>
   </BACKGROUND>

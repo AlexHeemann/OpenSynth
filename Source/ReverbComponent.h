@@ -23,7 +23,7 @@
 //[Headers]     -- You can add your own extra header files here --
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "ParameterSlider.h"
-#include "PluginProcessor.h"
+#include "ReverbParameterContainer.h"
 //[/Headers]
 
 
@@ -41,7 +41,7 @@ class ReverbComponent  : public Component,
 {
 public:
     //==============================================================================
-    ReverbComponent (OpenSynthAudioProcessor& processor);
+    ReverbComponent (ReverbParameterContainer& parameterContainer);
     ~ReverbComponent();
 
     //==============================================================================
@@ -56,7 +56,7 @@ public:
 
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
-    OpenSynthAudioProcessor& processor;
+    ReverbParameterContainer& parameterContainer;
     //[/UserVariables]
 
     //==============================================================================

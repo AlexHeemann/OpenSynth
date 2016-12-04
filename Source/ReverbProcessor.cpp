@@ -9,6 +9,7 @@
 */
 
 #include "ReverbProcessor.h"
+#include "ReverbParameterContainer.h"
 
 ReverbProcessor::ReverbProcessor()
 {
@@ -20,11 +21,11 @@ template <typename FloatType>
 void ReverbProcessor::processBuffer(AudioBuffer<FloatType>& buffer, int startSample, int numSamples)
 {
     ReverbDouble::Parameters parameters;
-    parameters.roomSize = reverbSize->get();
-    parameters.damping = reverbDamping->get();
-    parameters.dryLevel = reverbDryLevel->get();
-    parameters.wetLevel = reverbWetLevel->get();
-    parameters.width = reverbWidth->get();
+    parameters.roomSize = reverbParameterContainer->getReverbSizeParameter()->get();
+    parameters.damping = reverbParameterContainer->getReverbDampingParameter()->get();
+    parameters.dryLevel = reverbParameterContainer->getReverbDryParameter()->get();
+    parameters.wetLevel = reverbParameterContainer->getReverbWetParameter()->get();
+    parameters.width = reverbParameterContainer->getReverbWidthParameter()->get();
     
     reverb.setParameters(parameters);
     

@@ -18,6 +18,8 @@
 #include "ReverbProcessor.h"
 #include "FilterProcessor.h"
 
+class ReverbParameterContainer;
+
 typedef enum 
 {
 	WaveformSine,
@@ -116,15 +118,12 @@ public:
     AudioParameterInt* osc2Semi;
     AudioParameterInt* osc1Cents;
     AudioParameterInt* osc2Cents;
-
-    // Reverb Parameters
-    AudioParameterFloat* reverbSize;
-    AudioParameterFloat* reverbDamping;
-    AudioParameterFloat* reverbWetLevel;
-    AudioParameterFloat* reverbDryLevel;
-    AudioParameterFloat* reverbWidth;
-    AudioParameterBool* reverbEnabled;
     
+    ReverbParameterContainer& getReverbParameterContainer()
+    {
+        return *reverbParameterContainer;
+    }
+
 private:
     //==============================================================================
 	template <typename FloatType>
@@ -139,6 +138,8 @@ private:
     
     DelayProcessor delayProcessor;
     ReverbProcessor reverbProcessor;
+    
+    ScopedPointer<ReverbParameterContainer> reverbParameterContainer;
 
 	void initialiseSynthForWaveform(const Waveform waveform, const int numVoices);
 

@@ -3,6 +3,7 @@
 #include "PluginEditor.h"
 #include "TriangleWave.h"
 #include "WavetableVoice.h"
+#include "ReverbParameterContainer.h"
 
 //==============================================================================
 OpenSynthAudioProcessor::OpenSynthAudioProcessor() :
@@ -61,18 +62,8 @@ AudioProcessor (BusesProperties()
     delayProcessor.delaySpread = delaySpread;
     
     // Reverb
-    addParameter(reverbSize = new AudioParameterFloat("reverbSize", "Reverb Size", 0.0f, 1.0f, 0.5f));
-    addParameter(reverbDamping = new AudioParameterFloat("reverbDamping", "Reverb Damping", 0.0f, 1.0f, 0.5f));
-    addParameter(reverbDryLevel = new AudioParameterFloat("reverbDryLevel", "Reverb Dry Level", 0.0f, 1.0f, 0.4f));
-    addParameter(reverbWetLevel = new AudioParameterFloat("reverbWetLevel", "Reverb Wet Level", 0.0f, 1.0f, 0.33f));
-    addParameter(reverbWidth = new AudioParameterFloat("reverbWidth", "Reverb Width", 0.0f, 1.0f, 0.2f));
-    addParameter(reverbEnabled = new AudioParameterBool("reverbEnabled", "Reverb Enabled", false));
-    
-    reverbProcessor.reverbSize = reverbSize;
-    reverbProcessor.reverbDamping = reverbDamping;
-    reverbProcessor.reverbDryLevel = reverbDryLevel;
-    reverbProcessor.reverbWetLevel = reverbWetLevel;
-    reverbProcessor.reverbWidth = reverbWidth;
+    reverbParameterContainer = new ReverbParameterContainer(*this);
+    reverbProcessor.setReverbParameterContainer(reverbParameterContainer);
     
 	initialiseSynthForWaveform(WaveformSawtooth, 8);
 	keyboardState.addListener(this);
@@ -297,7 +288,7 @@ void OpenSynthAudioProcessor::process(AudioBuffer<FloatType>& buffer,
     {
         delayProcessor.renderNextBlock(buffer, 0, numSamples);
     }
-    if (reverbEnabled->get())
+    if (reverbParameterContainer->getReverbEnabledParameter()->get())
     {
         reverbProcessor.renderNextBlock(buffer, 0, numSamples);
     }

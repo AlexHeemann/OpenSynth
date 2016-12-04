@@ -14,6 +14,8 @@
 #include "Processor.h"
 #include "ReverbDouble.h"
 
+class ReverbParameterContainer;
+
 class ReverbProcessor : public Processor
 {
 public:
@@ -32,12 +34,10 @@ public:
     void setSampleRate(const int sampleRate);
     const int getSampleRate() const { return sampleRate; };
     void reset();
-    
-    AudioParameterFloat* reverbSize;
-    AudioParameterFloat* reverbDamping;
-    AudioParameterFloat* reverbWetLevel;
-    AudioParameterFloat* reverbDryLevel;
-    AudioParameterFloat* reverbWidth;
+    void setReverbParameterContainer(ReverbParameterContainer* reverbParameterContainer)
+    {
+        this->reverbParameterContainer = reverbParameterContainer;
+    };
     
 private:
     template <typename FloatType>
@@ -47,6 +47,7 @@ private:
     
     ReverbDouble reverb;
     ReverbDouble::Parameters reverbParameters;
+    ReverbParameterContainer* reverbParameterContainer;
 };
 
 #endif  // REVERBPROCESSOR_H_INCLUDED
