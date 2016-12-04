@@ -12,6 +12,22 @@
               companyName="Alexander Heemann">
   <MAINGROUP id="A4iQ36" name="Open Synth">
     <GROUP id="{115CB73A-FD2A-ACC8-26C7-8F73C7C67676}" name="Source">
+      <GROUP id="{B547E3B7-72E8-EEB1-B5B4-4355E010459F}" name="Parameter Containers">
+        <FILE id="AcfG95" name="ParameterContainer.h" compile="0" resource="0"
+              file="Source/ParameterContainer.h"/>
+        <FILE id="pAkRpJ" name="AmpParameterContainer.h" compile="0" resource="0"
+              file="Source/AmpParameterContainer.h"/>
+        <FILE id="fiTNQ1" name="DelayParameterContainer.h" compile="0" resource="0"
+              file="Source/DelayParameterContainer.h"/>
+        <FILE id="vvOZt9" name="EnvelopeParameterContainer.h" compile="0" resource="0"
+              file="Source/EnvelopeParameterContainer.h"/>
+        <FILE id="lOg9fI" name="FilterParameterContainer.h" compile="0" resource="0"
+              file="Source/FilterParameterContainer.h"/>
+        <FILE id="d6P1is" name="OscillatorParameterContainer.h" compile="0"
+              resource="0" file="Source/OscillatorParameterContainer.h"/>
+        <FILE id="AMW57g" name="ReverbParameterContainer.h" compile="0" resource="0"
+              file="Source/ReverbParameterContainer.h"/>
+      </GROUP>
       <GROUP id="{F2629644-6CD5-863D-1B69-9DB32FF9D900}" name="Processors">
         <FILE id="HbSOEp" name="Processor.h" compile="0" resource="0" file="Source/Processor.h"/>
         <FILE id="h6HzZR" name="AmpProcessor.cpp" compile="1" resource="0"
@@ -23,12 +39,12 @@
               file="Source/FilterProcessor.h"/>
         <FILE id="RIIIxX" name="ReverbProcessor.cpp" compile="1" resource="0"
               file="Source/ReverbProcessor.cpp"/>
+        <FILE id="NkmP5T" name="ReverbProcessor.h" compile="0" resource="0"
+              file="Source/ReverbProcessor.h"/>
         <FILE id="GbfvHU" name="DelayProcessor.cpp" compile="1" resource="0"
               file="Source/DelayProcessor.cpp"/>
         <FILE id="HMEf0p" name="DelayProcessor.h" compile="0" resource="0"
               file="Source/DelayProcessor.h"/>
-        <FILE id="NkmP5T" name="ReverbProcessor.h" compile="0" resource="0"
-              file="Source/ReverbProcessor.h"/>
       </GROUP>
       <GROUP id="{BEF80EEF-EBC3-1FB7-6495-864F8FCB6E6C}" name="Components">
         <FILE id="iEzddE" name="AmpComponent.cpp" compile="1" resource="0"
@@ -55,7 +71,6 @@
       <FILE id="ULM7gt" name="ParameterSlider.h" compile="0" resource="0"
             file="Source/ParameterSlider.h"/>
       <GROUP id="{8C6B5EB4-14D6-B31F-0FAF-605FBB7D7ABC}" name="Wavetables">
-        <FILE id="NPJx6m" name="TriangleWave.h" compile="0" resource="0" file="Source/TriangleWave.h"/>
         <FILE id="n6eNwb" name="SineWavetable.cpp" compile="1" resource="0"
               file="Source/SineWavetable.cpp"/>
         <FILE id="A1Bdty" name="SineWavetable.h" compile="0" resource="0" file="Source/SineWavetable.h"/>
@@ -73,6 +88,7 @@
               file="Source/SawtoothWavetable.h"/>
         <FILE id="uI7ngR" name="Wavetable.cpp" compile="1" resource="0" file="Source/Wavetable.cpp"/>
         <FILE id="TUCJNR" name="Wavetable.h" compile="0" resource="0" file="Source/Wavetable.h"/>
+        <FILE id="NPJx6m" name="TriangleWave.h" compile="0" resource="0" file="Source/TriangleWave.h"/>
       </GROUP>
       <GROUP id="{01DF704A-2EAA-FA7C-AB9F-596ED2D32280}" name="DspFilters">
         <FILE id="d9Mzep" name="Bessel.cpp" compile="1" resource="0" file="Source/DspFilters/Bessel.cpp"/>
