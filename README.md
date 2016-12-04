@@ -17,3 +17,7 @@ The code is available under the GPL license.
 Note that this is a super early release, and the project is under WIP.
 
 I've got a long list of things I want to add and improve :)
+
+If you wanna get in touch:
+
+https://twitter.com/alexheemann
