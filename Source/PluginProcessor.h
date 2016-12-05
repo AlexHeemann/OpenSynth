@@ -19,6 +19,7 @@
 #include "FilterProcessor.h"
 
 class ReverbParameterContainer;
+class EnvelopeParameterContainer;
 
 typedef enum 
 {
@@ -91,10 +92,6 @@ public:
 
 	// Gain parameters
     AudioParameterFloat* level;
-    AudioParameterFloat* attackRateAmp;
-    AudioParameterFloat* decayRateAmp;
-    AudioParameterFloat* releaseRateAmp;
-    AudioParameterFloat* sustainLevelAmp;
     
     // Filter Parameters
     AudioParameterFloat* attackRateFilter;
@@ -123,6 +120,16 @@ public:
     {
         return *reverbParameterContainer;
     }
+    
+    EnvelopeParameterContainer& getFilterEnvelopeParameterContainer()
+    {
+        return *filterEnvelopeParameterContainer;
+    }
+    
+    EnvelopeParameterContainer& getAmpEnvelopeParameterContainer()
+    {
+        return *ampEnvelopeParameterContainer;
+    }
 
 private:
     //==============================================================================
@@ -140,6 +147,8 @@ private:
     ReverbProcessor reverbProcessor;
     
     ScopedPointer<ReverbParameterContainer> reverbParameterContainer;
+    ScopedPointer<EnvelopeParameterContainer> filterEnvelopeParameterContainer;
+    ScopedPointer<EnvelopeParameterContainer> ampEnvelopeParameterContainer;
 
 	void initialiseSynthForWaveform(const Waveform waveform, const int numVoices);
 

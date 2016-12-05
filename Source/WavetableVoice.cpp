@@ -80,7 +80,7 @@ void WavetableVoice::calculatePhaseIncrement()
 
 void WavetableVoice::stopNote(float velocity, bool allowTailOff)
 {
-    if (allowTailOff && ampEnvelopeGenerator != nullptr && ampEnvelopeGenerator->releaseRate->get() > 0)
+    if (allowTailOff && ampEnvelopeGenerator != nullptr && ampEnvelopeGenerator->getReleaseRate() > 0)
     {
         // start a tail-off by setting this flag. The render callback will pick up on
         // this and do a fade out, calling clearCurrentNote() when it's finished.
@@ -89,7 +89,7 @@ void WavetableVoice::stopNote(float velocity, bool allowTailOff)
         // stopNote method could be called more than once.
         if (releaseCounter == 0)
         {
-            releaseCounter = ampEnvelopeGenerator->releaseRate->get() * getSampleRate();
+            releaseCounter = ampEnvelopeGenerator->getReleaseRate() * getSampleRate();
             ampEnvelopeGenerator->setEnvelopeState(EnvelopeGenerator::EnvelopeStateRelease);
             filterEnvelopeGenerator->setEnvelopeState(EnvelopeGenerator::EnvelopeStateRelease);
         }

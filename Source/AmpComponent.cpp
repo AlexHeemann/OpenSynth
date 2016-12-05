@@ -10,6 +10,7 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "AmpComponent.h"
+#include "EnvelopeParameterContainer.h"
 
 //==============================================================================
 AmpComponent::AmpComponent(OpenSynthAudioProcessor &processor) : processor(processor),
@@ -28,19 +29,20 @@ AmpComponent::AmpComponent(OpenSynthAudioProcessor &processor) : processor(proce
     gainKnob->setTextBoxStyle(juce::Slider::TextEntryBoxPosition::TextBoxBelow, false, 40, 15);
     ampLabel.attachToComponent(gainKnob, false);
     
-    addAndMakeVisible(attackSlider = new ParameterSlider(*processor.attackRateAmp));
+    EnvelopeParameterContainer& ampEnvelopeParameterContainer = processor.getAmpEnvelopeParameterContainer();
+    addAndMakeVisible(attackSlider = new ParameterSlider(*ampEnvelopeParameterContainer.getAttackRateParameter()));
     attackSlider->setSliderStyle(Slider::LinearVertical);
     attackLabel.attachToComponent(attackSlider, false);
     
-    addAndMakeVisible(decaySlider = new ParameterSlider(*processor.decayRateAmp));
+    addAndMakeVisible(decaySlider = new ParameterSlider(*ampEnvelopeParameterContainer.getDecayRateParameter()));
     decaySlider->setSliderStyle(Slider::LinearVertical);
     decayLabel.attachToComponent(decaySlider, false);
     
-    addAndMakeVisible(sustainSlider = new ParameterSlider(*processor.sustainLevelAmp));
+    addAndMakeVisible(sustainSlider = new ParameterSlider(*ampEnvelopeParameterContainer.getSustainLevelParameter()));
     sustainSlider->setSliderStyle(Slider::LinearVertical);
     sustainLabel.attachToComponent(sustainSlider, false);
     
-    addAndMakeVisible(releaseSlider = new ParameterSlider(*processor.releaseRateAmp));
+    addAndMakeVisible(releaseSlider = new ParameterSlider(*ampEnvelopeParameterContainer.getReleaseRateParameter()));
     releaseSlider->setSliderStyle(Slider::LinearVertical);
     releaseLabel.attachToComponent(releaseSlider, false);
 }

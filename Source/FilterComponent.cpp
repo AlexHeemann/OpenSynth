@@ -11,6 +11,7 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "FilterComponent.h"
 #include "FilterProcessor.h"
+#include "EnvelopeParameterContainer.h"
 
 //==============================================================================
 FilterComponent::FilterComponent(OpenSynthAudioProcessor &processor) : processor(processor),
@@ -39,19 +40,20 @@ resonanceLabel(String::empty, "Resonance")
     resonanceKnob->setTextBoxStyle(juce::Slider::TextEntryBoxPosition::NoTextBox, false, 0, 0);
     resonanceLabel.attachToComponent(resonanceKnob, false);
     
-    addAndMakeVisible(attackSlider = new ParameterSlider(*processor.attackRateFilter));
+    EnvelopeParameterContainer& filterEnvelopeParameterContainer = processor.getFilterEnvelopeParameterContainer();
+    addAndMakeVisible(attackSlider = new ParameterSlider(*filterEnvelopeParameterContainer.getAttackRateParameter()));
     attackSlider->setSliderStyle(Slider::LinearVertical);
     attackLabel.attachToComponent(attackSlider, false);
     
-    addAndMakeVisible(decaySlider = new ParameterSlider(*processor.decayRateFilter));
+    addAndMakeVisible(decaySlider = new ParameterSlider(*filterEnvelopeParameterContainer.getDecayRateParameter()));
     decaySlider->setSliderStyle(Slider::LinearVertical);
     decayLabel.attachToComponent(decaySlider, false);
     
-    addAndMakeVisible(sustainSlider = new ParameterSlider(*processor.sustainLevelFilter));
+    addAndMakeVisible(sustainSlider = new ParameterSlider(*filterEnvelopeParameterContainer.getSustainLevelParameter()));
     sustainSlider->setSliderStyle(Slider::LinearVertical);
     sustainLabel.attachToComponent(sustainSlider, false);
     
-    addAndMakeVisible(releaseSlider = new ParameterSlider(*processor.releaseRateFilter));
+    addAndMakeVisible(releaseSlider = new ParameterSlider(*filterEnvelopeParameterContainer.getReleaseRateParameter()));
     releaseSlider->setSliderStyle(Slider::LinearVertical);
     releaseLabel.attachToComponent(releaseSlider, false);
     

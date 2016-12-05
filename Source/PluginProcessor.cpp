@@ -4,6 +4,7 @@
 #include "TriangleWave.h"
 #include "WavetableVoice.h"
 #include "ReverbParameterContainer.h"
+#include "EnvelopeParameterContainer.h"
 
 //==============================================================================
 OpenSynthAudioProcessor::OpenSynthAudioProcessor() :
@@ -22,13 +23,8 @@ AudioProcessor (BusesProperties()
     sineWavetable(SineWavetable(40.0, 4096, getSampleRate()))
 {
 	addParameter(level = new AudioParameterFloat("gain", "Gain", 0.0f, 1.0f, 0.9f));
-    addParameter(attackRateAmp = new AudioParameterFloat("attack", "Envelope Attack", 0.0f, 3.0f, 0.0f));
-    attackRateAmp->range.skew = 0.5;
-    addParameter(decayRateAmp = new AudioParameterFloat("decay", "Envelope Decay", 0.0f, 3.0f, 3.0f));
-    decayRateAmp->range.skew = 0.5;
-    addParameter(releaseRateAmp = new AudioParameterFloat("release", "Envelope Release", 0.0f, 3.0f, 1.0f));
-    releaseRateAmp->range.skew = 0.5;
-    addParameter(sustainLevelAmp = new AudioParameterFloat("sustain", "Envelope Sustain", 0.0f, 1.0f, 1.0f));
+    ampEnvelopeParameterContainer = new EnvelopeParameterContainer(*this, 1);
+    filterEnvelopeParameterContainer = new EnvelopeParameterContainer(*this, 2);
     
     addParameter(filterFrequency = new AudioParameterFloat("filter_frequency", "Filter Frequency", 0.0f, 20000.0f, 10000.0f));
     filterFrequency->range.skew = 0.25;
@@ -109,16 +105,12 @@ void OpenSynthAudioProcessor::initialiseSynthForWaveform(const Waveform waveform
             }
         }
         EnvelopeGenerator* ampEnvelopeGenerator = new EnvelopeGenerator();
-        ampEnvelopeGenerator->attackRate = attackRateAmp;
-        ampEnvelopeGenerator->decayRate = decayRateAmp;
-        ampEnvelopeGenerator->sustainLevel = sustainLevelAmp;
-        ampEnvelopeGenerator->releaseRate = releaseRateAmp;
+        ampEnvelopeGenerator->setEnvelopeParameterContainer(ampEnvelopeParameterContainer);
         wavetableVoice->setAmpEnvelopeGenerator(ampEnvelopeGenerator);
+    
         EnvelopeGenerator* filterEnvelopeGenerator = new EnvelopeGenerator();
-        filterEnvelopeGenerator->attackRate = attackRateFilter;
-        filterEnvelopeGenerator->decayRate = decayRateFilter;
-        filterEnvelopeGenerator->sustainLevel = sustainLevelFilter;
-        filterEnvelopeGenerator->releaseRate = releaseRateFilter;
+        filterEnvelopeGenerator->setEnvelopeParameterContainer(filterEnvelopeParameterContainer);
+        
         wavetableVoice->setFilterEnvelopeGenerator(filterEnvelopeGenerator);
         wavetableVoice->getAmpProcessor().level = level;
         wavetableVoice->getFilterProcessor().frequency = filterFrequency;

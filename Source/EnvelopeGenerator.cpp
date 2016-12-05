@@ -9,6 +9,7 @@
 */
 
 #include "EnvelopeGenerator.h"
+#include "EnvelopeParameterContainer.h"
 
 EnvelopeGenerator::EnvelopeGenerator() : currentAmp(0.0), sampleRate(0.0), durationInSec(2.0), envInc(0.0)
 {
@@ -84,6 +85,10 @@ void EnvelopeGenerator::setEnvelopeState(EnvelopeState state)
     }
 };
 
+float EnvelopeGenerator::getReleaseRate() const
+{
+    return envelopeParameterContainer->getReleaseRateParameter()->get();
+}
 
 void EnvelopeGenerator::resetEnvelope()
 {
@@ -91,7 +96,7 @@ void EnvelopeGenerator::resetEnvelope()
     attackSegment.setStartAmp(0.0);
     attackSegment.setFinalAmp(1.0);
     decaySegment.setStartAmp(1.0);
-    decaySegment.setFinalAmp(sustainLevel->get());
+    decaySegment.setFinalAmp(envelopeParameterContainer->getSustainLevelParameter()->get());
     releaseSegment.setFinalAmp(0.0);
 	attackSegment.resetSegment();
 	decaySegment.resetSegment();
@@ -114,10 +119,10 @@ void EnvelopeGenerator::setDurationInSec(double durationInSec)
 
 void EnvelopeGenerator::calculateDurations()
 {
-	attackDuration = attackRate->get() * sampleRate;
-	decayDuration = decayRate->get() * sampleRate;
+	attackDuration = envelopeParameterContainer->getAttackRateParameter()->get() * sampleRate;
+	decayDuration = envelopeParameterContainer->getDecayRateParameter()->get() * sampleRate;
 	decayStart = attackDuration;
-    releaseDuration = releaseRate->get() * sampleRate;
+    releaseDuration = envelopeParameterContainer->getReleaseRateParameter()->get() * sampleRate;
 
 	attackSegment.setDurationInSamples(attackDuration);
 	decaySegment.setDurationInSamples(decayDuration);

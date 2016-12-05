@@ -14,6 +14,8 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "EnvelopeSegment.h"
 
+class EnvelopeParameterContainer;
+
 // Abstract base class for all things modulating
 class Modulator
 {
@@ -45,16 +47,15 @@ public:
 
 	void calculateEnvelopeBuffer(int numSamples);
 	void resetEnvelope();
-    
-    AudioParameterFloat* attackRate;
-    AudioParameterFloat* decayRate;
-    AudioParameterFloat* releaseRate;
-    AudioParameterFloat* sustainLevel;
-    AudioParameterFloat* envelopeAmount;
+    float getReleaseRate() const;
     
 	void setSampleRate(int sampleRate);
 	void setDurationInSec(double durationInSec);
     void setEnvelopeState(EnvelopeState state);
+    void setEnvelopeParameterContainer(EnvelopeParameterContainer* envelopeParameterContainer)
+    {
+        this->envelopeParameterContainer = envelopeParameterContainer;
+    }
     
 private:
 	double currentAmp = 0;
@@ -70,6 +71,7 @@ private:
 	EnvelopeSegmentAttack attackSegment;
 	EnvelopeSegmentDecay decaySegment;
     EnvelopeSegmentRelease releaseSegment;
+    EnvelopeParameterContainer* envelopeParameterContainer;
 
 	double envInc;
 	double envCount;
