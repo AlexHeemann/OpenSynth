@@ -27,14 +27,14 @@
 //[/MiscUserDefs]
 
 //==============================================================================
-DelayComponent::DelayComponent (OpenSynthAudioProcessor& processor)
-    : processor(processor)
+DelayComponent::DelayComponent (DelayParameterContainer& parameterContainer)
+    : parameterContainer(parameterContainer)
 {
     //[Constructor_pre] You can add your own custom stuff here..
-    addAndMakeVisible(timeKnob = new ParameterSlider(*processor.delayTime));
-    addAndMakeVisible (feedKnob = new ParameterSlider (*processor.delayFeedback));
-    addAndMakeVisible (spreadKnob = new ParameterSlider (*processor.delaySpread));
-    addAndMakeVisible (mixKnob = new ParameterSlider (*processor.delayMix));
+    addAndMakeVisible(timeKnob = new ParameterSlider(*parameterContainer.getDelayTimeParameter()));
+    addAndMakeVisible (feedKnob = new ParameterSlider (*parameterContainer.getDelayFeedbackParameter()));
+    addAndMakeVisible (spreadKnob = new ParameterSlider (*parameterContainer.getDelaySpreadParameter()));
+    addAndMakeVisible (mixKnob = new ParameterSlider (*parameterContainer.getDelayMixParameter()));
     //[/Constructor_pre]
 
     timeKnob->setRange (0, 1, 0);
@@ -209,7 +209,7 @@ void DelayComponent::buttonClicked (Button* buttonThatWasClicked)
     if (buttonThatWasClicked == delayToggleButton)
     {
         //[UserButtonCode_delayToggleButton] -- add your button handler code here..
-        processor.delayEnabled->setValueNotifyingHost(buttonThatWasClicked->getToggleState());
+        parameterContainer.getDelayEnabledParameter()->setValueNotifyingHost(buttonThatWasClicked->getToggleState());
         //[/UserButtonCode_delayToggleButton]
     }
 
@@ -233,10 +233,10 @@ void DelayComponent::buttonClicked (Button* buttonThatWasClicked)
 BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="DelayComponent" componentName=""
-                 parentClasses="public Component" constructorParams="OpenSynthAudioProcessor&amp; processor"
-                 variableInitialisers="processor(processor)" snapPixels="8" snapActive="1"
-                 snapShown="1" overlayOpacity="0.330" fixedSize="1" initialWidth="120"
-                 initialHeight="85">
+                 parentClasses="public Component" constructorParams="DelayParameterContainer&amp; parameterContainer"
+                 variableInitialisers="parameterContainer(parameterContainer)"
+                 snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
+                 fixedSize="1" initialWidth="120" initialHeight="85">
   <BACKGROUND backgroundColour="ffffffff">
     <RECT pos="0 0 120 24" fill="solid: ffd2691e" hasStroke="0"/>
   </BACKGROUND>

@@ -23,7 +23,7 @@ OpenSynthAudioProcessorEditor::OpenSynthAudioProcessorEditor (OpenSynthAudioProc
     addAndMakeVisible(ampComponent = new AmpComponent(owner));
     addAndMakeVisible(filterComponent = new FilterComponent(owner));
     addAndMakeVisible(oscillatorComponent = new OscillatorComponent(owner.getOscillatorParameterContainer()));
-    addAndMakeVisible(delayComponent = new DelayComponent(owner));
+    addAndMakeVisible(delayComponent = new DelayComponent(owner.getDelayParameterContainer()));
     addAndMakeVisible(reverbComponent = new ReverbComponent(owner.getReverbParameterContainer()));
 
 	// add the midi keyboard component..

@@ -9,6 +9,7 @@
 */
 
 #include "DelayProcessor.h"
+#include "DelayParameterContainer.h"
 
 DelayProcessor::DelayProcessor() : maxDelayLength(5.0f), isUsingDoublePrecision(true)
 {
@@ -72,10 +73,10 @@ void DelayProcessor::reset()
 template <typename FloatType>
 void DelayProcessor::processBuffer(AudioBuffer<FloatType> &buffer, AudioBuffer<FloatType> &delayBuffer, int startSample, int numSamples)
 {
-    const float localDelayLevel = delayLevel->get();
-    const float localMix = delayMix->get();
-    const float spread = delaySpread->get();
-    setDelayTimeInSeconds(delayTime->get());
+    const float localDelayLevel = parameterContainer->getDelayFeedbackParameter()->get();
+    const float localMix = parameterContainer->getDelayMixParameter()->get();
+    const float spread = parameterContainer->getDelaySpreadParameter()->get();
+    setDelayTimeInSeconds(parameterContainer->getDelayTimeParameter()->get());
     
     int delayPos = 0;
     int localActiveChannel = activeChannel;

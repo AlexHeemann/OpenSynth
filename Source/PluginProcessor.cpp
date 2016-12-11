@@ -7,6 +7,7 @@
 #include "EnvelopeParameterContainer.h"
 #include "OscillatorParameterContainer.h"
 #include "FilterParameterContainer.h"
+#include "DelayParameterContainer.h";
 
 //==============================================================================
 OpenSynthAudioProcessor::OpenSynthAudioProcessor() :
@@ -34,17 +35,8 @@ AudioProcessor (BusesProperties()
     // Filter
     filterParameterContainer = new FilterParameterContainer(*this);
     
-    // Delay
-    addParameter(delayTime = new AudioParameterFloat("delayTime", "Delay Time", 0.0f, 1.0f, 0.5f));
-    addParameter(delayFeedback = new AudioParameterFloat("delayFeedback", "Delay Feedback", 0.0f, 1.0f, 0.5f));
-    addParameter(delaySpread = new AudioParameterFloat("delaySpread", "Delay Spread", 0.0f, 1.0f, 0.0f));
-    addParameter(delayMix = new AudioParameterFloat("delayMix", "Delay Mix", 0.0f, 1.0f, 0.0f));
-    addParameter(delayEnabled = new AudioParameterBool("delayEnabled", "Delay Enabled", false));
-    
-    delayProcessor.delayMix = delayMix;
-    delayProcessor.delayTime = delayTime;
-    delayProcessor.delayLevel = delayFeedback;
-    delayProcessor.delaySpread = delaySpread;
+    delayParameterContainer = new DelayParameterContainer(*this);
+    delayProcessor.setParameterContainer(delayParameterContainer);
     
     // Reverb
     reverbParameterContainer = new ReverbParameterContainer(*this);
@@ -259,7 +251,7 @@ void OpenSynthAudioProcessor::process(AudioBuffer<FloatType>& buffer,
 	// and now get our synth to process these midi events and generate its output.
 	synth.renderNextBlock(buffer, midiMessages, 0, numSamples);
     
-    if (delayEnabled->get())
+    if (delayParameterContainer->getDelayEnabledParameter()->get())
     {
         delayProcessor.renderNextBlock(buffer, 0, numSamples);
     }

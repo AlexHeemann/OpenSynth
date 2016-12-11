@@ -13,6 +13,8 @@
 
 #include "Processor.h"
 
+class DelayParameterContainer;
+
 class DelayProcessor : public Processor
 {
 public:
@@ -37,17 +39,14 @@ public:
     void setSampleRate(int sampleRate);
     const int getSampleRate() const { return sampleRate; };
     void reset();
-    
-    AudioParameterFloat* delayLevel;
-    AudioParameterFloat* delayMix;
-    AudioParameterFloat* delayTime;
-    AudioParameterFloat* delaySpread;
+    void setParameterContainer(DelayParameterContainer* parameterContainer) { this->parameterContainer = parameterContainer; };
     
 private:
     template <typename FloatType>
     void processBuffer(AudioBuffer<FloatType>& buffer, AudioBuffer<FloatType>& delayBuffer, int startSample, int numSamples);
     void resizeDelayBuffers(int size);
     
+    DelayParameterContainer* parameterContainer;
     AudioBuffer<float> delayBufferFloat;
     AudioBuffer<double> delayBufferDouble;
     int sampleRate = 0;

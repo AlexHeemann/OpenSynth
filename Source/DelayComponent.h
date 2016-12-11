@@ -24,6 +24,7 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "ParameterSlider.h"
 #include "PluginProcessor.h"
+#include "DelayParameterContainer.h"
 //[/Headers]
 
 
@@ -42,7 +43,7 @@ class DelayComponent  : public Component,
 {
 public:
     //==============================================================================
-    DelayComponent (OpenSynthAudioProcessor& processor);
+    DelayComponent (DelayParameterContainer& parameterContainer);
     ~DelayComponent();
 
     //==============================================================================
@@ -58,7 +59,7 @@ public:
 
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
-    OpenSynthAudioProcessor& processor;
+    DelayParameterContainer& parameterContainer;
     //[/UserVariables]
 
     //==============================================================================

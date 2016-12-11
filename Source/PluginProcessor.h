@@ -22,6 +22,7 @@ class ReverbParameterContainer;
 class EnvelopeParameterContainer;
 class OscillatorParameterContainer;
 class FilterParameterContainer;
+class DelayParameterContainer;
 
 typedef enum
 {
@@ -93,19 +94,15 @@ public:
 	MidiKeyboardState keyboardState;
 
 	// Gain parameters
-    AudioParameterFloat* level;    
-    
-    // Delay Parameters
-    AudioParameterFloat* delayTime;
-    AudioParameterFloat* delayFeedback;
-    AudioParameterFloat* delaySpread;
-    AudioParameterFloat* delayMix;
-    AudioParameterBool* delayEnabled;
-    
+    AudioParameterFloat* level;        
     
     ReverbParameterContainer& getReverbParameterContainer()
     {
         return *reverbParameterContainer;
+    }
+    DelayParameterContainer& getDelayParameterContainer()
+    {
+        return *delayParameterContainer;
     }
     EnvelopeParameterContainer& getFilterEnvelopeParameterContainer()
     {
@@ -145,6 +142,7 @@ private:
     ScopedPointer<EnvelopeParameterContainer> ampEnvelopeParameterContainer;
     ScopedPointer<OscillatorParameterContainer> oscillatorParameterContainer;
     ScopedPointer<FilterParameterContainer> filterParameterContainer;
+    ScopedPointer<DelayParameterContainer> delayParameterContainer;
 
 	void initialiseSynthForWaveform(const Waveform waveform, const int numVoices);
 
