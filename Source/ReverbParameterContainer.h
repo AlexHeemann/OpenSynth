@@ -50,6 +50,8 @@ private:
     AudioParameterFloat* reverbDryLevel;
     AudioParameterFloat* reverbWidth;
     AudioParameterBool* reverbEnabled;
+    
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ReverbParameterContainer);
 };
 
 
