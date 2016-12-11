@@ -17,6 +17,9 @@
 #include "AmpProcessor.h"
 #include "FilterProcessor.h"
 
+class OscillatorParameterContainer;
+class FilterParameterContainer;
+
 class WavetableSound : public SynthesiserSound
 {
 public:
@@ -62,6 +65,10 @@ public:
     EnvelopeGenerator* getAmpEnvelopeGenerator() const { return ampEnvelopeGenerator; };
     void setFilterEnvelopeGenerator(EnvelopeGenerator* filterEnvelopeGenerator);
     EnvelopeGenerator* getFilterEnvelopeGenerator() const { return filterEnvelopeGenerator; };
+    void setOscillatorParameterContainer(OscillatorParameterContainer* oscillatorParameterContainer);
+    OscillatorParameterContainer* getOscillatorParameterContainer() const { return oscillatorParameterContainer; };
+    void setFilterParameterContainer(FilterParameterContainer* filterParameterContainer);
+    FilterParameterContainer* getFilterParameterContainer() const { return filterParameterContainer; };
     
     /**
      * Set the wavetable to use for the voice
@@ -71,12 +78,7 @@ public:
     
     AmpProcessor& getAmpProcessor() { return ampProcessor; }
     FilterProcessor& getFilterProcessor() { return filterProcessor; }
-    
-    AudioParameterInt* osc1Semi;
-    AudioParameterInt* osc2Semi;
-    AudioParameterInt* osc1Cents;
-    AudioParameterInt* osc2Cents;
-    AudioParameterFloat* oscMix;
+    OscillatorParameterContainer* getParameterContainer() const { return oscillatorParameterContainer; };
     
 private:
     double currentPhase1, currentPhase2, phaseIncrement1, phaseIncrement2, level, frequency1, frequency2, frqRad;
@@ -84,6 +86,8 @@ private:
     Wavetable* osc2Wavetable;
     EnvelopeGenerator* ampEnvelopeGenerator;
     EnvelopeGenerator* filterEnvelopeGenerator;
+    OscillatorParameterContainer* oscillatorParameterContainer;
+    FilterParameterContainer* filterParameterContainer;
     
     // Processors
     AmpProcessor ampProcessor;

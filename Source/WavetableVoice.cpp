@@ -9,6 +9,8 @@
 */
 
 #include "WavetableVoice.h"
+#include "OscillatorParameterContainer.h"
+#include "FilterParameterContainer.h"
 
 WavetableVoice::WavetableVoice(Wavetable* wavetable) : phaseIncrement1(0.0), phaseIncrement2(0.0), osc1Wavetable(wavetable), osc2Wavetable(wavetable)
 {
@@ -44,6 +46,16 @@ void WavetableVoice::setOsc1Wavetable(Wavetable* wavetable)
 void WavetableVoice::setOsc2Wavetable(Wavetable* wavetable)
 {
     this->osc2Wavetable = wavetable;
+}
+
+void WavetableVoice::setOscillatorParameterContainer(OscillatorParameterContainer* oscillatorParameterContainer)
+{
+    this->oscillatorParameterContainer = oscillatorParameterContainer;
+}
+
+void WavetableVoice::setFilterParameterContainer(FilterParameterContainer* filterParameterContainer)
+{
+    this->filterParameterContainer = filterParameterContainer;
 }
 
 void WavetableVoice::startNote(int midiNoteNumber, float velocity,
@@ -113,19 +125,19 @@ void WavetableVoice::processBlock(AudioBuffer<FloatType>& outputBuffer, int star
     // This buffer is used to calculate all the samples for this voice, it then gets added to the overall output buffer of the synth
     AudioBuffer<FloatType> localBuffer = AudioBuffer<FloatType>(outputBuffer.getNumChannels(), outputBuffer.getNumSamples());
     localBuffer.clear();
-    float localOscMix = oscMix->get();
+    float localOscMix = oscillatorParameterContainer->getOscMixParameter()->get();
  
     int currentNote = getCurrentlyPlayingNote();
     if (currentNote >= 0)
     {
-        int osc1Note = currentNote + osc1Semi->get();
-        int osc2Note = currentNote + osc2Semi->get();
+        int osc1Note = currentNote + oscillatorParameterContainer->getOsc1SemiParameter()->get();
+        int osc2Note = currentNote + oscillatorParameterContainer->getOsc2SemiParameter()->get();
         
         frequency1 = MidiMessage::getMidiNoteInHertz(osc1Note);
-        frequency1 += (MidiMessage::getMidiNoteInHertz(osc1Note + 1) - MidiMessage::getMidiNoteInHertz(osc1Note)) * (osc1Cents->get()/100.0);
+        frequency1 += (MidiMessage::getMidiNoteInHertz(osc1Note + 1) - MidiMessage::getMidiNoteInHertz(osc1Note)) * (oscillatorParameterContainer->getOsc1Cents()->get()/100.0);
         
         frequency2 = MidiMessage::getMidiNoteInHertz(osc2Note);
-        frequency2 += (MidiMessage::getMidiNoteInHertz(osc2Note + 1) - MidiMessage::getMidiNoteInHertz(osc2Note)) * (osc2Cents->get()/100.0);
+        frequency2 += (MidiMessage::getMidiNoteInHertz(osc2Note + 1) - MidiMessage::getMidiNoteInHertz(osc2Note)) * (oscillatorParameterContainer->getOsc2Cents()->get()/100.0);
         
         calculatePhaseIncrement();
     }

@@ -5,6 +5,8 @@
 #include "WavetableVoice.h"
 #include "ReverbParameterContainer.h"
 #include "EnvelopeParameterContainer.h"
+#include "OscillatorParameterContainer.h"
+#include "FilterParameterContainer.h"
 
 //==============================================================================
 OpenSynthAudioProcessor::OpenSynthAudioProcessor() :
@@ -26,24 +28,11 @@ AudioProcessor (BusesProperties()
     ampEnvelopeParameterContainer = new EnvelopeParameterContainer(*this, 1);
     filterEnvelopeParameterContainer = new EnvelopeParameterContainer(*this, 2);
     
-    addParameter(filterFrequency = new AudioParameterFloat("filter_frequency", "Filter Frequency", 0.0f, 20000.0f, 10000.0f));
-    filterFrequency->range.skew = 0.25;
-    addParameter(envelopeAmountFilter = new AudioParameterFloat("env_amount_filter", "Envelope Amount", 0.0f, 1.0f, 0.0f));
-     
-    addParameter(attackRateFilter = new AudioParameterFloat("attack", "Envelope Attack", 0.0f, 3.0f, 1.0f));
-    attackRateFilter->range.skew = 0.5;
-    addParameter(decayRateFilter = new AudioParameterFloat("decay", "Envelope Decay", 0.0f, 3.0f, 1.0f));
-    decayRateFilter->range.skew = 0.5;
-    addParameter(releaseRateFilter = new AudioParameterFloat("release", "Envelope Release", 0.0f, 3.0f, 1.0f));
-    releaseRateFilter->range.skew = 0.5;
-    addParameter(sustainLevelFilter = new AudioParameterFloat("sustain", "Envelope Sustain", 0.0f, 1.0f, 1.0f));
-    addParameter(filterResonance = new AudioParameterFloat("resonance", "Filter Resonance", 1.0f, 10.0f, 1.0f));
+    // Oscillators
+    oscillatorParameterContainer = new OscillatorParameterContainer(*this);
     
-    addParameter(osc1Semi = new AudioParameterInt("osc1semi", "Osc 1 Semi", -36, 36, 0));
-    addParameter(osc2Semi = new AudioParameterInt("osc2semi", "Osc 2 Semi", -36, 36, 0));
-    addParameter(osc1Cents = new AudioParameterInt("osc1cents", "Osc 1 Cents", -30, 30, 0));
-    addParameter(osc2Cents = new AudioParameterInt("osc2cents", "Osc 2 Cents", -30, 30, 0));
-    addParameter(oscMix = new AudioParameterFloat("oscMix", "Osc Mix", 0.0f, 1.0f, 0.0f));
+    // Filter
+    filterParameterContainer = new FilterParameterContainer(*this);
     
     // Delay
     addParameter(delayTime = new AudioParameterFloat("delayTime", "Delay Time", 0.0f, 1.0f, 0.5f));
@@ -113,14 +102,8 @@ void OpenSynthAudioProcessor::initialiseSynthForWaveform(const Waveform waveform
         
         wavetableVoice->setFilterEnvelopeGenerator(filterEnvelopeGenerator);
         wavetableVoice->getAmpProcessor().level = level;
-        wavetableVoice->getFilterProcessor().frequency = filterFrequency;
-        wavetableVoice->getFilterProcessor().envelopeAmount = envelopeAmountFilter;
-        wavetableVoice->getFilterProcessor().resonance = filterResonance;
-        wavetableVoice->osc1Semi = osc1Semi;
-        wavetableVoice->osc2Semi = osc2Semi;
-        wavetableVoice->osc1Cents = osc1Cents;
-        wavetableVoice->osc2Cents = osc2Cents;
-        wavetableVoice->oscMix = oscMix;
+        wavetableVoice->getFilterProcessor().setParameterContainer(filterParameterContainer);
+        wavetableVoice->setOscillatorParameterContainer(oscillatorParameterContainer);
         
         synth.addVoice(wavetableVoice);
 	}

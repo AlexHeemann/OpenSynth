@@ -14,6 +14,8 @@
 #include "Processor.h"
 #include "DspFilters/Dsp.h"
 
+class FilterParameterContainer;
+
 class FilterProcessor : public Processor
 {
 public:    
@@ -38,10 +40,7 @@ public:
     
     void resetFilter();
     void setActiveFilter(FilterType activeFilter);
-    
-    AudioParameterFloat* frequency;
-    AudioParameterFloat* envelopeAmount;
-    AudioParameterFloat* resonance;
+    void setParameterContainer(FilterParameterContainer* parameterContainer);
     
 private:
     template <typename FloatType>
@@ -63,6 +62,7 @@ private:
     std::vector<DspFilterType>& getActiveFilter();
     
     FilterType activeFilter;
+    FilterParameterContainer* parameterContainer;
 };
 
 

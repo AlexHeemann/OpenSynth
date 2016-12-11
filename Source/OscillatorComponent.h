@@ -23,7 +23,7 @@
 //[Headers]     -- You can add your own extra header files here --
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "ParameterSlider.h"
-#include "PluginProcessor.h"
+#include "OscillatorParameterContainer.h"
 //[/Headers]
 
 
@@ -41,7 +41,7 @@ class OscillatorComponent  : public Component,
 {
 public:
     //==============================================================================
-    OscillatorComponent (OpenSynthAudioProcessor& processor);
+    OscillatorComponent (OscillatorParameterContainer& parameterContainer);
     ~OscillatorComponent();
 
     //==============================================================================
@@ -56,7 +56,7 @@ public:
 
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
-    OpenSynthAudioProcessor& processor;
+    OscillatorParameterContainer& parameterContainer;
     Waveform waveformForId(int waveformId);
     //[/UserVariables]
 
@@ -69,7 +69,7 @@ private:
     ScopedPointer<ParameterSlider> osc1SemiSlider;
     ScopedPointer<ParameterSlider> osc2SemiSlider;
     ScopedPointer<ParameterSlider> osc1CentSlider;
-    ScopedPointer<ParameterSlider> osc2SemiSlider2;
+    ScopedPointer<ParameterSlider> osc2CentSlider;
     ScopedPointer<Label> osc1SemiLabel;
     ScopedPointer<Label> osc1CentsLabel;
     ScopedPointer<Label> osc2SemiLabel;

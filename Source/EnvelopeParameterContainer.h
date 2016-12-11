@@ -29,10 +29,10 @@ public:
     
     virtual ~EnvelopeParameterContainer() {}
     
-    AudioParameterFloat* getAttackRateParameter() { return attackRate; }
-    AudioParameterFloat* getDecayRateParameter() { return decayRate; }
-    AudioParameterFloat* getReleaseRateParameter() { return releaseRate; }
-    AudioParameterFloat* getSustainLevelParameter() { return sustainLevel; }
+    AudioParameterFloat* getAttackRateParameter() const { return attackRate; }
+    AudioParameterFloat* getDecayRateParameter() const { return decayRate; }
+    AudioParameterFloat* getReleaseRateParameter() const { return releaseRate; }
+    AudioParameterFloat* getSustainLevelParameter() const { return sustainLevel; }
     
 private:
     AudioProcessor& processor;
@@ -42,6 +42,8 @@ private:
     AudioParameterFloat* decayRate;
     AudioParameterFloat* releaseRate;
     AudioParameterFloat* sustainLevel;
+    
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(EnvelopeParameterContainer)
 };
 
 

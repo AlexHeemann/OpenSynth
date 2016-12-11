@@ -12,6 +12,7 @@
 #include "FilterComponent.h"
 #include "FilterProcessor.h"
 #include "EnvelopeParameterContainer.h"
+#include "FilterParameterContainer.h"
 
 //==============================================================================
 FilterComponent::FilterComponent(OpenSynthAudioProcessor &processor) : processor(processor),
@@ -25,17 +26,18 @@ resonanceLabel(String::empty, "Resonance")
 {
     setSize(160, 220);
     
-    addAndMakeVisible(frequencyKnob = new ParameterSlider(*processor.filterFrequency));
+    FilterParameterContainer& filterParameterContainer = processor.getFilterParameterContainer();
+    addAndMakeVisible(frequencyKnob = new ParameterSlider(*filterParameterContainer.getFilterFrequencyParameter()));
     frequencyKnob->setSliderStyle(Slider::Rotary);
     frequencyKnob->setTextBoxStyle(juce::Slider::TextEntryBoxPosition::TextBoxBelow, false, 68, 15);
     frequencyLabel.attachToComponent(frequencyKnob, false);
     
-    addAndMakeVisible(envelopeAmountKnob = new ParameterSlider(*processor.envelopeAmountFilter));
+    addAndMakeVisible(envelopeAmountKnob = new ParameterSlider(*filterParameterContainer.getEnvelopeAmountParameter()));
     envelopeAmountKnob->setSliderStyle(Slider::Rotary);
     envelopeAmountKnob->setTextBoxStyle(juce::Slider::TextEntryBoxPosition::NoTextBox, false, 0, 0);
     envAmountLabel.attachToComponent(envelopeAmountKnob, false);
     
-    addAndMakeVisible(resonanceKnob = new ParameterSlider(*processor.filterResonance));
+    addAndMakeVisible(resonanceKnob = new ParameterSlider(*filterParameterContainer.getFilterResonanceParameter()));
     resonanceKnob->setSliderStyle(Slider::Rotary);
     resonanceKnob->setTextBoxStyle(juce::Slider::TextEntryBoxPosition::NoTextBox, false, 0, 0);
     resonanceLabel.attachToComponent(resonanceKnob, false);

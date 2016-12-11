@@ -20,12 +20,14 @@
 
 class ReverbParameterContainer;
 class EnvelopeParameterContainer;
+class OscillatorParameterContainer;
+class FilterParameterContainer;
 
-typedef enum 
+typedef enum
 {
-	WaveformSine,
-	WaveformSquare,
-	WaveformSawtooth,
+    WaveformSine,
+    WaveformSawtooth,
+    WaveformSquare,
     WaveformTriangle,
 } Waveform;
 
@@ -83,24 +85,15 @@ public:
     void getStateInformation (MemoryBlock& destData) override;
     void setStateInformation (const void* data, int sizeInBytes) override;
 
-	void setWaveformForOscillator(Waveform waveform, int oscillator);
     void setFilterType(FilterProcessor::FilterType filterType);
+    void setWaveformForOscillator(Waveform waveform, int oscillator);
 
 	// this is kept up to date with the midi messages that arrive, and the UI component
 	// registers with it so it can represent the incoming messages
 	MidiKeyboardState keyboardState;
 
 	// Gain parameters
-    AudioParameterFloat* level;
-    
-    // Filter Parameters
-    AudioParameterFloat* attackRateFilter;
-    AudioParameterFloat* decayRateFilter;
-    AudioParameterFloat* releaseRateFilter;
-    AudioParameterFloat* sustainLevelFilter;
-    AudioParameterFloat* envelopeAmountFilter;
-    AudioParameterFloat* filterFrequency;
-    AudioParameterFloat* filterResonance;
+    AudioParameterFloat* level;    
     
     // Delay Parameters
     AudioParameterFloat* delayTime;
@@ -109,27 +102,28 @@ public:
     AudioParameterFloat* delayMix;
     AudioParameterBool* delayEnabled;
     
-    // Oscillator Parameters
-    AudioParameterFloat* oscMix;
-    AudioParameterInt* osc1Semi;
-    AudioParameterInt* osc2Semi;
-    AudioParameterInt* osc1Cents;
-    AudioParameterInt* osc2Cents;
     
     ReverbParameterContainer& getReverbParameterContainer()
     {
         return *reverbParameterContainer;
     }
-    
     EnvelopeParameterContainer& getFilterEnvelopeParameterContainer()
     {
         return *filterEnvelopeParameterContainer;
     }
-    
     EnvelopeParameterContainer& getAmpEnvelopeParameterContainer()
     {
         return *ampEnvelopeParameterContainer;
     }
+    OscillatorParameterContainer& getOscillatorParameterContainer()
+    {
+        return *oscillatorParameterContainer;
+    }
+    FilterParameterContainer& getFilterParameterContainer()
+    {
+        return *filterParameterContainer;
+    }
+    
 
 private:
     //==============================================================================
@@ -149,6 +143,8 @@ private:
     ScopedPointer<ReverbParameterContainer> reverbParameterContainer;
     ScopedPointer<EnvelopeParameterContainer> filterEnvelopeParameterContainer;
     ScopedPointer<EnvelopeParameterContainer> ampEnvelopeParameterContainer;
+    ScopedPointer<OscillatorParameterContainer> oscillatorParameterContainer;
+    ScopedPointer<FilterParameterContainer> filterParameterContainer;
 
 	void initialiseSynthForWaveform(const Waveform waveform, const int numVoices);
 

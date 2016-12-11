@@ -22,7 +22,7 @@ OpenSynthAudioProcessorEditor::OpenSynthAudioProcessorEditor (OpenSynthAudioProc
     // editor's size to whatever you need it to be.
     addAndMakeVisible(ampComponent = new AmpComponent(owner));
     addAndMakeVisible(filterComponent = new FilterComponent(owner));
-    addAndMakeVisible(oscillatorComponent = new OscillatorComponent(owner));
+    addAndMakeVisible(oscillatorComponent = new OscillatorComponent(owner.getOscillatorParameterContainer()));
     addAndMakeVisible(delayComponent = new DelayComponent(owner));
     addAndMakeVisible(reverbComponent = new ReverbComponent(owner.getReverbParameterContainer()));
 

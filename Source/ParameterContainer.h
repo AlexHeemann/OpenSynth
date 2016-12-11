@@ -12,7 +12,6 @@
 #define PARAMETERCONTAINER_H_INCLUDED
 
 #include "../JuceLibraryCode/JuceHeader.h"
-#include "PluginProcessor.h"
 
 class ParameterContainer
 {

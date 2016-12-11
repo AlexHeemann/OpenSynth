@@ -27,15 +27,15 @@
 //[/MiscUserDefs]
 
 //==============================================================================
-OscillatorComponent::OscillatorComponent (OpenSynthAudioProcessor& processor)
-    : processor(processor)
+OscillatorComponent::OscillatorComponent (OscillatorParameterContainer& parameterContainer)
+    : parameterContainer(parameterContainer)
 {
     //[Constructor_pre] You can add your own custom stuff here..
-    addAndMakeVisible (osc1SemiSlider = new ParameterSlider (*processor.osc1Semi));
-    addAndMakeVisible (osc2SemiSlider = new ParameterSlider (*processor.osc2Semi));
-    addAndMakeVisible (oscMixSlider = new ParameterSlider (*processor.oscMix));
-    addAndMakeVisible (osc1CentSlider = new ParameterSlider (*processor.osc1Cents));
-    addAndMakeVisible (osc2SemiSlider2 = new ParameterSlider (*processor.osc2Cents));
+    addAndMakeVisible (osc1SemiSlider = new ParameterSlider (*parameterContainer.getOsc1SemiParameter()));
+    addAndMakeVisible (osc2SemiSlider = new ParameterSlider (*parameterContainer.getOsc2SemiParameter()));
+    addAndMakeVisible (oscMixSlider = new ParameterSlider (*parameterContainer.getOscMixParameter()));
+    addAndMakeVisible (osc1CentSlider = new ParameterSlider (*parameterContainer.getOsc1Cents()));
+    addAndMakeVisible (osc2CentSlider = new ParameterSlider (*parameterContainer.getOsc2Cents()));
     //[/Constructor_pre]
 
     addAndMakeVisible (osc1ComboBox = new ComboBox ("Osc 1 Combo Box"));
@@ -97,10 +97,10 @@ OscillatorComponent::OscillatorComponent (OpenSynthAudioProcessor& processor)
     osc1CentSlider->setTextBoxStyle (Slider::TextBoxBelow, false, 80, 20);
     osc1CentSlider->setColour (Slider::trackColourId, Colours::white);
 
-    osc2SemiSlider2->setRange (0, 1, 0);
-    osc2SemiSlider2->setSliderStyle (Slider::LinearHorizontal);
-    osc2SemiSlider2->setTextBoxStyle (Slider::TextBoxBelow, false, 80, 20);
-    osc2SemiSlider2->setColour (Slider::trackColourId, Colours::white);
+    osc2CentSlider->setRange (0, 1, 0);
+    osc2CentSlider->setSliderStyle (Slider::LinearHorizontal);
+    osc2CentSlider->setTextBoxStyle (Slider::TextBoxBelow, false, 80, 20);
+    osc2CentSlider->setColour (Slider::trackColourId, Colours::white);
 
     addAndMakeVisible (osc1SemiLabel = new Label ("Osc 1 Semi Label",
                                                   TRANS("Semi")));
@@ -160,7 +160,7 @@ OscillatorComponent::~OscillatorComponent()
     osc1SemiSlider = nullptr;
     osc2SemiSlider = nullptr;
     osc1CentSlider = nullptr;
-    osc2SemiSlider2 = nullptr;
+    osc2CentSlider = nullptr;
     osc1SemiLabel = nullptr;
     osc1CentsLabel = nullptr;
     osc2SemiLabel = nullptr;
@@ -210,7 +210,7 @@ void OscillatorComponent::resized()
     osc1SemiSlider->setBounds (8, 56, 104, 32);
     osc2SemiSlider->setBounds (8, 176, 104, 32);
     osc1CentSlider->setBounds (8, 96, 104, 32);
-    osc2SemiSlider2->setBounds (8, 216, 104, 32);
+    osc2CentSlider->setBounds (8, 216, 104, 32);
     osc1SemiLabel->setBounds (112, 56, 40, 24);
     osc1CentsLabel->setBounds (112, 96, 40, 24);
     osc2SemiLabel->setBounds (112, 176, 40, 24);
@@ -227,13 +227,13 @@ void OscillatorComponent::comboBoxChanged (ComboBox* comboBoxThatHasChanged)
     if (comboBoxThatHasChanged == osc1ComboBox)
     {
         //[UserComboBoxCode_osc1ComboBox] -- add your combo box handling code here..
-        processor.setWaveformForOscillator(waveformForId(comboBoxThatHasChanged->getSelectedId()), 1);
+        parameterContainer.setWaveformForOscillator(waveformForId(comboBoxThatHasChanged->getSelectedId()), 1);
         //[/UserComboBoxCode_osc1ComboBox]
     }
     else if (comboBoxThatHasChanged == osc2ComboBox)
     {
         //[UserComboBoxCode_osc2ComboBox] -- add your combo box handling code here..
-        processor.setWaveformForOscillator(waveformForId(comboBoxThatHasChanged->getSelectedId()), 2);
+        parameterContainer.setWaveformForOscillator(waveformForId(comboBoxThatHasChanged->getSelectedId()), 2);
         //[/UserComboBoxCode_osc2ComboBox]
     }
 
@@ -272,10 +272,10 @@ Waveform OscillatorComponent::waveformForId(int waveformId)
 BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="OscillatorComponent" componentName=""
-                 parentClasses="public Component" constructorParams="OpenSynthAudioProcessor&amp; processor"
-                 variableInitialisers="processor(processor)" snapPixels="8" snapActive="1"
-                 snapShown="1" overlayOpacity="0.330" fixedSize="1" initialWidth="210"
-                 initialHeight="260">
+                 parentClasses="public Component" constructorParams="OscillatorParameterContainer&amp; parameterContainer"
+                 variableInitialisers="parameterContainer(parameterContainer)"
+                 snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
+                 fixedSize="1" initialWidth="210" initialHeight="260">
   <BACKGROUND backgroundColour="ffffffff">
     <RECT pos="2 53 150 43" fill="solid: ff39bccf" hasStroke="0"/>
     <RECT pos="2 93 150 43" fill="solid: ff10d2ee" hasStroke="0"/>
@@ -320,7 +320,7 @@ BEGIN_JUCER_METADATA
           trackcol="ffffffff" min="0" max="1" int="0" style="LinearHorizontal"
           textBoxPos="TextBoxBelow" textBoxEditable="1" textBoxWidth="80"
           textBoxHeight="20" skewFactor="1" needsCallback="0"/>
-  <SLIDER name="Osc 2 Semi Slider" id="9f37de1daa10a627" memberName="osc2SemiSlider2"
+  <SLIDER name="Osc 2 Cent Slider" id="9f37de1daa10a627" memberName="osc2CentSlider"
           virtualName="ParameterSlider" explicitFocusOrder="0" pos="8 216 104 32"
           trackcol="ffffffff" min="0" max="1" int="0" style="LinearHorizontal"
           textBoxPos="TextBoxBelow" textBoxEditable="1" textBoxWidth="80"

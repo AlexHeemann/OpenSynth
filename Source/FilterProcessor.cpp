@@ -9,6 +9,7 @@
 */
 
 #include "FilterProcessor.h"
+#include "FilterParameterContainer.h"
 
 FilterProcessor::FilterProcessor()
 {
@@ -23,6 +24,9 @@ void FilterProcessor::processBufferWithFilter(AudioBuffer<FloatType> &buffer, in
 {
     bool isModulated = envelopeGenerator != nullptr && envelopeGenerator->envelopeBuffer.size() >= numSamples && numSamples > 0;
     float filterModulation = isModulated ? envelopeGenerator->envelopeBuffer[0] : 1.0;
+    AudioParameterFloat* frequency = parameterContainer->getFilterFrequencyParameter();
+    AudioParameterFloat* envelopeAmount = parameterContainer->getEnvelopeAmountParameter();
+    AudioParameterFloat* resonance = parameterContainer->getFilterResonanceParameter();
     
     for (int filterIdx = 0; filterIdx < filters.size(); filterIdx++)
     {
@@ -61,10 +65,10 @@ void FilterProcessor::processBuffer(AudioBuffer<FloatType> &buffer, int startSam
 
 void FilterProcessor::resetFilter()
 {
-    initialiseLowPassFilter(frequency->get());
-    initialiseHighPassFilter(frequency->get());
-    initialiseBandPassFilter(frequency->get());
-    initialiseAllPassFilter(frequency->get());
+    initialiseLowPassFilter(parameterContainer->getFilterFrequencyParameter()->get());
+    initialiseHighPassFilter(parameterContainer->getFilterFrequencyParameter()->get());
+    initialiseBandPassFilter(parameterContainer->getFilterFrequencyParameter()->get());
+    initialiseAllPassFilter(parameterContainer->getFilterFrequencyParameter()->get());
 }
 
 void FilterProcessor::initialiseLowPassFilter(double frequency)
@@ -131,3 +135,9 @@ void FilterProcessor::setActiveFilter(FilterType activeFilter)
 {
     this->activeFilter = activeFilter;
 }
+
+void FilterProcessor::setParameterContainer(FilterParameterContainer* parameterContainer)
+{
+    this->parameterContainer = parameterContainer;
+}
+
