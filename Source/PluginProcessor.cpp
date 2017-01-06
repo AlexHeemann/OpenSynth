@@ -35,6 +35,7 @@ AudioProcessor (BusesProperties()
     // Filter
     filterParameterContainer = new FilterParameterContainer(*this);
     
+    // Delay
     delayParameterContainer = new DelayParameterContainer(*this);
     delayProcessor.setParameterContainer(delayParameterContainer);
     
