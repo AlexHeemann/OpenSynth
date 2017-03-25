@@ -1,5 +1,5 @@
 # Open Synth
-[Open Synth Screenshot](https://github.com/AlexHeemann/OpenSynth/raw/master/Assets/OpenSynth.png)
+![Open Synth Screenshot](https://github.com/AlexHeemann/OpenSynth/raw/master/Assets/OpenSynth.png)
 Open Synth is an open source wavetable synthesizer. It uses the [JUCE](https://www.juce.com) framework and can be compiled as VST/AU/standalone. The filters are from the fantastic [DSPFilters](https://github.com/vinniefalco/DSPFilters) library. 
 The code is available under the GPL license.
 
