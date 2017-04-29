@@ -11,7 +11,7 @@
 #include "ReverbProcessor.h"
 #include "ReverbParameterContainer.h"
 
-ReverbProcessor::ReverbProcessor()
+ReverbProcessor::ReverbProcessor(ModulationMatrix* modulationMatrix) : Processor(modulationMatrix)
 {
     
     

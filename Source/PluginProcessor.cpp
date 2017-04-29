@@ -7,7 +7,7 @@
 #include "EnvelopeParameterContainer.h"
 #include "OscillatorParameterContainer.h"
 #include "FilterParameterContainer.h"
-#include "DelayParameterContainer.h";
+#include "DelayParameterContainer.h"
 
 //==============================================================================
 OpenSynthAudioProcessor::OpenSynthAudioProcessor() :
@@ -25,6 +25,10 @@ AudioProcessor (BusesProperties()
     squareWavetable(SquareWavetable(40.0, 4096, getSampleRate())),
     sineWavetable(SineWavetable(40.0, 4096, getSampleRate()))
 {
+    modulationMatrix = new ModulationMatrix();
+    reverbProcessor = new ReverbProcessor(modulationMatrix);
+    delayProcessor = new DelayProcessor(modulationMatrix);
+    
 	addParameter(level = new AudioParameterFloat("gain", "Gain", 0.0f, 1.0f, 0.9f));
     ampEnvelopeParameterContainer = new EnvelopeParameterContainer(*this, 1);
     filterEnvelopeParameterContainer = new EnvelopeParameterContainer(*this, 2);
@@ -37,14 +41,15 @@ AudioProcessor (BusesProperties()
     
     // Delay
     delayParameterContainer = new DelayParameterContainer(*this);
-    delayProcessor.setParameterContainer(delayParameterContainer);
+    delayProcessor->setParameterContainer(delayParameterContainer);
     
     // Reverb
     reverbParameterContainer = new ReverbParameterContainer(*this);
-    reverbProcessor.setReverbParameterContainer(reverbParameterContainer);
+    reverbProcessor->setReverbParameterContainer(reverbParameterContainer);
     
 	initialiseSynthForWaveform(WaveformSawtooth, 8);
 	keyboardState.addListener(this);
+    setupModulation();
 }
 
 OpenSynthAudioProcessor::~OpenSynthAudioProcessor()
@@ -55,6 +60,8 @@ void OpenSynthAudioProcessor::initialiseSynthForWaveform(const Waveform waveform
 {
 	synth.clearSounds();
 	synth.clearVoices();
+    lfo1 = new LFO(ParameterIDLFO1Output, *this);
+    lfo1->setModulationMatrix(modulationMatrix);
 
 	for (int i = numVoices; --i >= 0;)
 	{
@@ -94,9 +101,12 @@ void OpenSynthAudioProcessor::initialiseSynthForWaveform(const Waveform waveform
         filterEnvelopeGenerator->setEnvelopeParameterContainer(filterEnvelopeParameterContainer);
         
         wavetableVoice->setFilterEnvelopeGenerator(filterEnvelopeGenerator);
-        wavetableVoice->getAmpProcessor().level = level;
-        wavetableVoice->getFilterProcessor().setParameterContainer(filterParameterContainer);
+        wavetableVoice->getAmpProcessor()->level = level;
+        wavetableVoice->getFilterProcessor()->setParameterContainer(filterParameterContainer);
         wavetableVoice->setOscillatorParameterContainer(oscillatorParameterContainer);
+        wavetableVoice->setModulationMatrix(modulationMatrix);
+        
+        wavetableVoice->setLFO1(lfo1);
         
         synth.addVoice(wavetableVoice);
 	}
@@ -157,6 +167,11 @@ void OpenSynthAudioProcessor::changeProgramName (int index, const String& newNam
 {
 }
 
+void OpenSynthAudioProcessor::setupModulation()
+{
+    modulationMatrix->addRow(ParameterIDLFO1Output, ParameterIDFilterCutoff, 1.0);
+}
+
 //==============================================================================
 void OpenSynthAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
@@ -185,11 +200,12 @@ void OpenSynthAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBl
     }
 	currentSampleRate = sampleRate;
 	keyboardState.reset();
-    delayProcessor.setIsUsingDoublePrecision(isUsingDoublePrecision());
-    delayProcessor.setSampleRate(sampleRate);
-    delayProcessor.reset();
-    reverbProcessor.setSampleRate(sampleRate);
-    reverbProcessor.reset();
+    delayProcessor->setIsUsingDoublePrecision(isUsingDoublePrecision());
+    delayProcessor->setSampleRate(sampleRate);
+    delayProcessor->reset();
+    reverbProcessor->setSampleRate(sampleRate);
+    reverbProcessor->reset();
+    lfo1->setSampleRate(sampleRate);
 
 	reset();
 }
@@ -205,8 +221,8 @@ void OpenSynthAudioProcessor::reset()
 {
 	// Use this method as the place to clear any delay lines, buffers, etc, as it
 	// means there's been a break in the audio's continuity.
-    delayProcessor.reset();
-    reverbProcessor.reset();
+    delayProcessor->reset();
+    reverbProcessor->reset();
 }
 
 #ifndef JucePlugin_PreferredChannelConfigurations
@@ -254,11 +270,11 @@ void OpenSynthAudioProcessor::process(AudioBuffer<FloatType>& buffer,
     
     if (delayParameterContainer->getDelayEnabledParameter()->get())
     {
-        delayProcessor.renderNextBlock(buffer, 0, numSamples);
+        delayProcessor->renderNextBlock(buffer, 0, numSamples);
     }
     if (reverbParameterContainer->getReverbEnabledParameter()->get())
     {
-        reverbProcessor.renderNextBlock(buffer, 0, numSamples);
+        reverbProcessor->renderNextBlock(buffer, 0, numSamples);
     }
 }
 
@@ -354,7 +370,7 @@ void OpenSynthAudioProcessor::setFilterType(FilterProcessor::FilterType filterTy
         WavetableVoice* voice = dynamic_cast<WavetableVoice*>(synth.getVoice(voiceIdx));
         if (voice != nullptr)
         {
-            voice->getFilterProcessor().setActiveFilter(filterType);
+            voice->getFilterProcessor()->setActiveFilter(filterType);
         }
     }
 }

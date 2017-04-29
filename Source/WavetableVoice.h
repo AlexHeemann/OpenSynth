@@ -16,6 +16,8 @@
 #include "EnvelopeGenerator.h"
 #include "AmpProcessor.h"
 #include "FilterProcessor.h"
+#include "LFO.h"
+#include "ModulationMatrix.h"
 
 class OscillatorParameterContainer;
 class FilterParameterContainer;
@@ -76,8 +78,30 @@ public:
     void setOsc1Wavetable(Wavetable* wavetable);
     void setOsc2Wavetable(Wavetable* wavetable);
     
-    AmpProcessor& getAmpProcessor() { return ampProcessor; }
-    FilterProcessor& getFilterProcessor() { return filterProcessor; }
+    void setLFO1(LFO* lfo)
+    {
+        lfo1 = lfo;
+    }
+    
+    void setLFO2(LFO* lfo)
+    {
+        lfo2 = lfo;
+    }
+    
+    void setModulationMatrix(ModulationMatrix* modulationMatrix)
+    {
+        this->modulationMatrix = modulationMatrix;
+        filterProcessor->setModulationMatrix(modulationMatrix);
+        ampProcessor->setModulationMatrix(modulationMatrix);
+    }
+    
+    ModulationMatrix* getModulationMatrix()
+    {
+        return modulationMatrix;
+    }
+    
+    AmpProcessor* getAmpProcessor() { return ampProcessor; }
+    FilterProcessor* getFilterProcessor() { return filterProcessor; }
     OscillatorParameterContainer* getParameterContainer() const { return oscillatorParameterContainer; };
     
 private:
@@ -90,8 +114,12 @@ private:
     FilterParameterContainer* filterParameterContainer;
     
     // Processors
-    AmpProcessor ampProcessor;
-    FilterProcessor filterProcessor;
+    ScopedPointer<AmpProcessor> ampProcessor;
+    ScopedPointer<FilterProcessor> filterProcessor;
+    
+    ScopedPointer<LFO> lfo1;
+    ScopedPointer<LFO> lfo2;
+    ScopedPointer<ModulationMatrix> modulationMatrix;
     
     int releaseCounter;
     

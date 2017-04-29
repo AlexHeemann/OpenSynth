@@ -10,7 +10,7 @@
 
 #include "AmpProcessor.h"
 
-AmpProcessor::AmpProcessor()
+AmpProcessor::AmpProcessor(ModulationMatrix* modulationMatrix) : Processor(modulationMatrix)
 {
 }
 

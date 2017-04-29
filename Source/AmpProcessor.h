@@ -16,7 +16,7 @@
 class AmpProcessor : public Processor
 {
 public:
-    AmpProcessor();
+    AmpProcessor(ModulationMatrix* modulationMatrix);
     virtual ~AmpProcessor() {};
     
     void renderNextBlock(AudioBuffer<float>& outputBuffer, int startSample, int numSamples) override

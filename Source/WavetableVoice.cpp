@@ -14,6 +14,8 @@
 
 WavetableVoice::WavetableVoice(Wavetable* wavetable) : phaseIncrement1(0.0), phaseIncrement2(0.0), osc1Wavetable(wavetable), osc2Wavetable(wavetable)
 {
+    filterProcessor = new FilterProcessor(modulationMatrix);
+    ampProcessor = new AmpProcessor(modulationMatrix);
 }
 
 WavetableVoice::~WavetableVoice()
@@ -27,7 +29,7 @@ void WavetableVoice::setAmpEnvelopeGenerator(EnvelopeGenerator* ampEnvelopeGener
     this->ampEnvelopeGenerator = ampEnvelopeGenerator;
     this->ampEnvelopeGenerator->setSampleRate(getSampleRate());
     this->ampEnvelopeGenerator->resetEnvelope();
-    ampProcessor.setEnvelopeGenerator(ampEnvelopeGenerator);
+    ampProcessor->setEnvelopeGenerator(ampEnvelopeGenerator);
 }
 
 void WavetableVoice::setFilterEnvelopeGenerator(EnvelopeGenerator *filterEnvelopeGenerator)
@@ -35,7 +37,7 @@ void WavetableVoice::setFilterEnvelopeGenerator(EnvelopeGenerator *filterEnvelop
     this->filterEnvelopeGenerator = filterEnvelopeGenerator;
     this->filterEnvelopeGenerator->setSampleRate(getSampleRate());
     this->filterEnvelopeGenerator->resetEnvelope();
-    filterProcessor.setEnvelopeGenerator(filterEnvelopeGenerator);
+    filterProcessor->setEnvelopeGenerator(filterEnvelopeGenerator);
 }
 
 void WavetableVoice::setOsc1Wavetable(Wavetable* wavetable)
@@ -81,7 +83,7 @@ void WavetableVoice::startNote(int midiNoteNumber, float velocity,
     {
         filterEnvelopeGenerator->resetEnvelope();
     }
-    filterProcessor.resetFilter();
+    filterProcessor->resetFilter();
 }
 
 void WavetableVoice::calculatePhaseIncrement()
@@ -120,8 +122,14 @@ void WavetableVoice::stopNote(float velocity, bool allowTailOff)
 template <typename FloatType>
 void WavetableVoice::processBlock(AudioBuffer<FloatType>& outputBuffer, int startSample, int numSamples)
 {
+    modulationMatrix->clear();
+    
     ampEnvelopeGenerator->calculateEnvelopeBuffer(numSamples);
     filterEnvelopeGenerator->calculateEnvelopeBuffer(numSamples);
+    lfo1->oscillate(numSamples);
+    
+    modulationMatrix->process();
+    
     // This buffer is used to calculate all the samples for this voice, it then gets added to the overall output buffer of the synth
     AudioBuffer<FloatType> localBuffer = AudioBuffer<FloatType>(outputBuffer.getNumChannels(), outputBuffer.getNumSamples());
     localBuffer.clear();
@@ -221,8 +229,8 @@ void WavetableVoice::processBlock(AudioBuffer<FloatType>& outputBuffer, int star
         }
     }
     
-    filterProcessor.renderNextBlock(localBuffer, startSample, numSamples);
-    ampProcessor.renderNextBlock(localBuffer, startSample, numSamples);
+    filterProcessor->renderNextBlock(localBuffer, startSample, numSamples);
+    ampProcessor->renderNextBlock(localBuffer, startSample, numSamples);
     
     // Add samples from this voice to the output buffer
     for (int sampleIdx = 0; sampleIdx < numSamples; sampleIdx++)

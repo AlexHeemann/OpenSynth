@@ -19,7 +19,7 @@ class ReverbParameterContainer;
 class ReverbProcessor : public Processor
 {
 public:
-    ReverbProcessor();
+    ReverbProcessor(ModulationMatrix* modulationMatrix);
     virtual ~ReverbProcessor() {};
     
     void renderNextBlock(AudioBuffer<float>& outputBuffer, int startSample, int numSamples) override

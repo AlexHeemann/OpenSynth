@@ -15,6 +15,7 @@
 #include "DspFilters/Dsp.h"
 
 class FilterParameterContainer;
+class ModulationMatrix;
 
 class FilterProcessor : public Processor
 {
@@ -26,7 +27,7 @@ public:
         AllPass = 4
     } FilterType;
     
-    FilterProcessor();
+    FilterProcessor(ModulationMatrix* modulationMatrix);
     virtual ~FilterProcessor() {};
     
     void renderNextBlock(AudioBuffer<float>& outputBuffer, int startSample, int numSamples) override
@@ -40,7 +41,7 @@ public:
     
     void resetFilter();
     void setActiveFilter(FilterType activeFilter);
-    void setParameterContainer(FilterParameterContainer* parameterContainer);
+    void setParameterContainer(FilterParameterContainer* parameterContainer);    
     
 private:
     template <typename FloatType>
@@ -62,7 +63,7 @@ private:
     std::vector<DspFilterType>& getActiveFilter();
     
     FilterType activeFilter;
-    FilterParameterContainer* parameterContainer;
+    FilterParameterContainer* parameterContainer;    
 };
 
 

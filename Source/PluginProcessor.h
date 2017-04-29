@@ -17,6 +17,8 @@
 #include "DelayProcessor.h"
 #include "ReverbProcessor.h"
 #include "FilterProcessor.h"
+#include "ModulationMatrix.h"
+#include "LFO.h"
 
 class ReverbParameterContainer;
 class EnvelopeParameterContainer;
@@ -31,6 +33,12 @@ typedef enum
     WaveformSquare,
     WaveformTriangle,
 } Waveform;
+
+typedef enum
+{
+    ParameterIDLFO1Output,
+    ParameterIDFilterCutoff,
+} ParameterID;
 
 //==============================================================================
 /**
@@ -134,8 +142,8 @@ private:
     SquareWavetable squareWavetable;
     SineWavetable sineWavetable;
     
-    DelayProcessor delayProcessor;
-    ReverbProcessor reverbProcessor;
+    ScopedPointer<DelayProcessor> delayProcessor;
+    ScopedPointer<ReverbProcessor> reverbProcessor;
     
     ScopedPointer<ReverbParameterContainer> reverbParameterContainer;
     ScopedPointer<EnvelopeParameterContainer> filterEnvelopeParameterContainer;
@@ -143,9 +151,15 @@ private:
     ScopedPointer<OscillatorParameterContainer> oscillatorParameterContainer;
     ScopedPointer<FilterParameterContainer> filterParameterContainer;
     ScopedPointer<DelayParameterContainer> delayParameterContainer;
+    
+    ScopedPointer<LFO> lfo1;
+    ScopedPointer<LFO> lfo2;
+    
+    ScopedPointer<ModulationMatrix> modulationMatrix;
 
 	void initialiseSynthForWaveform(const Waveform waveform, const int numVoices);
-
+    void setupModulation();
+    
 	virtual void handleNoteOn(MidiKeyboardState* source,
 		int midiChannel, int midiNoteNumber, float velocity) override;
 	virtual void handleNoteOff(MidiKeyboardState* source,
