@@ -15,6 +15,7 @@
 #include "OscillatorComponent.h"
 #include "DelayComponent.h"
 #include "ReverbComponent.h"
+#include "LFOComponent.h"
 
 class ParameterSlider;
 
@@ -31,8 +32,8 @@ public:
     void paint (Graphics&) override;
     void resized() override;
 
-	virtual void dragOperationStarted();
-	virtual void dragOperationEnded();
+	virtual int dragOperationStarted();
+	virtual int dragOperationEnded();
 
 private:
     // This reference is provided as a quick way for your editor to
@@ -51,6 +52,7 @@ private:
     ScopedPointer<OscillatorComponent> oscillatorComponent;
     ScopedPointer<DelayComponent> delayComponent;
     ScopedPointer<ReverbComponent> reverbComponent;
+    ScopedPointer<LFOComponent> lfoComponent;
 	ComponentBoundsConstrainer resizeLimits;
 
 	//==============================================================================

@@ -25,6 +25,7 @@ OpenSynthAudioProcessorEditor::OpenSynthAudioProcessorEditor (OpenSynthAudioProc
     addAndMakeVisible(oscillatorComponent = new OscillatorComponent(owner.getOscillatorParameterContainer()));
     addAndMakeVisible(delayComponent = new DelayComponent(owner.getDelayParameterContainer()));
     addAndMakeVisible(reverbComponent = new ReverbComponent(owner.getReverbParameterContainer()));
+    addAndMakeVisible(lfoComponent = new LFOComponent(owner.getLFOParameterContainer()));
 
 	// add the midi keyboard component..
 	addAndMakeVisible(keyboardComponent);
@@ -34,7 +35,7 @@ OpenSynthAudioProcessorEditor::OpenSynthAudioProcessorEditor (OpenSynthAudioProc
 	resizeLimits.setSizeLimits(200, 150, 800, 300);
 
 	// set our component's size
-	setSize(550, 410);
+	setSize(700, 550);
 }
 
 OpenSynthAudioProcessorEditor::~OpenSynthAudioProcessorEditor()
@@ -59,16 +60,19 @@ void OpenSynthAudioProcessorEditor::resized()
     delayComponent->setTopRightPosition(filterComponent->getX() + filterComponent->getWidth(), filterComponent->getY() + filterComponent->getHeight() + 10);
     ampComponent->setTopLeftPosition(filterComponent->getX() + filterComponent->getWidth() + 10, filterComponent->getY());
     reverbComponent->setTopLeftPosition(ampComponent->getX(), ampComponent->getY() + ampComponent->getHeight() + 10);
+    lfoComponent->setTopLeftPosition(oscillatorComponent->getX(), oscillatorComponent->getY() + oscillatorComponent->getHeight() + 10);
 }
 
 //==============================================================================
 
-void OpenSynthAudioProcessorEditor::dragOperationStarted()
+int OpenSynthAudioProcessorEditor::dragOperationStarted()
 {
+    return 1;
 }
 
-void OpenSynthAudioProcessorEditor::dragOperationEnded()
+int OpenSynthAudioProcessorEditor::dragOperationEnded()
 {
+    return 1;
 }
 
 //==============================================================================

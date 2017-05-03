@@ -21,6 +21,8 @@
 
 //[Headers]     -- You can add your own extra header files here --
 #include "../JuceLibraryCode/JuceHeader.h"
+#include "LFOParameterContainer.h"
+#include "ParameterSlider.h"
 //[/Headers]
 
 
@@ -37,7 +39,7 @@ class LFOComponent  : public Component
 {
 public:
     //==============================================================================
-    LFOComponent ();
+    LFOComponent (LFOParameterContainer& parameterContainer);
     ~LFOComponent();
 
     //==============================================================================
@@ -51,9 +53,13 @@ public:
 
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
+    LFOParameterContainer& parameterContainer;
     //[/UserVariables]
 
     //==============================================================================
+    ScopedPointer<Label> lfoTitleLabel;
+    ScopedPointer<ParameterSlider> frequencySlider;
+    ScopedPointer<Label> label;
 
 
     //==============================================================================

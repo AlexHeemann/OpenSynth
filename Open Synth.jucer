@@ -22,6 +22,8 @@
       <FILE id="GzvtvY" name="LFO.cpp" compile="1" resource="0" file="Source/LFO.cpp"/>
       <FILE id="zmKA78" name="LFO.h" compile="0" resource="0" file="Source/LFO.h"/>
       <GROUP id="{B547E3B7-72E8-EEB1-B5B4-4355E010459F}" name="Parameter Containers">
+        <FILE id="BGvuL0" name="LFOParameterContainer.h" compile="0" resource="0"
+              file="Source/LFOParameterContainer.h"/>
         <FILE id="AcfG95" name="ParameterContainer.h" compile="0" resource="0"
               file="Source/ParameterContainer.h"/>
         <FILE id="pAkRpJ" name="AmpParameterContainer.h" compile="0" resource="0"
