@@ -30,34 +30,49 @@ resonanceLabel(String::empty, "Resonance")
     addAndMakeVisible(frequencyKnob = new ParameterSlider(*filterParameterContainer.getFilterFrequencyParameter()));
     frequencyKnob->setSliderStyle(Slider::Rotary);
     frequencyKnob->setTextBoxStyle(juce::Slider::TextEntryBoxPosition::TextBoxBelow, false, 68, 15);
+    frequencyKnob->setColour(Slider::textBoxBackgroundColourId, Colours::midnightblue);
     frequencyLabel.attachToComponent(frequencyKnob, false);
+    frequencyLabel.setColour (Label::backgroundColourId, Colours::transparentWhite);
+    frequencyLabel.setColour (Label::textColourId, Colours::black);
     
     addAndMakeVisible(envelopeAmountKnob = new ParameterSlider(*filterParameterContainer.getEnvelopeAmountParameter()));
     envelopeAmountKnob->setSliderStyle(Slider::Rotary);
     envelopeAmountKnob->setTextBoxStyle(juce::Slider::TextEntryBoxPosition::NoTextBox, false, 0, 0);
     envAmountLabel.attachToComponent(envelopeAmountKnob, false);
+    envAmountLabel.setColour (Label::backgroundColourId, Colours::transparentWhite);
+    envAmountLabel.setColour (Label::textColourId, Colours::black);
     
     addAndMakeVisible(resonanceKnob = new ParameterSlider(*filterParameterContainer.getFilterResonanceParameter()));
     resonanceKnob->setSliderStyle(Slider::Rotary);
     resonanceKnob->setTextBoxStyle(juce::Slider::TextEntryBoxPosition::NoTextBox, false, 0, 0);
     resonanceLabel.attachToComponent(resonanceKnob, false);
+    resonanceLabel.setColour (Label::textColourId, Colours::black);
+    resonanceLabel.setColour (Label::backgroundColourId, Colours::transparentWhite);
     
     EnvelopeParameterContainer& filterEnvelopeParameterContainer = processor.getFilterEnvelopeParameterContainer();
     addAndMakeVisible(attackSlider = new ParameterSlider(*filterEnvelopeParameterContainer.getAttackRateParameter()));
     attackSlider->setSliderStyle(Slider::LinearVertical);
     attackLabel.attachToComponent(attackSlider, false);
+    attackLabel.setColour (Label::textColourId, Colours::black);
+    attackLabel.setColour (Label::backgroundColourId, Colours::transparentWhite);
     
     addAndMakeVisible(decaySlider = new ParameterSlider(*filterEnvelopeParameterContainer.getDecayRateParameter()));
     decaySlider->setSliderStyle(Slider::LinearVertical);
     decayLabel.attachToComponent(decaySlider, false);
+    decayLabel.setColour (Label::textColourId, Colours::black);
+    decayLabel.setColour (Label::backgroundColourId, Colours::transparentWhite);
     
     addAndMakeVisible(sustainSlider = new ParameterSlider(*filterEnvelopeParameterContainer.getSustainLevelParameter()));
     sustainSlider->setSliderStyle(Slider::LinearVertical);
     sustainLabel.attachToComponent(sustainSlider, false);
+    sustainLabel.setColour (Label::textColourId, Colours::black);
+    sustainLabel.setColour (Label::backgroundColourId, Colours::transparentWhite);
     
     addAndMakeVisible(releaseSlider = new ParameterSlider(*filterEnvelopeParameterContainer.getReleaseRateParameter()));
     releaseSlider->setSliderStyle(Slider::LinearVertical);
     releaseLabel.attachToComponent(releaseSlider, false);
+    releaseLabel.setColour (Label::textColourId, Colours::black);
+    releaseLabel.setColour (Label::backgroundColourId, Colours::transparentWhite);
     
     addAndMakeVisible (filterTypeComboBox = new ComboBox ("Osc 1 Combo Box"));
     filterTypeComboBox->setEditableText (false);

@@ -27,24 +27,35 @@ AmpComponent::AmpComponent(OpenSynthAudioProcessor &processor) : processor(proce
     addAndMakeVisible(gainKnob = new ParameterSlider(*processor.level));
     gainKnob->setSliderStyle(Slider::Rotary);
     gainKnob->setTextBoxStyle(juce::Slider::TextEntryBoxPosition::TextBoxBelow, false, 40, 15);
+    gainKnob->setColour(Slider::textBoxBackgroundColourId, Colours::midnightblue);
     ampLabel.attachToComponent(gainKnob, false);
+    ampLabel.setColour (Label::textColourId, Colours::black);
+    ampLabel.setColour (Label::backgroundColourId, Colours::transparentWhite);
     
     EnvelopeParameterContainer& ampEnvelopeParameterContainer = processor.getAmpEnvelopeParameterContainer();
     addAndMakeVisible(attackSlider = new ParameterSlider(*ampEnvelopeParameterContainer.getAttackRateParameter()));
     attackSlider->setSliderStyle(Slider::LinearVertical);
     attackLabel.attachToComponent(attackSlider, false);
+    attackLabel.setColour (Label::textColourId, Colours::black);
+    attackLabel.setColour (Label::backgroundColourId, Colours::transparentWhite);
     
     addAndMakeVisible(decaySlider = new ParameterSlider(*ampEnvelopeParameterContainer.getDecayRateParameter()));
     decaySlider->setSliderStyle(Slider::LinearVertical);
     decayLabel.attachToComponent(decaySlider, false);
+    decayLabel.setColour (Label::textColourId, Colours::black);
+    decayLabel.setColour (Label::backgroundColourId, Colours::transparentWhite);
     
     addAndMakeVisible(sustainSlider = new ParameterSlider(*ampEnvelopeParameterContainer.getSustainLevelParameter()));
     sustainSlider->setSliderStyle(Slider::LinearVertical);
     sustainLabel.attachToComponent(sustainSlider, false);
+    sustainLabel.setColour (Label::textColourId, Colours::black);
+    sustainLabel.setColour (Label::backgroundColourId, Colours::transparentWhite);
     
     addAndMakeVisible(releaseSlider = new ParameterSlider(*ampEnvelopeParameterContainer.getReleaseRateParameter()));
     releaseSlider->setSliderStyle(Slider::LinearVertical);
     releaseLabel.attachToComponent(releaseSlider, false);
+    releaseLabel.setColour (Label::textColourId, Colours::black);
+    releaseLabel.setColour (Label::backgroundColourId, Colours::transparentWhite);
 }
 
 AmpComponent::~AmpComponent()

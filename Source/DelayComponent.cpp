@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 4.3.0
+  Created with Projucer version: 5.0.0
 
   ------------------------------------------------------------------------------
 
@@ -59,23 +59,25 @@ DelayComponent::DelayComponent (DelayParameterContainer& parameterContainer)
 
     addAndMakeVisible (timeLabel = new Label ("Time Label",
                                               TRANS("Time")));
-    timeLabel->setFont (Font (15.00f, Font::plain));
+    timeLabel->setFont (Font (15.00f, Font::plain).withTypefaceStyle ("Regular"));
     timeLabel->setJustificationType (Justification::centredLeft);
     timeLabel->setEditable (false, false, false);
+    timeLabel->setColour (Label::textColourId, Colours::black);
     timeLabel->setColour (TextEditor::textColourId, Colours::black);
     timeLabel->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
     addAndMakeVisible (feedLabel = new Label ("Feed Label",
                                               TRANS("Feed")));
-    feedLabel->setFont (Font (15.00f, Font::plain));
+    feedLabel->setFont (Font (15.00f, Font::plain).withTypefaceStyle ("Regular"));
     feedLabel->setJustificationType (Justification::centredLeft);
     feedLabel->setEditable (false, false, false);
+    feedLabel->setColour (Label::textColourId, Colours::black);
     feedLabel->setColour (TextEditor::textColourId, Colours::black);
     feedLabel->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
     addAndMakeVisible (spreadLabel = new Label ("Spread Label",
                                                 TRANS("Spread")));
-    spreadLabel->setFont (Font (15.00f, Font::plain));
+    spreadLabel->setFont (Font (15.00f, Font::plain).withTypefaceStyle ("Regular"));
     spreadLabel->setJustificationType (Justification::centredLeft);
     spreadLabel->setEditable (false, false, false);
     spreadLabel->setColour (TextEditor::textColourId, Colours::black);
@@ -83,7 +85,7 @@ DelayComponent::DelayComponent (DelayParameterContainer& parameterContainer)
 
     addAndMakeVisible (mixLabel = new Label ("Mix Label",
                                              TRANS("Mix")));
-    mixLabel->setFont (Font (15.00f, Font::plain));
+    mixLabel->setFont (Font (15.00f, Font::plain).withTypefaceStyle ("Regular"));
     mixLabel->setJustificationType (Justification::centredLeft);
     mixLabel->setEditable (false, false, false);
     mixLabel->setColour (TextEditor::textColourId, Colours::black);
@@ -91,10 +93,11 @@ DelayComponent::DelayComponent (DelayParameterContainer& parameterContainer)
 
     addAndMakeVisible (delayTitleLabel = new Label ("Delay Title Label",
                                                     TRANS("Delay")));
-    delayTitleLabel->setFont (Font (15.00f, Font::plain));
+    delayTitleLabel->setFont (Font (15.00f, Font::plain).withTypefaceStyle ("Regular"));
     delayTitleLabel->setJustificationType (Justification::centredLeft);
     delayTitleLabel->setEditable (false, false, false);
     delayTitleLabel->setColour (Label::backgroundColourId, Colours::white);
+    delayTitleLabel->setColour (Label::textColourId, Colours::black);
     delayTitleLabel->setColour (Label::outlineColourId, Colour (0x00000000));
     delayTitleLabel->setColour (TextEditor::textColourId, Colours::black);
     delayTitleLabel->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
@@ -157,16 +160,16 @@ void DelayComponent::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    timeKnob->setBounds (8, 24, 40, 40);
-    feedKnob->setBounds (72, 24, 40, 40);
+    timeKnob->setBounds (8, 24, 48, 48);
+    feedKnob->setBounds (64, 24, 48, 48);
     spreadKnob->setBounds (8, 88, 40, 40);
     mixKnob->setBounds (72, 88, 40, 40);
-    timeLabel->setBounds (8, 64, 40, 16);
-    feedLabel->setBounds (72, 64, 40, 16);
+    timeLabel->setBounds (12, 64, 40, 16);
+    feedLabel->setBounds (69, 64, 40, 16);
     spreadLabel->setBounds (0, 128, 56, 16);
     mixLabel->setBounds (75, 128, 32, 16);
     delayTitleLabel->setBounds (38, 4, 48, 16);
-    delayToggleButton->setBounds (8, 0, 150, 24);
+    delayToggleButton->setBounds (0, 0, 32, 24);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -241,12 +244,12 @@ BEGIN_JUCER_METADATA
     <RECT pos="0 0 120 24" fill="solid: ffd2691e" hasStroke="0"/>
   </BACKGROUND>
   <SLIDER name="Time Knob" id="aa80732c9a3bcd4b" memberName="timeKnob"
-          virtualName="ParameterSlider" explicitFocusOrder="0" pos="8 24 40 40"
+          virtualName="ParameterSlider" explicitFocusOrder="0" pos="8 24 48 48"
           min="0" max="1" int="0" style="Rotary" textBoxPos="NoTextBox"
           textBoxEditable="1" textBoxWidth="80" textBoxHeight="20" skewFactor="1"
           needsCallback="1"/>
   <SLIDER name="Feed Knob" id="84e5b64d59972127" memberName="feedKnob"
-          virtualName="ParameterSlider" explicitFocusOrder="0" pos="72 24 40 40"
+          virtualName="ParameterSlider" explicitFocusOrder="0" pos="64 24 48 48"
           min="0" max="1" int="0" style="Rotary" textBoxPos="NoTextBox"
           textBoxEditable="1" textBoxWidth="80" textBoxHeight="20" skewFactor="1"
           needsCallback="1"/>
@@ -260,32 +263,33 @@ BEGIN_JUCER_METADATA
           style="Rotary" textBoxPos="NoTextBox" textBoxEditable="1" textBoxWidth="80"
           textBoxHeight="20" skewFactor="1" needsCallback="1"/>
   <LABEL name="Time Label" id="38b196fc8a7c0f5f" memberName="timeLabel"
-         virtualName="" explicitFocusOrder="0" pos="8 64 40 16" edTextCol="ff000000"
-         edBkgCol="0" labelText="Time" editableSingleClick="0" editableDoubleClick="0"
-         focusDiscardsChanges="0" fontname="Default font" fontsize="15"
-         bold="0" italic="0" justification="33"/>
+         virtualName="" explicitFocusOrder="0" pos="12 64 40 16" textCol="ff000000"
+         edTextCol="ff000000" edBkgCol="0" labelText="Time" editableSingleClick="0"
+         editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
+         fontsize="15" kerning="0" bold="0" italic="0" justification="33"/>
   <LABEL name="Feed Label" id="bae9c7ca1e0ff466" memberName="feedLabel"
-         virtualName="" explicitFocusOrder="0" pos="72 64 40 16" edTextCol="ff000000"
-         edBkgCol="0" labelText="Feed" editableSingleClick="0" editableDoubleClick="0"
-         focusDiscardsChanges="0" fontname="Default font" fontsize="15"
-         bold="0" italic="0" justification="33"/>
+         virtualName="" explicitFocusOrder="0" pos="69 64 40 16" textCol="ff000000"
+         edTextCol="ff000000" edBkgCol="0" labelText="Feed" editableSingleClick="0"
+         editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
+         fontsize="15" kerning="0" bold="0" italic="0" justification="33"/>
   <LABEL name="Spread Label" id="34727334d9a5d622" memberName="spreadLabel"
          virtualName="" explicitFocusOrder="0" pos="0 128 56 16" edTextCol="ff000000"
          edBkgCol="0" labelText="Spread" editableSingleClick="0" editableDoubleClick="0"
          focusDiscardsChanges="0" fontname="Default font" fontsize="15"
-         bold="0" italic="0" justification="33"/>
+         kerning="0" bold="0" italic="0" justification="33"/>
   <LABEL name="Mix Label" id="a426f00524c2dd8e" memberName="mixLabel"
          virtualName="" explicitFocusOrder="0" pos="75 128 32 16" edTextCol="ff000000"
          edBkgCol="0" labelText="Mix" editableSingleClick="0" editableDoubleClick="0"
          focusDiscardsChanges="0" fontname="Default font" fontsize="15"
-         bold="0" italic="0" justification="33"/>
+         kerning="0" bold="0" italic="0" justification="33"/>
   <LABEL name="Delay Title Label" id="1aef2ce4beb9bc42" memberName="delayTitleLabel"
          virtualName="" explicitFocusOrder="0" pos="38 4 48 16" bkgCol="ffffffff"
-         outlineCol="0" edTextCol="ff000000" edBkgCol="0" labelText="Delay"
-         editableSingleClick="0" editableDoubleClick="0" focusDiscardsChanges="0"
-         fontname="Default font" fontsize="15" bold="0" italic="0" justification="33"/>
+         textCol="ff000000" outlineCol="0" edTextCol="ff000000" edBkgCol="0"
+         labelText="Delay" editableSingleClick="0" editableDoubleClick="0"
+         focusDiscardsChanges="0" fontname="Default font" fontsize="15"
+         kerning="0" bold="0" italic="0" justification="33"/>
   <TOGGLEBUTTON name="Delay Toggle Button" id="8f4c7bd269ee1c38" memberName="delayToggleButton"
-                virtualName="" explicitFocusOrder="0" pos="8 0 150 24" buttonText=""
+                virtualName="" explicitFocusOrder="0" pos="0 0 32 24" buttonText=""
                 connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
 </JUCER_COMPONENT>
 

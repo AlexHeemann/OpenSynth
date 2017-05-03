@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 4.3.0
+  Created with Projucer version: 5.0.0
 
   ------------------------------------------------------------------------------
 
@@ -67,18 +67,20 @@ OscillatorComponent::OscillatorComponent (OscillatorParameterContainer& paramete
     osc2ComboBox->addListener (this);
 
     addAndMakeVisible (mixLabel = new Label ("Mix Label",
-                                             TRANS("MIx")));
-    mixLabel->setFont (Font (15.00f, Font::plain));
+                                             TRANS("Mix")));
+    mixLabel->setFont (Font (15.00f, Font::plain).withTypefaceStyle ("Regular"));
     mixLabel->setJustificationType (Justification::centredLeft);
     mixLabel->setEditable (false, false, false);
+    mixLabel->setColour (Label::textColourId, Colours::black);
     mixLabel->setColour (TextEditor::textColourId, Colours::black);
     mixLabel->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
     addAndMakeVisible (titleLabel = new Label ("Title Label",
                                                TRANS("Oscillators")));
-    titleLabel->setFont (Font (15.00f, Font::plain));
+    titleLabel->setFont (Font (15.00f, Font::plain).withTypefaceStyle ("Regular"));
     titleLabel->setJustificationType (Justification::centredLeft);
     titleLabel->setEditable (false, false, false);
+    titleLabel->setColour (Label::textColourId, Colours::black);
     titleLabel->setColour (TextEditor::textColourId, Colours::black);
     titleLabel->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
@@ -104,7 +106,7 @@ OscillatorComponent::OscillatorComponent (OscillatorParameterContainer& paramete
 
     addAndMakeVisible (osc1SemiLabel = new Label ("Osc 1 Semi Label",
                                                   TRANS("Semi")));
-    osc1SemiLabel->setFont (Font (15.00f, Font::plain));
+    osc1SemiLabel->setFont (Font (15.00f, Font::plain).withTypefaceStyle ("Regular"));
     osc1SemiLabel->setJustificationType (Justification::centredLeft);
     osc1SemiLabel->setEditable (false, false, false);
     osc1SemiLabel->setColour (TextEditor::textColourId, Colours::black);
@@ -112,7 +114,7 @@ OscillatorComponent::OscillatorComponent (OscillatorParameterContainer& paramete
 
     addAndMakeVisible (osc1CentsLabel = new Label ("Osc 1 Cents Label",
                                                    TRANS("Cents")));
-    osc1CentsLabel->setFont (Font (15.00f, Font::plain));
+    osc1CentsLabel->setFont (Font (15.00f, Font::plain).withTypefaceStyle ("Regular"));
     osc1CentsLabel->setJustificationType (Justification::centredLeft);
     osc1CentsLabel->setEditable (false, false, false);
     osc1CentsLabel->setColour (TextEditor::textColourId, Colours::black);
@@ -120,7 +122,7 @@ OscillatorComponent::OscillatorComponent (OscillatorParameterContainer& paramete
 
     addAndMakeVisible (osc2SemiLabel = new Label ("Osc 2 Semi Label",
                                                   TRANS("Semi")));
-    osc2SemiLabel->setFont (Font (15.00f, Font::plain));
+    osc2SemiLabel->setFont (Font (15.00f, Font::plain).withTypefaceStyle ("Regular"));
     osc2SemiLabel->setJustificationType (Justification::centredLeft);
     osc2SemiLabel->setEditable (false, false, false);
     osc2SemiLabel->setColour (TextEditor::textColourId, Colours::black);
@@ -128,7 +130,7 @@ OscillatorComponent::OscillatorComponent (OscillatorParameterContainer& paramete
 
     addAndMakeVisible (osc2CentsLabel = new Label ("Osc 2 Cents Label",
                                                    TRANS("Cents")));
-    osc2CentsLabel->setFont (Font (15.00f, Font::plain));
+    osc2CentsLabel->setFont (Font (15.00f, Font::plain).withTypefaceStyle ("Regular"));
     osc2CentsLabel->setJustificationType (Justification::centredLeft);
     osc2CentsLabel->setEditable (false, false, false);
     osc2CentsLabel->setColour (TextEditor::textColourId, Colours::black);
@@ -296,15 +298,15 @@ BEGIN_JUCER_METADATA
             layout="33" items="Sine&#10;Sawtooth&#10;Square&#10;Triangle"
             textWhenNonSelected="Waveform" textWhenNoItems="(no choices)"/>
   <LABEL name="Mix Label" id="d01ee9ac72b6cecf" memberName="mixLabel"
-         virtualName="" explicitFocusOrder="0" pos="168 48 32 24" edTextCol="ff000000"
-         edBkgCol="0" labelText="MIx" editableSingleClick="0" editableDoubleClick="0"
-         focusDiscardsChanges="0" fontname="Default font" fontsize="15"
-         bold="0" italic="0" justification="33"/>
-  <LABEL name="Title Label" id="5be71bd636933011" memberName="titleLabel"
-         virtualName="" explicitFocusOrder="0" pos="24 0 79 24" edTextCol="ff000000"
-         edBkgCol="0" labelText="Oscillators" editableSingleClick="0"
+         virtualName="" explicitFocusOrder="0" pos="168 48 32 24" textCol="ff000000"
+         edTextCol="ff000000" edBkgCol="0" labelText="Mix" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
-         fontsize="15" bold="0" italic="0" justification="33"/>
+         fontsize="15" kerning="0" bold="0" italic="0" justification="33"/>
+  <LABEL name="Title Label" id="5be71bd636933011" memberName="titleLabel"
+         virtualName="" explicitFocusOrder="0" pos="24 0 79 24" textCol="ff000000"
+         edTextCol="ff000000" edBkgCol="0" labelText="Oscillators" editableSingleClick="0"
+         editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
+         fontsize="15" kerning="0" bold="0" italic="0" justification="33"/>
   <SLIDER name="Osc 1 Semi Slider" id="f2161025490f057a" memberName="osc1SemiSlider"
           virtualName="ParameterSlider" explicitFocusOrder="0" pos="8 56 104 32"
           trackcol="ffffffff" min="0" max="1" int="0" style="LinearHorizontal"
@@ -329,22 +331,22 @@ BEGIN_JUCER_METADATA
          virtualName="" explicitFocusOrder="0" pos="112 56 40 24" edTextCol="ff000000"
          edBkgCol="0" labelText="Semi" editableSingleClick="0" editableDoubleClick="0"
          focusDiscardsChanges="0" fontname="Default font" fontsize="15"
-         bold="0" italic="0" justification="33"/>
+         kerning="0" bold="0" italic="0" justification="33"/>
   <LABEL name="Osc 1 Cents Label" id="4a616d42488b077f" memberName="osc1CentsLabel"
          virtualName="" explicitFocusOrder="0" pos="112 96 40 24" edTextCol="ff000000"
          edBkgCol="0" labelText="Cents" editableSingleClick="0" editableDoubleClick="0"
          focusDiscardsChanges="0" fontname="Default font" fontsize="15"
-         bold="0" italic="0" justification="33"/>
+         kerning="0" bold="0" italic="0" justification="33"/>
   <LABEL name="Osc 2 Semi Label" id="b45d0aa1f88a2fce" memberName="osc2SemiLabel"
          virtualName="" explicitFocusOrder="0" pos="112 176 40 24" edTextCol="ff000000"
          edBkgCol="0" labelText="Semi" editableSingleClick="0" editableDoubleClick="0"
          focusDiscardsChanges="0" fontname="Default font" fontsize="15"
-         bold="0" italic="0" justification="33"/>
+         kerning="0" bold="0" italic="0" justification="33"/>
   <LABEL name="Osc 2 Cents Label" id="e5c6d319c74eba51" memberName="osc2CentsLabel"
          virtualName="" explicitFocusOrder="0" pos="112 216 40 24" edTextCol="ff000000"
          edBkgCol="0" labelText="Cents" editableSingleClick="0" editableDoubleClick="0"
          focusDiscardsChanges="0" fontname="Default font" fontsize="15"
-         bold="0" italic="0" justification="33"/>
+         kerning="0" bold="0" italic="0" justification="33"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

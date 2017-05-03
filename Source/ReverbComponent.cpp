@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 4.3.0
+  Created with Projucer version: 5.0.0
 
   ------------------------------------------------------------------------------
 
@@ -40,10 +40,11 @@ ReverbComponent::ReverbComponent (ReverbParameterContainer& parameterContainer)
 
     addAndMakeVisible (reverbTitleLabel = new Label ("Reverb Title Label",
                                                      TRANS("Reverb")));
-    reverbTitleLabel->setFont (Font (15.00f, Font::plain));
+    reverbTitleLabel->setFont (Font (15.00f, Font::plain).withTypefaceStyle ("Regular"));
     reverbTitleLabel->setJustificationType (Justification::centredLeft);
     reverbTitleLabel->setEditable (false, false, false);
     reverbTitleLabel->setColour (Label::backgroundColourId, Colours::white);
+    reverbTitleLabel->setColour (Label::textColourId, Colours::black);
     reverbTitleLabel->setColour (TextEditor::textColourId, Colours::black);
     reverbTitleLabel->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
@@ -69,41 +70,46 @@ ReverbComponent::ReverbComponent (ReverbParameterContainer& parameterContainer)
 
     addAndMakeVisible (sizeLabel = new Label ("Size Label",
                                               TRANS("Size")));
-    sizeLabel->setFont (Font (13.00f, Font::plain));
+    sizeLabel->setFont (Font (13.00f, Font::plain).withTypefaceStyle ("Regular"));
     sizeLabel->setJustificationType (Justification::centredLeft);
     sizeLabel->setEditable (false, false, false);
+    sizeLabel->setColour (Label::textColourId, Colours::black);
     sizeLabel->setColour (TextEditor::textColourId, Colours::black);
     sizeLabel->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
     addAndMakeVisible (dampingLabel = new Label ("Damping",
                                                  TRANS("Damping")));
-    dampingLabel->setFont (Font (13.00f, Font::plain));
+    dampingLabel->setFont (Font (13.00f, Font::plain).withTypefaceStyle ("Regular"));
     dampingLabel->setJustificationType (Justification::centredLeft);
     dampingLabel->setEditable (false, false, false);
+    dampingLabel->setColour (Label::textColourId, Colours::black);
     dampingLabel->setColour (TextEditor::textColourId, Colours::black);
     dampingLabel->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
     addAndMakeVisible (wetLabel = new Label ("Wet Label",
                                              TRANS("Wet")));
-    wetLabel->setFont (Font (13.00f, Font::plain));
+    wetLabel->setFont (Font (13.00f, Font::plain).withTypefaceStyle ("Regular"));
     wetLabel->setJustificationType (Justification::centredLeft);
     wetLabel->setEditable (false, false, false);
+    wetLabel->setColour (Label::textColourId, Colours::black);
     wetLabel->setColour (TextEditor::textColourId, Colours::black);
     wetLabel->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
     addAndMakeVisible (dryLabel = new Label ("Dry Label",
                                              TRANS("Dry")));
-    dryLabel->setFont (Font (13.00f, Font::plain));
+    dryLabel->setFont (Font (13.00f, Font::plain).withTypefaceStyle ("Regular"));
     dryLabel->setJustificationType (Justification::centredLeft);
     dryLabel->setEditable (false, false, false);
+    dryLabel->setColour (Label::textColourId, Colours::black);
     dryLabel->setColour (TextEditor::textColourId, Colours::black);
     dryLabel->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
     addAndMakeVisible (widthLabel = new Label ("Width Label",
                                                TRANS("Width")));
-    widthLabel->setFont (Font (13.00f, Font::plain));
+    widthLabel->setFont (Font (13.00f, Font::plain).withTypefaceStyle ("Regular"));
     widthLabel->setJustificationType (Justification::centredLeft);
     widthLabel->setEditable (false, false, false);
+    widthLabel->setColour (Label::textColourId, Colours::black);
     widthLabel->setColour (TextEditor::textColourId, Colours::black);
     widthLabel->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
@@ -178,7 +184,7 @@ void ReverbComponent::resized()
     wetLabel->setBounds (16, 124, 31, 14);
     dryLabel->setBounds (72, 125, 31, 13);
     widthLabel->setBounds (13, 179, 40, 16);
-    reverbToggleButton->setBounds (6, 0, 90, 24);
+    reverbToggleButton->setBounds (6, 0, 98, 24);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -224,9 +230,10 @@ BEGIN_JUCER_METADATA
   </BACKGROUND>
   <LABEL name="Reverb Title Label" id="22a399ed1ffe13ed" memberName="reverbTitleLabel"
          virtualName="" explicitFocusOrder="0" pos="34 4 53 16" bkgCol="ffffffff"
-         edTextCol="ff000000" edBkgCol="0" labelText="Reverb" editableSingleClick="0"
-         editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
-         fontsize="15" bold="0" italic="0" justification="33"/>
+         textCol="ff000000" edTextCol="ff000000" edBkgCol="0" labelText="Reverb"
+         editableSingleClick="0" editableDoubleClick="0" focusDiscardsChanges="0"
+         fontname="Default font" fontsize="15" kerning="0" bold="0" italic="0"
+         justification="33"/>
   <SLIDER name="Reverb Size Knob" id="5d03a43546f16b0c" memberName="reverbSizeKnob"
           virtualName="ParameterSlider" explicitFocusOrder="0" pos="8 29 48 40"
           min="0" max="1" int="0" style="Rotary" textBoxPos="NoTextBox"
@@ -253,32 +260,32 @@ BEGIN_JUCER_METADATA
           textBoxEditable="1" textBoxWidth="80" textBoxHeight="20" skewFactor="1"
           needsCallback="0"/>
   <LABEL name="Size Label" id="da35f56642f1beea" memberName="sizeLabel"
-         virtualName="" explicitFocusOrder="0" pos="16 64 32 16" edTextCol="ff000000"
-         edBkgCol="0" labelText="Size" editableSingleClick="0" editableDoubleClick="0"
-         focusDiscardsChanges="0" fontname="Default font" fontsize="13"
-         bold="0" italic="0" justification="33"/>
+         virtualName="" explicitFocusOrder="0" pos="16 64 32 16" textCol="ff000000"
+         edTextCol="ff000000" edBkgCol="0" labelText="Size" editableSingleClick="0"
+         editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
+         fontsize="13" kerning="0" bold="0" italic="0" justification="33"/>
   <LABEL name="Damping" id="6e140bedf24f8ed6" memberName="dampingLabel"
-         virtualName="" explicitFocusOrder="0" pos="59 64 59 16" edTextCol="ff000000"
-         edBkgCol="0" labelText="Damping" editableSingleClick="0" editableDoubleClick="0"
-         focusDiscardsChanges="0" fontname="Default font" fontsize="13"
-         bold="0" italic="0" justification="33"/>
+         virtualName="" explicitFocusOrder="0" pos="59 64 59 16" textCol="ff000000"
+         edTextCol="ff000000" edBkgCol="0" labelText="Damping" editableSingleClick="0"
+         editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
+         fontsize="13" kerning="0" bold="0" italic="0" justification="33"/>
   <LABEL name="Wet Label" id="7532d935b4e82b81" memberName="wetLabel"
-         virtualName="" explicitFocusOrder="0" pos="16 124 31 14" edTextCol="ff000000"
-         edBkgCol="0" labelText="Wet" editableSingleClick="0" editableDoubleClick="0"
-         focusDiscardsChanges="0" fontname="Default font" fontsize="13"
-         bold="0" italic="0" justification="33"/>
+         virtualName="" explicitFocusOrder="0" pos="16 124 31 14" textCol="ff000000"
+         edTextCol="ff000000" edBkgCol="0" labelText="Wet" editableSingleClick="0"
+         editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
+         fontsize="13" kerning="0" bold="0" italic="0" justification="33"/>
   <LABEL name="Dry Label" id="60f7cd654e6f045d" memberName="dryLabel"
-         virtualName="" explicitFocusOrder="0" pos="72 125 31 13" edTextCol="ff000000"
-         edBkgCol="0" labelText="Dry" editableSingleClick="0" editableDoubleClick="0"
-         focusDiscardsChanges="0" fontname="Default font" fontsize="13"
-         bold="0" italic="0" justification="33"/>
+         virtualName="" explicitFocusOrder="0" pos="72 125 31 13" textCol="ff000000"
+         edTextCol="ff000000" edBkgCol="0" labelText="Dry" editableSingleClick="0"
+         editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
+         fontsize="13" kerning="0" bold="0" italic="0" justification="33"/>
   <LABEL name="Width Label" id="ddc79248f2583b8c" memberName="widthLabel"
-         virtualName="" explicitFocusOrder="0" pos="13 179 40 16" edTextCol="ff000000"
-         edBkgCol="0" labelText="Width" editableSingleClick="0" editableDoubleClick="0"
-         focusDiscardsChanges="0" fontname="Default font" fontsize="13"
-         bold="0" italic="0" justification="33"/>
+         virtualName="" explicitFocusOrder="0" pos="13 179 40 16" textCol="ff000000"
+         edTextCol="ff000000" edBkgCol="0" labelText="Width" editableSingleClick="0"
+         editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
+         fontsize="13" kerning="0" bold="0" italic="0" justification="33"/>
   <TOGGLEBUTTON name="Enabled Toggle Button" id="57b1784b8a594edf" memberName="reverbToggleButton"
-                virtualName="" explicitFocusOrder="0" pos="6 0 90 24" buttonText=""
+                virtualName="" explicitFocusOrder="0" pos="6 0 98 24" buttonText=""
                 connectedEdges="0" needsCallback="1" radioGroupId="0" state="0"/>
 </JUCER_COMPONENT>
 
