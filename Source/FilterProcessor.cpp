@@ -26,7 +26,7 @@ void FilterProcessor::processBufferWithFilter(AudioBuffer<FloatType> &buffer, in
 {
     bool isModulated = envelopeGenerator != nullptr && envelopeGenerator->envelopeBuffer.size() >= numSamples && numSamples > 0;
     float filterModulation = isModulated ? envelopeGenerator->envelopeBuffer[0] : 1.0;
-    filterModulation += modulationMatrix->getValueForDestinationID(ParameterIDFilterCutoff);
+    filterModulation = modulationMatrix->getValueForDestinationID(ParameterIDFilterCutoff);
     AudioParameterFloat* frequency = parameterContainer->getFilterFrequencyParameter();
     AudioParameterFloat* envelopeAmount = parameterContainer->getEnvelopeAmountParameter();
     AudioParameterFloat* resonance = parameterContainer->getFilterResonanceParameter();
