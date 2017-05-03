@@ -10,15 +10,16 @@
 
 #include "LFO.h"
 #include "ModulationMatrix.h"
+#include "LFOParameterContainer.h"
 
 void LFO::calculatePhaseIncrement()
 {
-    phaseIncrement = frequencyParameter->get() * frqRad;
+    phaseIncrement = parameterContainer->getFrequencyParameter()->get() * frqRad;
 }
 
 void LFO::reset()
 {
-    currentPhase = phaseOffsetParameter->get() * 2.0 * double_Pi;
+    currentPhase = parameterContainer->getPhaseOffsetParameter()->get() * 2.0 * double_Pi;
 }
 
 void LFO::oscillate(int numSamples)
@@ -30,7 +31,6 @@ void LFO::oscillate(int numSamples)
         case LFOWaveformSine:
             for (int sample = 0; sample < numSamples; ++sample)
             {
-                currentValue = sin(currentPhase);
                 currentPhase += phaseIncrement;
                 if (currentPhase >= twoPi)
                 {
@@ -43,6 +43,7 @@ void LFO::oscillate(int numSamples)
             break;
     }
     
+    currentValue = sin(currentPhase);
     modulationMatrix->setValueForSourceID(ID, currentValue);
 }
 

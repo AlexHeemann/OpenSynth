@@ -15,7 +15,7 @@
 #include "Module.h"
 #include <set>
 
-class ModulationMatrix;
+class LFOParameterContainer;
 
 class LFO : public Module
 {
@@ -29,21 +29,19 @@ public:
         LFOWaveformTriangle,
     } LFOWaveform;
     
-    LFO(int ID, AudioProcessor& processor) : Module(ID, processor)
+    LFO(int ID, LFOParameterContainer* parameterContainer) : Module(ID), parameterContainer(parameterContainer)
     {
-        processor.addParameter(phaseOffsetParameter = new AudioParameterFloat(std::to_string(ID) + "_" + "phaseOffset", "Phase Offset", 0.0f, 1.0f, 0.0f));
-        processor.addParameter(frequencyParameter = new AudioParameterFloat(std::to_string(ID) + "_" + "frequencyParameter", "Frequency", 0.0f, 20.0f, 10.0f));
     };
     ~LFO() {};
     
-    double getCurrentValue() { return currentValue; }
+    double getCurrentValue() const { return currentValue; }
     void setSampleRate(int sampleRate)
     {
         this->sampleRate = sampleRate;
         frqRad = (2.0 * double_Pi) / sampleRate;
     };
-    AudioParameterFloat* phaseOffsetParameter;
-    AudioParameterFloat* frequencyParameter;
+    
+    LFOParameterContainer* getParameterContainer() const { return parameterContainer; }
     
     // Calculates the next values for the LFO
     void oscillate(int numSamples);
@@ -60,6 +58,7 @@ private:
     double phaseIncrement;
     double frqRad;
     int sampleRate;
+    LFOParameterContainer* parameterContainer;
     
     void calculatePhaseIncrement();
     
