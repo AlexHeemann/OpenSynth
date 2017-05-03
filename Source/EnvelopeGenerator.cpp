@@ -10,8 +10,9 @@
 
 #include "EnvelopeGenerator.h"
 #include "EnvelopeParameterContainer.h"
+#include "ModulationMatrix.h"
 
-EnvelopeGenerator::EnvelopeGenerator() : currentAmp(0.0), sampleRate(0.0), durationInSec(2.0), envInc(0.0)
+EnvelopeGenerator::EnvelopeGenerator(int ID) : Module(ID), currentAmp(0.0), sampleRate(0.0), durationInSec(2.0), envInc(0.0)
 {
 	attackSegment.setCurvature(EnvelopeSegment::EnvelopeCurvatureExponential);
 	decaySegment.setCurvature(EnvelopeSegment::EnvelopeCurvatureExponential);
@@ -73,6 +74,8 @@ void EnvelopeGenerator::calculateEnvelopeBuffer(int numSamples)
 
 		envelopeBuffer[sampleIdx] = currentAmp;
 	}
+    
+    modulationMatrix->setValueForSourceID(ID, currentAmp);
 }
 
 void EnvelopeGenerator::setEnvelopeState(EnvelopeState state)

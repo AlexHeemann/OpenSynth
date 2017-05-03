@@ -13,6 +13,7 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "EnvelopeSegment.h"
+#include "Module.h"
 
 class EnvelopeParameterContainer;
 
@@ -28,7 +29,7 @@ public:
 
 };
 
-class EnvelopeGenerator
+class EnvelopeGenerator : public Module
 {
 public:
 	typedef enum
@@ -39,7 +40,7 @@ public:
 		EnvelopeStateRelease
 	} EnvelopeState;
 
-	EnvelopeGenerator();
+	EnvelopeGenerator(int ID);
 	virtual ~EnvelopeGenerator();
 	// Contains the values for the current buffer
 	std::vector<double> envelopeBuffer;

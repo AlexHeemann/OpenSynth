@@ -18,7 +18,7 @@ class ModulationMatrix;
 class Module
 {
 public:
-    Module(int ID, AudioProcessor& processor) : ID(ID) {};
+    Module(int ID) : ID(ID) {};
     ~Module() {};
     
     int getID() { return ID; };
