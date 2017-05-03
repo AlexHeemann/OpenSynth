@@ -25,6 +25,7 @@ class EnvelopeParameterContainer;
 class OscillatorParameterContainer;
 class FilterParameterContainer;
 class DelayParameterContainer;
+class LFOParameterContainer;
 
 typedef enum
 {
@@ -37,6 +38,8 @@ typedef enum
 typedef enum
 {
     ParameterIDLFO1Output,
+    ParameterIDEnvelope1Output,
+    ParameterIDEnvelope2Output,
     ParameterIDFilterCutoff,
 } ParameterID;
 
@@ -128,6 +131,10 @@ public:
     {
         return *filterParameterContainer;
     }
+    LFOParameterContainer& getLFOParameterContainer()
+    {
+        return *lfoParameterContainer;
+    }
     
 
 private:
@@ -151,6 +158,7 @@ private:
     ScopedPointer<OscillatorParameterContainer> oscillatorParameterContainer;
     ScopedPointer<FilterParameterContainer> filterParameterContainer;
     ScopedPointer<DelayParameterContainer> delayParameterContainer;
+    ScopedPointer<LFOParameterContainer> lfoParameterContainer;
     
     ScopedPointer<LFO> lfo1;
     ScopedPointer<LFO> lfo2;
@@ -158,7 +166,7 @@ private:
     ScopedPointer<ModulationMatrix> modulationMatrix;
 
 	void initialiseSynthForWaveform(const Waveform waveform, const int numVoices);
-    void setupModulation();
+    void setupModulation(ModulationMatrix* modulationMatrix);
     
 	virtual void handleNoteOn(MidiKeyboardState* source,
 		int midiChannel, int midiNoteNumber, float velocity) override;

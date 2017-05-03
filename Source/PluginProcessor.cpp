@@ -39,6 +39,9 @@ AudioProcessor (BusesProperties()
     // Filter
     filterParameterContainer = new FilterParameterContainer(*this);
     
+    // LFO
+    lfoParameterContainer = new LFOParameterContainer(*this);
+    
     // Delay
     delayParameterContainer = new DelayParameterContainer(*this);
     delayProcessor->setParameterContainer(delayParameterContainer);
@@ -49,7 +52,7 @@ AudioProcessor (BusesProperties()
     
 	initialiseSynthForWaveform(WaveformSawtooth, 8);
 	keyboardState.addListener(this);
-    setupModulation();
+    setupModulation(modulationMatrix);
 }
 
 OpenSynthAudioProcessor::~OpenSynthAudioProcessor()
@@ -60,7 +63,7 @@ void OpenSynthAudioProcessor::initialiseSynthForWaveform(const Waveform waveform
 {
 	synth.clearSounds();
 	synth.clearVoices();
-    lfo1 = new LFO(ParameterIDLFO1Output, *this);
+    lfo1 = new LFO(ParameterIDLFO1Output, lfoParameterContainer);
     lfo1->setModulationMatrix(modulationMatrix);
 
 	for (int i = numVoices; --i >= 0;)
@@ -93,20 +96,27 @@ void OpenSynthAudioProcessor::initialiseSynthForWaveform(const Waveform waveform
                 wavetableVoice = new WavetableVoice(&sawtoothWavetable);
             }
         }
-        EnvelopeGenerator* ampEnvelopeGenerator = new EnvelopeGenerator();
+        wavetableVoice->setModulationMatrix(new ModulationMatrix());
+        
+        EnvelopeGenerator* ampEnvelopeGenerator = new EnvelopeGenerator(ParameterIDEnvelope1Output);
+        ampEnvelopeGenerator->setModulationMatrix(wavetableVoice->getModulationMatrix());
         ampEnvelopeGenerator->setEnvelopeParameterContainer(ampEnvelopeParameterContainer);
         wavetableVoice->setAmpEnvelopeGenerator(ampEnvelopeGenerator);
     
-        EnvelopeGenerator* filterEnvelopeGenerator = new EnvelopeGenerator();
+        EnvelopeGenerator* filterEnvelopeGenerator = new EnvelopeGenerator(ParameterIDEnvelope2Output);
         filterEnvelopeGenerator->setEnvelopeParameterContainer(filterEnvelopeParameterContainer);
+        filterEnvelopeGenerator->setModulationMatrix(wavetableVoice->getModulationMatrix());
         
         wavetableVoice->setFilterEnvelopeGenerator(filterEnvelopeGenerator);
         wavetableVoice->getAmpProcessor()->level = level;
         wavetableVoice->getFilterProcessor()->setParameterContainer(filterParameterContainer);
         wavetableVoice->setOscillatorParameterContainer(oscillatorParameterContainer);
-        wavetableVoice->setModulationMatrix(modulationMatrix);
         
-        wavetableVoice->setLFO1(lfo1);
+        LFO* lfo = new LFO(ParameterIDLFO1Output, lfoParameterContainer);
+        lfo->setModulationMatrix(wavetableVoice->getModulationMatrix());
+        
+        wavetableVoice->setLFO1(lfo);
+        setupModulation(wavetableVoice->getModulationMatrix());
         
         synth.addVoice(wavetableVoice);
 	}
@@ -167,9 +177,10 @@ void OpenSynthAudioProcessor::changeProgramName (int index, const String& newNam
 {
 }
 
-void OpenSynthAudioProcessor::setupModulation()
+void OpenSynthAudioProcessor::setupModulation(ModulationMatrix* modulationMatrix)
 {
     modulationMatrix->addRow(ParameterIDLFO1Output, ParameterIDFilterCutoff, 1.0);
+    modulationMatrix->addRow(ParameterIDEnvelope2Output, ParameterIDFilterCutoff, 1.0);
 }
 
 //==============================================================================
@@ -196,6 +207,7 @@ void OpenSynthAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBl
                 voice->getFilterEnvelopeGenerator()->setSampleRate(sampleRate);
                 voice->getFilterEnvelopeGenerator()->resetEnvelope();
             }
+            voice->getLFO1()->setSampleRate(sampleRate);
         }
     }
 	currentSampleRate = sampleRate;
