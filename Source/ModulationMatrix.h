@@ -40,17 +40,17 @@ public:
     ModulationMatrix();
     ~ModulationMatrix() {};
     
-    int keyFromIDs(int sourceID, int destinationID)
+    int keyFromIDs(int sourceID, int destinationID) const
     {
         return sourceID << 16 | destinationID;
     }
     
-    int sourceIDFromKey(int key)
+    int sourceIDFromKey(int key) const
     {
         return key >> 16;
     }
     
-    int destinationIDFromKey(int key)
+    int destinationIDFromKey(int key) const
     {
         return key & 0xFFFF;
     }
