@@ -83,6 +83,16 @@ public:
         lfo1 = lfo;
     }
     
+    LFO* getLFO1()
+    {
+        return lfo1;
+    }
+    
+    LFO* getLFO2()
+    {
+        return lfo2;
+    }
+    
     void setLFO2(LFO* lfo)
     {
         lfo2 = lfo;
