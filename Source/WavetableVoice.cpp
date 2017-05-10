@@ -27,17 +27,21 @@ WavetableVoice::~WavetableVoice()
 void WavetableVoice::setAmpEnvelopeGenerator(EnvelopeGenerator* ampEnvelopeGenerator)
 {
     this->ampEnvelopeGenerator = ampEnvelopeGenerator;
-    this->ampEnvelopeGenerator->setSampleRate(getSampleRate());
-    this->ampEnvelopeGenerator->resetEnvelope();
+    setupEnvelope(ampEnvelopeGenerator);
     ampProcessor->setEnvelopeGenerator(ampEnvelopeGenerator);
 }
 
 void WavetableVoice::setFilterEnvelopeGenerator(EnvelopeGenerator *filterEnvelopeGenerator)
 {
     this->filterEnvelopeGenerator = filterEnvelopeGenerator;
-    this->filterEnvelopeGenerator->setSampleRate(getSampleRate());
-    this->filterEnvelopeGenerator->resetEnvelope();
+    setupEnvelope(filterEnvelopeGenerator);
     filterProcessor->setEnvelopeGenerator(filterEnvelopeGenerator);
+}
+
+void WavetableVoice::setupEnvelope(EnvelopeGenerator* envelopeGenerator)
+{
+    envelopeGenerator->setSampleRate(getSampleRate());
+    envelopeGenerator->resetEnvelope();
 }
 
 void WavetableVoice::setOsc1Wavetable(Wavetable* wavetable)
@@ -75,15 +79,19 @@ void WavetableVoice::startNote(int midiNoteNumber, float velocity,
     
     calculatePhaseIncrement();
     
-    if (ampEnvelopeGenerator != nullptr)
-    {
-        ampEnvelopeGenerator->resetEnvelope();
-    }
-    if (filterEnvelopeGenerator != nullptr)
-    {
-        filterEnvelopeGenerator->resetEnvelope();
-    }
+    resetEnvelope(ampEnvelopeGenerator);
+    resetEnvelope(filterEnvelopeGenerator);
+    resetEnvelope(envelopeGenerator1);
+    resetEnvelope(envelopeGenerator2);
     filterProcessor->resetFilter();
+}
+
+void WavetableVoice::resetEnvelope(EnvelopeGenerator* envelopeGenerator)
+{
+    if (envelopeGenerator != nullptr)
+    {
+        envelopeGenerator->resetEnvelope();
+    }
 }
 
 void WavetableVoice::calculatePhaseIncrement()
@@ -119,6 +127,12 @@ void WavetableVoice::stopNote(float velocity, bool allowTailOff)
     }
 }
 
+double getFrequencyFromFloatNote(float note)
+{
+    double frequencyOfA = 440.0;
+    return frequencyOfA * powf (2.0, (note - 69) / 12.0);
+}
+
 template <typename FloatType>
 void WavetableVoice::processBlock(AudioBuffer<FloatType>& outputBuffer, int startSample, int numSamples)
 {
@@ -126,6 +140,8 @@ void WavetableVoice::processBlock(AudioBuffer<FloatType>& outputBuffer, int star
     
     ampEnvelopeGenerator->calculateEnvelopeBuffer(numSamples);
     filterEnvelopeGenerator->calculateEnvelopeBuffer(numSamples);
+    envelopeGenerator1->calculateEnvelopeBuffer(numSamples);
+    envelopeGenerator2->calculateEnvelopeBuffer(numSamples);
     lfo1->oscillate(numSamples);
     
     modulationMatrix->process();
@@ -138,14 +154,20 @@ void WavetableVoice::processBlock(AudioBuffer<FloatType>& outputBuffer, int star
     int currentNote = getCurrentlyPlayingNote();
     if (currentNote >= 0)
     {
+        Range<int> osc1ModRange = oscillatorParameterContainer->getOsc1SemiParameter()->getRange();
+        float osc1SemiModulation = osc1ModRange.getEnd() * modulationMatrix->getValueForDestinationID(ParameterIDOscillator1Semi);
+        Range<int> osc2ModRange = oscillatorParameterContainer->getOsc2SemiParameter()->getRange();
+        float osc2SemiModulation = osc2ModRange.getEnd() * modulationMatrix->getValueForDestinationID(ParameterIDOscillator2Semi);
         int osc1Note = currentNote + oscillatorParameterContainer->getOsc1SemiParameter()->get();
         int osc2Note = currentNote + oscillatorParameterContainer->getOsc2SemiParameter()->get();
         
-        frequency1 = MidiMessage::getMidiNoteInHertz(osc1Note);
-        frequency1 += (MidiMessage::getMidiNoteInHertz(osc1Note + 1) - MidiMessage::getMidiNoteInHertz(osc1Note)) * (oscillatorParameterContainer->getOsc1Cents()->get()/100.0);
+        Range<int> osc1CentsModRange = oscillatorParameterContainer->getOsc1Cents()->getRange();
+        float osc1CentsModulation = osc1CentsModRange.getEnd() * modulationMatrix->getValueForDestinationID(ParameterIDOscillator1Cents);
+        Range<int> osc2CentsModRange = oscillatorParameterContainer->getOsc2Cents()->getRange();
+        float osc2CentsModulation = osc2CentsModRange.getEnd() * modulationMatrix->getValueForDestinationID(ParameterIDOscillator1Cents);
         
-        frequency2 = MidiMessage::getMidiNoteInHertz(osc2Note);
-        frequency2 += (MidiMessage::getMidiNoteInHertz(osc2Note + 1) - MidiMessage::getMidiNoteInHertz(osc2Note)) * (oscillatorParameterContainer->getOsc2Cents()->get()/100.0);
+        frequency1 = getFrequencyFromFloatNote(osc1Note + osc1SemiModulation + (oscillatorParameterContainer->getOsc1Cents()->get()/100.0));
+        frequency2 = getFrequencyFromFloatNote(osc2Note + osc2SemiModulation + (oscillatorParameterContainer->getOsc2Cents()->get()/100.0));
         
         calculatePhaseIncrement();
     }

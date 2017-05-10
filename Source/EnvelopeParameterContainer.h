@@ -11,20 +11,20 @@
 #ifndef ENVELOPEPARAMETERCONTAINER_H_INCLUDED
 #define ENVELOPEPARAMETERCONTAINER_H_INCLUDED
 
-#include "ParameterContainer.h"
+#include "ModulationParameterContainer.h"
 
-class EnvelopeParameterContainer: public ParameterContainer
+class EnvelopeParameterContainer: public ModulationParameterContainer
 {
 public:
-    EnvelopeParameterContainer(AudioProcessor& processor, int envelopeIndex) : processor(processor), envelopeIndex(envelopeIndex)
+    EnvelopeParameterContainer(AudioProcessor& processor, String name) : ModulationParameterContainer(processor, name)
     {
-        processor.addParameter(attackRate = new AudioParameterFloat("attack " + String(envelopeIndex), "Envelope " + String(envelopeIndex) + " Attack", 0.0f, 3.0f, 0.0f));
+        processor.addParameter(attackRate = new AudioParameterFloat(name + " attack", name + " Attack", 0.0f, 3.0f, 0.0f));
         attackRate->range.skew = 0.5;
-        processor.addParameter(decayRate = new AudioParameterFloat("decay " + String(envelopeIndex), "Envelope " + String(envelopeIndex) + " Decay", 0.0f, 3.0f, 3.0f));
+        processor.addParameter(decayRate = new AudioParameterFloat(name + " decay", name + " Decay", 0.0f, 3.0f, 3.0f));
         decayRate->range.skew = 0.5;
-        processor.addParameter(releaseRate = new AudioParameterFloat("release " + String(envelopeIndex), "Envelope " + String(envelopeIndex) + " Release", 0.0f, 3.0f, 1.0f));
+        processor.addParameter(releaseRate = new AudioParameterFloat(name + " release", name + " Release", 0.0f, 3.0f, 1.0f));
         releaseRate->range.skew = 0.5;
-        processor.addParameter(sustainLevel = new AudioParameterFloat("sustain " + String(envelopeIndex), "Envelope " + String(envelopeIndex) + " Sustain", 0.0f, 1.0f, 1.0f));
+        processor.addParameter(sustainLevel = new AudioParameterFloat(name + " sustain", name + " Sustain", 0.0f, 1.0f, 1.0f));
     }
     
     virtual ~EnvelopeParameterContainer() {}
@@ -35,9 +35,6 @@ public:
     AudioParameterFloat* getSustainLevelParameter() const { return sustainLevel; }
     
 private:
-    AudioProcessor& processor;
-    int envelopeIndex;
-    
     AudioParameterFloat* attackRate;
     AudioParameterFloat* decayRate;
     AudioParameterFloat* releaseRate;

@@ -38,9 +38,34 @@ typedef enum
 typedef enum
 {
     ParameterIDLFO1Output,
+    ParameterIDLFO1Frequency,
+    ParameterIDAmpEnvelopeOutput,
+    ParameterIDFilterEnvelopeOutput,
     ParameterIDEnvelope1Output,
     ParameterIDEnvelope2Output,
     ParameterIDFilterCutoff,
+    ParameterIDFilterCutoffModulationAmount,
+    ParameterIDFilterResonance,
+    ParameterIDEnvelope1Attack,
+    ParameterIDEnvelope1Decay,
+    ParameterIDEnvelope1Sustain,
+    ParameterIDEnvelope1Release,
+    ParameterIDEnvelope2Attack,
+    ParameterIDEnvelope2Decay,
+    ParameterIDEnvelope2Sustain,
+    ParameterIDEnvelope2Release,
+    ParameterIDOscillator1Semi,
+    ParameterIDOscillator1Cents,
+    ParameterIDOscillator2Semi,
+    ParameterIDOscillator2Cents,
+    ParameterIDDelayTime,
+    ParameterIDDelayFeedback,
+    ParameterIDReverbSize,
+    ParameterIDReverbDamping,
+    ParameterIDReverbWet,
+    ParameterIDReverbDry,
+    ParameterIDReverbWidth,
+    ParameterIDMasterGain,
 } ParameterID;
 
 //==============================================================================
@@ -135,6 +160,17 @@ public:
     {
         return *lfoParameterContainer;
     }
+    EnvelopeParameterContainer& getEnvelope1ParameterContainer()
+    {
+        return *envelope1ParameterContainer;
+    }
+    EnvelopeParameterContainer& getEnvelope2ParameterContainer()
+    {
+        return *envelope2ParameterContainer;
+    }
+    
+    void connect(int sourceID, int destinationID);
+    void updateModulationAmount(int sourceID, int destinationID, float amount);
     
 
 private:
@@ -159,6 +195,8 @@ private:
     ScopedPointer<FilterParameterContainer> filterParameterContainer;
     ScopedPointer<DelayParameterContainer> delayParameterContainer;
     ScopedPointer<LFOParameterContainer> lfoParameterContainer;
+    ScopedPointer<EnvelopeParameterContainer> envelope1ParameterContainer;
+    ScopedPointer<EnvelopeParameterContainer> envelope2ParameterContainer;
     
     ScopedPointer<LFO> lfo1;
     ScopedPointer<LFO> lfo2;

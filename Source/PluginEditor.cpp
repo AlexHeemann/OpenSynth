@@ -26,6 +26,8 @@ OpenSynthAudioProcessorEditor::OpenSynthAudioProcessorEditor (OpenSynthAudioProc
     addAndMakeVisible(delayComponent = new DelayComponent(owner.getDelayParameterContainer()));
     addAndMakeVisible(reverbComponent = new ReverbComponent(owner.getReverbParameterContainer()));
     addAndMakeVisible(lfoComponent = new LFOComponent(owner.getLFOParameterContainer()));
+    addAndMakeVisible(envelope1Component = new EnvelopeComponent(owner.getEnvelope1ParameterContainer()));
+    addAndMakeVisible(envelope2Component = new EnvelopeComponent(owner.getEnvelope2ParameterContainer()));
 
 	// add the midi keyboard component..
 	addAndMakeVisible(keyboardComponent);
@@ -60,7 +62,9 @@ void OpenSynthAudioProcessorEditor::resized()
     delayComponent->setTopRightPosition(filterComponent->getX() + filterComponent->getWidth(), filterComponent->getY() + filterComponent->getHeight() + 10);
     ampComponent->setTopLeftPosition(filterComponent->getX() + filterComponent->getWidth() + 10, filterComponent->getY());
     reverbComponent->setTopLeftPosition(ampComponent->getX(), ampComponent->getY() + ampComponent->getHeight() + 10);
-    lfoComponent->setTopLeftPosition(oscillatorComponent->getX(), oscillatorComponent->getY() + oscillatorComponent->getHeight() + 10);
+    lfoComponent->setTopLeftPosition(oscillatorComponent->getX(), oscillatorComponent->getY() + oscillatorComponent->getHeight() + 70);
+    envelope1Component->setTopLeftPosition(lfoComponent->getX() + lfoComponent->getWidth() + 10, lfoComponent->getY());
+    envelope2Component->setTopLeftPosition(envelope1Component->getX() + envelope1Component->getWidth() + 10, envelope1Component->getY());
 }
 
 //==============================================================================

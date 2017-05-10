@@ -31,11 +31,11 @@ ReverbComponent::ReverbComponent (ReverbParameterContainer& parameterContainer)
     : parameterContainer(parameterContainer)
 {
     //[Constructor_pre] You can add your own custom stuff here..
-    addAndMakeVisible (reverbSizeKnob = new ParameterSlider (*parameterContainer.getReverbSizeParameter()));
-    addAndMakeVisible (reverbDampingKnob = new ParameterSlider (*parameterContainer.getReverbDampingParameter()));
-    addAndMakeVisible (reverbWetKnob = new ParameterSlider (*parameterContainer.getReverbWetParameter()));
-    addAndMakeVisible (reverbDryKnob = new ParameterSlider (*parameterContainer.getReverbDryParameter()));
-    addAndMakeVisible (reverbWidthKnob = new ParameterSlider (*parameterContainer.getReverbWidthParameter()));
+    addAndMakeVisible (reverbSizeKnob = new ParameterSlider (*parameterContainer.getReverbSizeParameter(), ParameterIDReverbSize));
+    addAndMakeVisible (reverbDampingKnob = new ParameterSlider (*parameterContainer.getReverbDampingParameter(), ParameterIDReverbDamping));
+    addAndMakeVisible (reverbWetKnob = new ParameterSlider (*parameterContainer.getReverbWetParameter(), ParameterIDReverbWet));
+    addAndMakeVisible (reverbDryKnob = new ParameterSlider (*parameterContainer.getReverbDryParameter(), ParameterIDReverbDry));
+    addAndMakeVisible (reverbWidthKnob = new ParameterSlider (*parameterContainer.getReverbWidthParameter(), ParameterIDReverbWidth));
     //[/Constructor_pre]
 
     addAndMakeVisible (reverbTitleLabel = new Label ("Reverb Title Label",

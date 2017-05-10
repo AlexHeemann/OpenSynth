@@ -71,6 +71,19 @@ public:
     OscillatorParameterContainer* getOscillatorParameterContainer() const { return oscillatorParameterContainer; };
     void setFilterParameterContainer(FilterParameterContainer* filterParameterContainer);
     FilterParameterContainer* getFilterParameterContainer() const { return filterParameterContainer; };
+    void setEnvelopeGenerator1(EnvelopeGenerator* envelopeGenerator)
+    {
+        setupEnvelope(envelopeGenerator);
+        this->envelopeGenerator1 = envelopeGenerator;
+    }
+    EnvelopeGenerator* getEnvelopeGenerator1() const { return envelopeGenerator1; }
+    
+    void setEnvelopeGenerator2(EnvelopeGenerator* envelopeGenerator)
+    {
+        setupEnvelope(envelopeGenerator);
+        this->envelopeGenerator2 = envelopeGenerator;
+    }
+    EnvelopeGenerator* getEnvelopeGenerator2() const { return envelopeGenerator2; }
     
     /**
      * Set the wavetable to use for the voice
@@ -120,6 +133,8 @@ private:
     Wavetable* osc2Wavetable;
     EnvelopeGenerator* ampEnvelopeGenerator;
     EnvelopeGenerator* filterEnvelopeGenerator;
+    ScopedPointer<EnvelopeGenerator> envelopeGenerator1;
+    ScopedPointer<EnvelopeGenerator> envelopeGenerator2;
     OscillatorParameterContainer* oscillatorParameterContainer;
     FilterParameterContainer* filterParameterContainer;
     
@@ -137,6 +152,8 @@ private:
     void processBlock(AudioBuffer<FloatType>& outputBuffer, int startSample, int numSamples);
     
     void calculatePhaseIncrement();
+    void resetEnvelope(EnvelopeGenerator* envelopeGenerator);
+    void setupEnvelope(EnvelopeGenerator* envelopeGenerator);
 };
 
 

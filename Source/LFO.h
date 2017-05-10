@@ -21,14 +21,6 @@ class LFO : public Module
 {
 public:
     
-    typedef enum
-    {
-        LFOWaveformSine,
-        LFOWaveformSaw,
-        LFOWaveformSquare,
-        LFOWaveformTriangle,
-    } LFOWaveform;
-    
     LFO(int ID, LFOParameterContainer* parameterContainer) : Module(ID), parameterContainer(parameterContainer)
     {
     };
@@ -52,7 +44,6 @@ public:
     
 private:
     std::set<int> targets;
-    LFOWaveform waveform = LFOWaveformSine;
     double currentValue = 0;
     double currentPhase = 0;
     double phaseIncrement;

@@ -11,27 +11,34 @@
 #ifndef LFOPARAMETERCONTAINER_H_INCLUDED
 #define LFOPARAMETERCONTAINER_H_INCLUDED
 
-#include "ParameterContainer.h"
+#include "ModulationParameterContainer.h"
+#include "PluginProcessor.h"
 
-class LFOParameterContainer : public ParameterContainer
+class LFOParameterContainer : public ModulationParameterContainer
 {
 public:
-    LFOParameterContainer(AudioProcessor& processor) : processor(processor)
+    LFOParameterContainer(AudioProcessor& processor, String name) : ModulationParameterContainer(processor, name)
     {
         processor.addParameter(phaseOffsetParameter = new AudioParameterFloat("LFO_phaseOffset", "Phase Offset", 0.0f, 1.0f, 0.0f));
-        processor.addParameter(frequencyParameter = new AudioParameterFloat("LFO_frequencyParameter", "Frequency", 0.0f, 20.0f, 5.0f));
+        processor.addParameter(frequencyParameter = new AudioParameterFloat("LFO_frequency", "Frequency", 0.0f, 20.0f, 5.0f));
+        processor.addParameter(waveformParameter = new AudioParameterChoice("LFO_waveform", "Waveform", waveforms, WaveformSine));
     };
     
     virtual ~LFOParameterContainer() {};
     
     AudioParameterFloat* getPhaseOffsetParameter() const { return phaseOffsetParameter; }
     AudioParameterFloat* getFrequencyParameter() const { return frequencyParameter; }
-    
+    AudioParameterChoice* getWaveformParameter() const { return waveformParameter; }
+    void setWaveform(Waveform waveform)
+    {
+        *waveformParameter = waveform;
+    }
     
 private:
-    AudioProcessor& processor;
     AudioParameterFloat* phaseOffsetParameter;
     AudioParameterFloat* frequencyParameter;
+    AudioParameterChoice* waveformParameter;
+    StringArray waveforms = {"Sine", "Sawtooth", "Square", "Triangle"};
 };
 
 

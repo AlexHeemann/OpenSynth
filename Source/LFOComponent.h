@@ -23,6 +23,7 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "LFOParameterContainer.h"
 #include "ParameterSlider.h"
+#include "ModulationPlug.h"
 //[/Headers]
 
 
@@ -35,7 +36,8 @@
     Describe your class and how it works here!
                                                                     //[/Comments]
 */
-class LFOComponent  : public Component
+class LFOComponent  : public Component,
+                      public ComboBoxListener
 {
 public:
     //==============================================================================
@@ -48,6 +50,7 @@ public:
 
     void paint (Graphics& g) override;
     void resized() override;
+    void comboBoxChanged (ComboBox* comboBoxThatHasChanged) override;
 
 
 
@@ -60,6 +63,8 @@ private:
     ScopedPointer<Label> lfoTitleLabel;
     ScopedPointer<ParameterSlider> frequencySlider;
     ScopedPointer<Label> label;
+    ScopedPointer<ComboBox> waveformComboBox;
+    ScopedPointer<ModulationPlug> modulationPlug;
 
 
     //==============================================================================

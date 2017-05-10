@@ -30,8 +30,16 @@ AudioProcessor (BusesProperties()
     delayProcessor = new DelayProcessor(modulationMatrix);
     
 	addParameter(level = new AudioParameterFloat("gain", "Gain", 0.0f, 1.0f, 0.9f));
-    ampEnvelopeParameterContainer = new EnvelopeParameterContainer(*this, 1);
-    filterEnvelopeParameterContainer = new EnvelopeParameterContainer(*this, 2);
+    
+    // Envelopes
+    ampEnvelopeParameterContainer = new EnvelopeParameterContainer(*this, "Amp Envelope");
+    ampEnvelopeParameterContainer->setID(ParameterIDAmpEnvelopeOutput);
+    filterEnvelopeParameterContainer = new EnvelopeParameterContainer(*this, "Filter Envelope");
+    filterEnvelopeParameterContainer->setID(ParameterIDFilterEnvelopeOutput);
+    envelope1ParameterContainer = new EnvelopeParameterContainer(*this, "Envelope 1");
+    envelope1ParameterContainer->setID(ParameterIDEnvelope1Output);
+    envelope2ParameterContainer = new EnvelopeParameterContainer(*this, "Envelope 2");
+    envelope2ParameterContainer->setID(ParameterIDEnvelope2Output);
     
     // Oscillators
     oscillatorParameterContainer = new OscillatorParameterContainer(*this);
@@ -40,7 +48,8 @@ AudioProcessor (BusesProperties()
     filterParameterContainer = new FilterParameterContainer(*this);
     
     // LFO
-    lfoParameterContainer = new LFOParameterContainer(*this);
+    lfoParameterContainer = new LFOParameterContainer(*this, "LFO 1");
+    lfoParameterContainer->setID(ParameterIDLFO1Output);
     
     // Delay
     delayParameterContainer = new DelayParameterContainer(*this);
@@ -98,15 +107,29 @@ void OpenSynthAudioProcessor::initialiseSynthForWaveform(const Waveform waveform
         }
         wavetableVoice->setModulationMatrix(new ModulationMatrix());
         
-        EnvelopeGenerator* ampEnvelopeGenerator = new EnvelopeGenerator(ParameterIDEnvelope1Output);
+        EnvelopeGenerator* ampEnvelopeGenerator = new EnvelopeGenerator(ParameterIDAmpEnvelopeOutput);
         ampEnvelopeGenerator->setModulationMatrix(wavetableVoice->getModulationMatrix());
         ampEnvelopeGenerator->setEnvelopeParameterContainer(ampEnvelopeParameterContainer);
+        ampEnvelopeGenerator->setID(ParameterIDAmpEnvelopeOutput);
         wavetableVoice->setAmpEnvelopeGenerator(ampEnvelopeGenerator);
     
-        EnvelopeGenerator* filterEnvelopeGenerator = new EnvelopeGenerator(ParameterIDEnvelope2Output);
+        EnvelopeGenerator* filterEnvelopeGenerator = new EnvelopeGenerator(ParameterIDFilterEnvelopeOutput);
         filterEnvelopeGenerator->setEnvelopeParameterContainer(filterEnvelopeParameterContainer);
         filterEnvelopeGenerator->setModulationMatrix(wavetableVoice->getModulationMatrix());
+        filterEnvelopeGenerator->setID(ParameterIDFilterEnvelopeOutput);
         
+        EnvelopeGenerator* envelopeGenerator1 = new EnvelopeGenerator(ParameterIDEnvelope1Output);
+        envelopeGenerator1->setEnvelopeParameterContainer(envelope1ParameterContainer);
+        envelopeGenerator1->setModulationMatrix(wavetableVoice->getModulationMatrix());
+        envelopeGenerator1->setID(ParameterIDEnvelope1Output);
+        
+        EnvelopeGenerator* envelopeGenerator2 = new EnvelopeGenerator(ParameterIDEnvelope2Output);
+        envelopeGenerator2->setEnvelopeParameterContainer(envelope2ParameterContainer);
+        envelopeGenerator2->setModulationMatrix(wavetableVoice->getModulationMatrix());
+        envelopeGenerator2->setID(ParameterIDEnvelope2Output);
+        
+        wavetableVoice->setEnvelopeGenerator1(envelopeGenerator1);
+        wavetableVoice->setEnvelopeGenerator2(envelopeGenerator2);
         wavetableVoice->setFilterEnvelopeGenerator(filterEnvelopeGenerator);
         wavetableVoice->getAmpProcessor()->level = level;
         wavetableVoice->getFilterProcessor()->setParameterContainer(filterParameterContainer);
@@ -179,8 +202,34 @@ void OpenSynthAudioProcessor::changeProgramName (int index, const String& newNam
 
 void OpenSynthAudioProcessor::setupModulation(ModulationMatrix* modulationMatrix)
 {
-    modulationMatrix->addRow(ParameterIDLFO1Output, ParameterIDFilterCutoff, 1.0);
-    modulationMatrix->addRow(ParameterIDEnvelope2Output, ParameterIDFilterCutoff, 1.0);
+//    modulationMatrix->addRow(ParameterIDLFO1Output, ParameterIDFilterCutoff, 1.0);
+//    modulationMatrix->addRow(ParameterIDEnvelope2Output, ParameterIDFilterCutoff, 1.0);
+//    modulationMatrix->addRow(ParameterIDLFO1Output, ParameterIDOscillator1Semi, 0.1);
+//    modulationMatrix->addRow(ParameterIDEnvelope2Output, ParameterIDOscillator1Semi, 0.1);
+}
+
+void OpenSynthAudioProcessor::connect(int sourceID, int destinationID)
+{
+    for (int voiceIdx = 0; voiceIdx < synth.getNumVoices(); voiceIdx++)
+    {
+        WavetableVoice* voice = dynamic_cast<WavetableVoice*>(synth.getVoice(voiceIdx));
+        if (voice != nullptr)
+        {
+            voice->getModulationMatrix()->addRow(sourceID, destinationID, 0.5);
+        }
+    }
+}
+
+void OpenSynthAudioProcessor::updateModulationAmount(int sourceID, int destinationID, float amount)
+{
+    for (int voiceIdx = 0; voiceIdx < synth.getNumVoices(); voiceIdx++)
+    {
+        WavetableVoice* voice = dynamic_cast<WavetableVoice*>(synth.getVoice(voiceIdx));
+        if (voice != nullptr)
+        {
+            voice->getModulationMatrix()->updateModulationAmount(sourceID, destinationID, amount);
+        }
+    }
 }
 
 //==============================================================================

@@ -24,7 +24,7 @@ AmpComponent::AmpComponent(OpenSynthAudioProcessor &processor) : processor(proce
     // initialise any special settings that your component needs.
     setSize(140, 105);
     
-    addAndMakeVisible(gainKnob = new ParameterSlider(*processor.level));
+    addAndMakeVisible(gainKnob = new ParameterSlider(*processor.level, ParameterIDMasterGain));
     gainKnob->setSliderStyle(Slider::Rotary);
     gainKnob->setTextBoxStyle(juce::Slider::TextEntryBoxPosition::TextBoxBelow, false, 40, 15);
     gainKnob->setColour(Slider::textBoxBackgroundColourId, Colours::midnightblue);
@@ -33,25 +33,25 @@ AmpComponent::AmpComponent(OpenSynthAudioProcessor &processor) : processor(proce
     ampLabel.setColour (Label::backgroundColourId, Colours::transparentWhite);
     
     EnvelopeParameterContainer& ampEnvelopeParameterContainer = processor.getAmpEnvelopeParameterContainer();
-    addAndMakeVisible(attackSlider = new ParameterSlider(*ampEnvelopeParameterContainer.getAttackRateParameter()));
+    addAndMakeVisible(attackSlider = new ParameterSlider(*ampEnvelopeParameterContainer.getAttackRateParameter(), ParameterIDEnvelope1Attack));
     attackSlider->setSliderStyle(Slider::LinearVertical);
     attackLabel.attachToComponent(attackSlider, false);
     attackLabel.setColour (Label::textColourId, Colours::black);
     attackLabel.setColour (Label::backgroundColourId, Colours::transparentWhite);
     
-    addAndMakeVisible(decaySlider = new ParameterSlider(*ampEnvelopeParameterContainer.getDecayRateParameter()));
+    addAndMakeVisible(decaySlider = new ParameterSlider(*ampEnvelopeParameterContainer.getDecayRateParameter(), ParameterIDEnvelope1Decay));
     decaySlider->setSliderStyle(Slider::LinearVertical);
     decayLabel.attachToComponent(decaySlider, false);
     decayLabel.setColour (Label::textColourId, Colours::black);
     decayLabel.setColour (Label::backgroundColourId, Colours::transparentWhite);
     
-    addAndMakeVisible(sustainSlider = new ParameterSlider(*ampEnvelopeParameterContainer.getSustainLevelParameter()));
+    addAndMakeVisible(sustainSlider = new ParameterSlider(*ampEnvelopeParameterContainer.getSustainLevelParameter(), ParameterIDEnvelope1Sustain));
     sustainSlider->setSliderStyle(Slider::LinearVertical);
     sustainLabel.attachToComponent(sustainSlider, false);
     sustainLabel.setColour (Label::textColourId, Colours::black);
     sustainLabel.setColour (Label::backgroundColourId, Colours::transparentWhite);
     
-    addAndMakeVisible(releaseSlider = new ParameterSlider(*ampEnvelopeParameterContainer.getReleaseRateParameter()));
+    addAndMakeVisible(releaseSlider = new ParameterSlider(*ampEnvelopeParameterContainer.getReleaseRateParameter(), ParameterIDEnvelope1Release));
     releaseSlider->setSliderStyle(Slider::LinearVertical);
     releaseLabel.attachToComponent(releaseSlider, false);
     releaseLabel.setColour (Label::textColourId, Colours::black);

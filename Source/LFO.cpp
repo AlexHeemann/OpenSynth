@@ -26,24 +26,44 @@ void LFO::oscillate(int numSamples)
 {
     calculatePhaseIncrement();
     double twoPi = 2.0 * double_Pi;
-    switch (waveform)
+    
+    for (int sample = 0; sample < numSamples; ++sample)
     {
-        case LFOWaveformSine:
-            for (int sample = 0; sample < numSamples; ++sample)
+        currentPhase += phaseIncrement;
+        if (currentPhase >= twoPi)
+        {
+            currentPhase -= twoPi;
+        }
+    }
+    
+    switch (parameterContainer->getWaveformParameter()->getIndex())
+    {
+        case WaveformSine:
+            currentValue = sin(currentPhase);
+            break;
+        case WaveformSawtooth:
+            currentValue = (((currentPhase / twoPi) * 2.0) - 1) * -1;
+            break;
+        case WaveformSquare:
+            if (currentPhase > twoPi / 2.0)
             {
-                currentPhase += phaseIncrement;
-                if (currentPhase >= twoPi)
-                {
-                    currentPhase -= twoPi;
-                }
+                currentValue = -1;
+            }
+            else
+            {
+                currentValue = 1;
             }
             break;
+        case WaveformTriangle:
+        {
+            currentValue = (currentPhase < double_Pi ? currentPhase / double_Pi : 1.0 - (currentPhase - double_Pi) / double_Pi) * 2.0 - 1.0;
+            break;
+        }
         default:
-            currentPhase = 0;
+            currentValue = 0;
             break;
     }
     
-    currentValue = sin(currentPhase);
     modulationMatrix->setValueForSourceID(ID, currentValue);
 }
 

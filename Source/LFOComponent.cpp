@@ -31,7 +31,7 @@ LFOComponent::LFOComponent (LFOParameterContainer& parameterContainer)
     : parameterContainer(parameterContainer)
 {
     //[Constructor_pre] You can add your own custom stuff here..
-    addAndMakeVisible (frequencySlider = new ParameterSlider (*parameterContainer.getFrequencyParameter()));
+    addAndMakeVisible (frequencySlider = new ParameterSlider (*parameterContainer.getFrequencyParameter(), ParameterIDLFO1Frequency));
     //[/Constructor_pre]
 
     addAndMakeVisible (lfoTitleLabel = new Label ("LFO Title Label",
@@ -42,7 +42,7 @@ LFOComponent::LFOComponent (LFOParameterContainer& parameterContainer)
     lfoTitleLabel->setColour (Label::backgroundColourId, Colour (0xffd05555));
     lfoTitleLabel->setColour (TextEditor::textColourId, Colours::black);
     lfoTitleLabel->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
-
+    
     frequencySlider->setRange (0, 1, 0);
     frequencySlider->setSliderStyle (Slider::Rotary);
     frequencySlider->setTextBoxStyle (Slider::NoTextBox, false, 80, 20);
@@ -56,14 +56,30 @@ LFOComponent::LFOComponent (LFOParameterContainer& parameterContainer)
     label->setColour (TextEditor::textColourId, Colours::black);
     label->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
+    addAndMakeVisible (waveformComboBox = new ComboBox ("Waveform ComboBox"));
+    waveformComboBox->setEditableText (false);
+    waveformComboBox->setJustificationType (Justification::centredLeft);
+    waveformComboBox->setTextWhenNothingSelected (TRANS("Waveform"));
+    waveformComboBox->setTextWhenNoChoicesAvailable (TRANS("(no choices)"));
+    waveformComboBox->addItem (TRANS("Sine"), 1);
+    waveformComboBox->addItem (TRANS("Saw"), 2);
+    waveformComboBox->addItem (TRANS("Square"), 3);
+    waveformComboBox->addItem (TRANS("Triangle"), 4);
+    waveformComboBox->addListener (this);
+
+    addAndMakeVisible (modulationPlug = new ModulationPlug());
+    modulationPlug->setName ("Modulation Plug");
+
 
     //[UserPreSize]
     //[/UserPreSize]
 
-    setSize (140, 100);
+    setSize (180, 100);
 
 
     //[Constructor] You can add your own custom stuff here..
+    waveformComboBox->setSelectedId(1);
+    modulationPlug->setID(parameterContainer.getID());
     //[/Constructor]
 }
 
@@ -75,6 +91,8 @@ LFOComponent::~LFOComponent()
     lfoTitleLabel = nullptr;
     frequencySlider = nullptr;
     label = nullptr;
+    waveformComboBox = nullptr;
+    modulationPlug = nullptr;
 
 
     //[Destructor]. You can add your own custom destruction code here..
@@ -98,11 +116,45 @@ void LFOComponent::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    lfoTitleLabel->setBounds (0, 0, 144, 24);
+    lfoTitleLabel->setBounds (0, 0, 184, 24);
     frequencySlider->setBounds (1, 26, 55, 56);
     label->setBounds (0, 72, 72, 24);
+    waveformComboBox->setBounds (80, 64, 88, 24);
+    modulationPlug->setBounds (144, 32, 23, 24);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
+}
+
+void LFOComponent::comboBoxChanged (ComboBox* comboBoxThatHasChanged)
+{
+    //[UsercomboBoxChanged_Pre]
+    //[/UsercomboBoxChanged_Pre]
+
+    if (comboBoxThatHasChanged == waveformComboBox)
+    {
+        //[UserComboBoxCode_waveformComboBox] -- add your combo box handling code here..
+        switch (waveformComboBox->getSelectedId() - 1)
+        {
+            case WaveformSine:
+                parameterContainer.setWaveform(WaveformSine);
+                break;
+            case WaveformSawtooth:
+                parameterContainer.setWaveform(WaveformSawtooth);
+                break;
+            case WaveformSquare:
+                parameterContainer.setWaveform(WaveformSquare);
+                break;
+            case WaveformTriangle:
+                parameterContainer.setWaveform(WaveformTriangle);
+                break;
+            default:
+                break;
+        }
+        //[/UserComboBoxCode_waveformComboBox]
+    }
+
+    //[UsercomboBoxChanged_Post]
+    //[/UsercomboBoxChanged_Post]
 }
 
 
@@ -124,10 +176,10 @@ BEGIN_JUCER_METADATA
                  parentClasses="public Component" constructorParams="LFOParameterContainer&amp; parameterContainer"
                  variableInitialisers="parameterContainer(parameterContainer)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
-                 fixedSize="1" initialWidth="140" initialHeight="100">
+                 fixedSize="1" initialWidth="180" initialHeight="100">
   <BACKGROUND backgroundColour="ffffffff"/>
   <LABEL name="LFO Title Label" id="d57d9b5342a6dbf8" memberName="lfoTitleLabel"
-         virtualName="" explicitFocusOrder="0" pos="0 0 144 24" bkgCol="ffd05555"
+         virtualName="" explicitFocusOrder="0" pos="0 0 184 24" bkgCol="ffd05555"
          edTextCol="ff000000" edBkgCol="0" labelText="LFO" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="18" kerning="0" bold="0" italic="0" justification="33"/>
@@ -141,6 +193,13 @@ BEGIN_JUCER_METADATA
          edBkgCol="0" labelText="Frequency&#10;" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="13" kerning="0" bold="0" italic="0" justification="33"/>
+  <COMBOBOX name="Waveform ComboBox" id="38e78ad41cb58384" memberName="waveformComboBox"
+            virtualName="" explicitFocusOrder="0" pos="80 64 88 24" editable="0"
+            layout="33" items="Sine&#10;Saw&#10;Square&#10;Triangle" textWhenNonSelected="Waveform"
+            textWhenNoItems="(no choices)"/>
+  <GENERICCOMPONENT name="Modulation Plug" id="27df8c89727bce37" memberName="modulationPlug"
+                    virtualName="ModulationPlug" explicitFocusOrder="0" pos="144 32 23 24"
+                    class="Component" params=""/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

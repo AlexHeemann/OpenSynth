@@ -16,6 +16,7 @@
 #include "DelayComponent.h"
 #include "ReverbComponent.h"
 #include "LFOComponent.h"
+#include "EnvelopeComponent.h"
 
 class ParameterSlider;
 
@@ -53,6 +54,8 @@ private:
     ScopedPointer<DelayComponent> delayComponent;
     ScopedPointer<ReverbComponent> reverbComponent;
     ScopedPointer<LFOComponent> lfoComponent;
+    ScopedPointer<EnvelopeComponent> envelope1Component;
+    ScopedPointer<EnvelopeComponent> envelope2Component;
 	ComponentBoundsConstrainer resizeLimits;
 
 	//==============================================================================
