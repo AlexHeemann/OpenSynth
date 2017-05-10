@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 5.0.0
+  Created with Projucer version: 5.0.1
 
   ------------------------------------------------------------------------------
 
@@ -21,8 +21,6 @@
 
 //[Headers]     -- You can add your own extra header files here --
 #include "../JuceLibraryCode/JuceHeader.h"
-#include "ParameterSlider.h"
-#include "OscillatorParameterContainer.h"
 //[/Headers]
 
 
@@ -35,50 +33,32 @@
     Describe your class and how it works here!
                                                                     //[/Comments]
 */
-class OscillatorComponent  : public Component,
-                             public DragAndDropListener,
-                             public ComboBoxListener
+class ModulationSink  : public Component
 {
 public:
     //==============================================================================
-    OscillatorComponent (OscillatorParameterContainer& parameterContainer);
-    ~OscillatorComponent();
+    ModulationSink ();
+    ~ModulationSink();
 
     //==============================================================================
     //[UserMethods]     -- You can add your own custom methods in this section.
-    void itemDropped(const int sourceID, const int destinationID);
     //[/UserMethods]
 
     void paint (Graphics& g) override;
     void resized() override;
-    void comboBoxChanged (ComboBox* comboBoxThatHasChanged) override;
 
 
 
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
-    OscillatorParameterContainer& parameterContainer;
-    Waveform waveformForId(int waveformId);
     //[/UserVariables]
 
     //==============================================================================
-    ScopedPointer<ComboBox> osc1ComboBox;
-    ScopedPointer<ParameterSlider> oscMixSlider;
-    ScopedPointer<ComboBox> osc2ComboBox;
-    ScopedPointer<Label> mixLabel;
     ScopedPointer<Label> titleLabel;
-    ScopedPointer<ParameterSlider> osc1SemiSlider;
-    ScopedPointer<ParameterSlider> osc2SemiSlider;
-    ScopedPointer<ParameterSlider> osc1CentSlider;
-    ScopedPointer<ParameterSlider> osc2CentSlider;
-    ScopedPointer<Label> osc1SemiLabel;
-    ScopedPointer<Label> osc1CentsLabel;
-    ScopedPointer<Label> osc2SemiLabel;
-    ScopedPointer<Label> osc2CentsLabel;
 
 
     //==============================================================================
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (OscillatorComponent)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ModulationSink)
 };
 
 //[EndFile] You can add extra defines here...

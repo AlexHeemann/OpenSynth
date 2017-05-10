@@ -31,11 +31,15 @@ OscillatorComponent::OscillatorComponent (OscillatorParameterContainer& paramete
     : parameterContainer(parameterContainer)
 {
     //[Constructor_pre] You can add your own custom stuff here..
-    addAndMakeVisible (osc1SemiSlider = new ParameterSlider (*parameterContainer.getOsc1SemiParameter()));
-    addAndMakeVisible (osc2SemiSlider = new ParameterSlider (*parameterContainer.getOsc2SemiParameter()));
-    addAndMakeVisible (oscMixSlider = new ParameterSlider (*parameterContainer.getOscMixParameter()));
-    addAndMakeVisible (osc1CentSlider = new ParameterSlider (*parameterContainer.getOsc1Cents()));
-    addAndMakeVisible (osc2CentSlider = new ParameterSlider (*parameterContainer.getOsc2Cents()));
+    addAndMakeVisible (osc1SemiSlider = new ParameterSlider (*parameterContainer.getOsc1SemiParameter(), ParameterIDOscillator1Semi));
+    addAndMakeVisible (osc2SemiSlider = new ParameterSlider (*parameterContainer.getOsc2SemiParameter(), ParameterIDOscillator2Semi));
+    addAndMakeVisible (oscMixSlider = new ParameterSlider (*parameterContainer.getOscMixParameter(), 0));
+    addAndMakeVisible (osc1CentSlider = new ParameterSlider (*parameterContainer.getOsc1Cents(), ParameterIDOscillator1Cents));
+    addAndMakeVisible (osc2CentSlider = new ParameterSlider (*parameterContainer.getOsc2Cents(), ParameterIDOscillator2Cents));
+    osc1SemiSlider->setListener(this);
+    osc2SemiSlider->setListener(this);
+    osc1CentSlider->setListener(this);
+    osc2CentSlider->setListener(this);
     //[/Constructor_pre]
 
     addAndMakeVisible (osc1ComboBox = new ComboBox ("Osc 1 Combo Box"));
@@ -173,6 +177,11 @@ OscillatorComponent::~OscillatorComponent()
     //[/Destructor]
 }
 
+void OscillatorComponent::itemDropped(const int sourceID, const int destinationID)
+{
+    parameterContainer.getProcessor().connect(sourceID, destinationID);
+}
+
 //==============================================================================
 void OscillatorComponent::paint (Graphics& g)
 {
@@ -274,7 +283,8 @@ Waveform OscillatorComponent::waveformForId(int waveformId)
 BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="OscillatorComponent" componentName=""
-                 parentClasses="public Component" constructorParams="OscillatorParameterContainer&amp; parameterContainer"
+                 parentClasses="public Component, public DragAndDropListener"
+                 constructorParams="OscillatorParameterContainer&amp; parameterContainer"
                  variableInitialisers="parameterContainer(parameterContainer)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="1" initialWidth="210" initialHeight="260">

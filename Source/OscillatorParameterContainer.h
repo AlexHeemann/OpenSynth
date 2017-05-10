@@ -39,6 +39,8 @@ public:
     AudioParameterChoice* getOsc1Waveform() const { return osc1Waveform; }
     AudioParameterChoice* getOsc2Waveform() const { return osc2Waveform; }
     
+    OpenSynthAudioProcessor& getProcessor() { return processor; }
+    
     void setWaveformForOscillator(Waveform waveform, int oscillator)
     {
         processor.setWaveformForOscillator(waveform, oscillator);

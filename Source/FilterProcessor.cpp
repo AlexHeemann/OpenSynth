@@ -33,7 +33,7 @@ void FilterProcessor::processBufferWithFilter(AudioBuffer<FloatType> &buffer, in
     
     for (int filterIdx = 0; filterIdx < filters.size(); filterIdx++)
     {
-        float newKnobValue = std::min(1.0f, frequency->range.convertTo0to1(frequency->get()) + envelopeAmount->get() * filterModulation);
+        float newKnobValue = std::min(1.0f, frequency->range.convertTo0to1(frequency->get()) + filterModulation);
         filters[filterIdx].setParam(Dsp::ParamID::idFrequency, std::fmax(0.0f, std::fmin(frequency->range.end, frequency->range.convertFrom0to1(newKnobValue))));
         filters[filterIdx].setParam(Dsp::ParamID::idQ, resonance->get());
     }

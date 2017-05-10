@@ -13,13 +13,14 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "PluginProcessor.h"
+#include "Module.h"
+#include "DragAndDropListener.h"
 
-class ParameterSlider : public Slider, public DragAndDropTarget,
+class ParameterSlider : public Module, public Slider, public DragAndDropTarget,
 private Timer
 {
 public:
-    ParameterSlider(AudioProcessorParameter& p)
-    : Slider(p.getName(256)), param(p)
+    ParameterSlider(AudioProcessorParameter& p, int ID) : Module(ID), Slider(p.getName(256)), param(p)
     {
         setRange(0.0, 1.0, 0.0);
         updateSliderPos();
@@ -46,15 +47,38 @@ public:
             Slider::setValue(newValue);
     }
     
+    void setHighlighted(bool highlighted)
+    {
+        if (highlighted && !isHighlighted)
+        {
+            isHighlighted = true;
+            originalSliderFillColour = findColour(rotarySliderFillColourId);
+            originalSliderOutlineColour = findColour(rotarySliderOutlineColourId);
+            originalBackgroundColour = findColour(backgroundColourId);
+            originalTrackColour = findColour(trackColourId);
+            setColour(rotarySliderOutlineColourId, Colour(0, 200, 23));
+            setColour(rotarySliderFillColourId, Colour(0, 200, 23));
+            setColour(backgroundColourId, Colour(0, 200, 23));
+            setColour(trackColourId, Colour(0, 200, 23));
+        }
+        else if (!highlighted)
+        {
+            isHighlighted = false;
+            setColour(rotarySliderOutlineColourId, originalSliderOutlineColour);
+            setColour(rotarySliderFillColourId, originalSliderFillColour);
+            setColour(backgroundColourId, originalBackgroundColour);
+            setColour(trackColourId, originalTrackColour);
+        }
+    }
+    
     virtual void itemDragEnter(const SourceDetails& dragSourceDetails) override
     {
-        originalSliderFillColour = findColour(rotarySliderFillColourId);
-        setColour(rotarySliderFillColourId, Colour(0, 200, 23));
+        setHighlighted(true);
     }
     
     virtual void itemDragExit(const SourceDetails& dragSourceDetails) override
     {
-        setColour(rotarySliderFillColourId, originalSliderFillColour);
+        setHighlighted(false);
     }
     
     virtual bool isInterestedInDragSource(const SourceDetails& dragSourceDetails) override
@@ -64,13 +88,25 @@ public:
     
     virtual void itemDropped(const SourceDetails& dragSourceDetails) override
     {
-        setColour(rotarySliderFillColourId, originalSliderFillColour);
+        setHighlighted(false);
+        if (listener != nullptr)
+        {
+            listener->itemDropped(dragSourceDetails.description, ID);
+        }
     }
+    
+    void setListener(DragAndDropListener* listener) { this->listener = listener; }
+    DragAndDropListener* getListener() { return listener; }
     
     AudioProcessorParameter& param;
     
 private:
     Colour originalSliderFillColour;
+    Colour originalSliderOutlineColour;
+    Colour originalBackgroundColour;
+    Colour originalTrackColour;
+    bool isHighlighted = false;
+    DragAndDropListener* listener;
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ParameterSlider)
     
