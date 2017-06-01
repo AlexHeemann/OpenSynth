@@ -52,6 +52,12 @@ ModulationSink::ModulationSink ()
     //[/Constructor]
 }
 
+void ModulationSink::setHighlighted(bool highlighted)
+{
+    isHighlighted = highlighted;
+    repaint();
+}
+
 ModulationSink::~ModulationSink()
 {
     //[Destructor_pre]. You can add your own custom destruction code here..
@@ -70,7 +76,14 @@ void ModulationSink::paint (Graphics& g)
     //[UserPrePaint] Add your own custom painting code here..
     //[/UserPrePaint]
 
-    g.setColour (Colour (0xff2aa5a5));
+    if (isHighlighted)
+    {
+        g.setColour(Colour(0, 200, 23));
+    }
+    else
+    {
+        g.setColour (Colour (0xff2aa5a5));
+    }
     g.fillRoundedRectangle (0.0f, 0.0f, 20.0f, 20.0f, 10.000f);
 
     //[UserPaint] Add your own custom painting code here..

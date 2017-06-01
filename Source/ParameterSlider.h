@@ -73,26 +73,26 @@ public:
     
     virtual void itemDragEnter(const SourceDetails& dragSourceDetails) override
     {
-        setHighlighted(true);
+//        setHighlighted(true);
     }
     
     virtual void itemDragExit(const SourceDetails& dragSourceDetails) override
     {
-        setHighlighted(false);
+//        setHighlighted(false);
     }
     
     virtual bool isInterestedInDragSource(const SourceDetails& dragSourceDetails) override
     {
-        return true;
+        return false;
     }
     
     virtual void itemDropped(const SourceDetails& dragSourceDetails) override
     {
-        setHighlighted(false);
-        if (listener != nullptr)
-        {
-            listener->itemDropped(dragSourceDetails.description, ID);
-        }
+//        setHighlighted(false);
+//        if (listener != nullptr)
+//        {
+//            listener->itemDropped(dragSourceDetails.description, ID);
+//        }
     }
     
     void setListener(DragAndDropListener* listener) { this->listener = listener; }

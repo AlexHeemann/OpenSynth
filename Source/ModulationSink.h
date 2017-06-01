@@ -46,11 +46,12 @@ public:
 
     void paint (Graphics& g) override;
     void resized() override;
-
+    void setHighlighted(bool highlighted);
 
 
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
+    bool isHighlighted = false;
     //[/UserVariables]
 
     //==============================================================================

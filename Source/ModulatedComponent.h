@@ -32,16 +32,9 @@ public:
     
     void setHighlighted(bool highlighted)
     {
-        if (highlighted && !isHighlighted)
-        {
-            isHighlighted = true;
-            slider->setHighlighted(highlighted);
-        }
-        else if (!highlighted)
-        {
-            isHighlighted = false;
-            slider->setHighlighted(highlighted);
-        }
+        isHighlighted = highlighted;
+        slider->setHighlighted(highlighted);
+        modulationSink->setHighlighted(highlighted);
     }
     
     virtual void itemDragEnter(const SourceDetails& dragSourceDetails) override
@@ -61,7 +54,7 @@ public:
     
     virtual void itemDropped(const SourceDetails& dragSourceDetails) override
     {
-        setHighlighted(false);
+        slider->setHighlighted(false);
         if (listener != nullptr)
         {
             listener->itemDropped(dragSourceDetails.description, ID);

@@ -16,6 +16,7 @@
 #include "PluginProcessor.h"
 #include "ModulationPopover.h"
 #include "ModulatedComponent.h"
+#include "ModulationOverview.h"
 
 //==============================================================================
 /*
@@ -37,15 +38,11 @@ private:
     OpenSynthAudioProcessor& processor;
     
     ScopedPointer<ModulatedComponent> frequencyKnob;
-    ScopedPointer<ParameterSlider> envelopeAmountKnob;
     ScopedPointer<ModulatedComponent> resonanceKnob;
-    ScopedPointer<ParameterSlider> attackSlider;
-    ScopedPointer<ParameterSlider> decaySlider;
-    ScopedPointer<ParameterSlider> sustainSlider;
-    ScopedPointer<ParameterSlider> releaseSlider;
     ScopedPointer<ComboBox> filterTypeComboBox;
     ScopedPointer<ModulationPopover> frequencyModulationPopover;
-    Label attackLabel, decayLabel, sustainLabel, releaseLabel, frequencyLabel, envAmountLabel, resonanceLabel;
+    ScopedPointer<Label> frequencyLabel, resonanceLabel;
+    ScopedPointer<ModulationOverview> modulationOverview;
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (FilterComponent)
 };

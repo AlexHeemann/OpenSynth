@@ -26,7 +26,7 @@ ModulatedComponent::~ModulatedComponent()
 
 void ModulatedComponent::paint (Graphics& g)
 {
-    g.drawRect (getLocalBounds(), 1);   // draw an outline around the component
+//    g.drawRect (getLocalBounds(), 1);   // draw an outline around the component
 }
 
 void ModulatedComponent::resized()
