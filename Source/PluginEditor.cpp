@@ -18,8 +18,6 @@ OpenSynthAudioProcessorEditor::OpenSynthAudioProcessorEditor (OpenSynthAudioProc
 	envAttackLabel(String::empty, "Attack:"),
 	envDecayLabel(String::empty, "Decay:")
 {
-    // Make sure that before the constructor has finished, you've set the
-    // editor's size to whatever you need it to be.
     addAndMakeVisible(ampComponent = new AmpComponent(owner));
     addAndMakeVisible(filterComponent = new FilterComponent(owner));
     addAndMakeVisible(oscillatorComponent = new OscillatorComponent(owner.getOscillatorParameterContainer()));
