@@ -168,6 +168,10 @@ public:
     {
         return *envelope2ParameterContainer;
     }
+    ModulationMatrix* getModulationMatrix() const
+    {
+        return modulationMatrix;
+    }
     
     void connect(int sourceID, int destinationID);
     void updateModulationAmount(int sourceID, int destinationID, float amount);

@@ -26,6 +26,8 @@ AudioProcessor (BusesProperties()
     sineWavetable(SineWavetable(40.0, 4096, getSampleRate()))
 {
     modulationMatrix = new ModulationMatrix();
+    modulationMatrix->setData(new ModulationMatrixData());
+    
     reverbProcessor = new ReverbProcessor(modulationMatrix);
     delayProcessor = new DelayProcessor(modulationMatrix);
     
@@ -66,6 +68,7 @@ AudioProcessor (BusesProperties()
 
 OpenSynthAudioProcessor::~OpenSynthAudioProcessor()
 {
+    delete modulationMatrix->getData();
 }
 
 void OpenSynthAudioProcessor::initialiseSynthForWaveform(const Waveform waveform, const int numVoices)
@@ -106,6 +109,7 @@ void OpenSynthAudioProcessor::initialiseSynthForWaveform(const Waveform waveform
             }
         }
         wavetableVoice->setModulationMatrix(new ModulationMatrix());
+        wavetableVoice->getModulationMatrix()->setData(modulationMatrix->getData());
         
         EnvelopeGenerator* ampEnvelopeGenerator = new EnvelopeGenerator(ParameterIDAmpEnvelopeOutput);
         ampEnvelopeGenerator->setModulationMatrix(wavetableVoice->getModulationMatrix());
@@ -210,26 +214,12 @@ void OpenSynthAudioProcessor::setupModulation(ModulationMatrix* modulationMatrix
 
 void OpenSynthAudioProcessor::connect(int sourceID, int destinationID)
 {
-    for (int voiceIdx = 0; voiceIdx < synth.getNumVoices(); voiceIdx++)
-    {
-        WavetableVoice* voice = dynamic_cast<WavetableVoice*>(synth.getVoice(voiceIdx));
-        if (voice != nullptr)
-        {
-            voice->getModulationMatrix()->addRow(sourceID, destinationID, 0.5);
-        }
-    }
+    modulationMatrix->addRow(sourceID, destinationID, 0.5);
 }
 
 void OpenSynthAudioProcessor::updateModulationAmount(int sourceID, int destinationID, float amount)
 {
-    for (int voiceIdx = 0; voiceIdx < synth.getNumVoices(); voiceIdx++)
-    {
-        WavetableVoice* voice = dynamic_cast<WavetableVoice*>(synth.getVoice(voiceIdx));
-        if (voice != nullptr)
-        {
-            voice->getModulationMatrix()->updateModulationAmount(sourceID, destinationID, amount);
-        }
-    }
+    modulationMatrix->updateModulationAmount(sourceID, destinationID, amount);
 }
 
 //==============================================================================
