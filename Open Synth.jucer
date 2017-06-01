@@ -13,6 +13,10 @@
               splashScreenColour="Dark" buildStandalone="1" enableIAA="0">
   <MAINGROUP id="A4iQ36" name="Open Synth">
     <GROUP id="{115CB73A-FD2A-ACC8-26C7-8F73C7C67676}" name="Source">
+      <FILE id="z73M64" name="ModulationMatrixData.cpp" compile="1" resource="0"
+            file="Source/ModulationMatrixData.cpp"/>
+      <FILE id="beHaen" name="ModulationMatrixData.h" compile="0" resource="0"
+            file="Source/ModulationMatrixData.h"/>
       <FILE id="KtWCtx" name="DragAndDropListener.h" compile="0" resource="0"
             file="Source/DragAndDropListener.h"/>
       <FILE id="ouWpKc" name="Module.cpp" compile="1" resource="0" file="Source/Module.cpp"/>
@@ -62,6 +66,10 @@
               file="Source/DelayProcessor.h"/>
       </GROUP>
       <GROUP id="{BEF80EEF-EBC3-1FB7-6495-864F8FCB6E6C}" name="Components">
+        <FILE id="f27LxT" name="ModulationOverview.cpp" compile="1" resource="0"
+              file="Source/ModulationOverview.cpp"/>
+        <FILE id="kwjAMg" name="ModulationOverview.h" compile="0" resource="0"
+              file="Source/ModulationOverview.h"/>
         <FILE id="YmwgdL" name="ModulatedComponent.cpp" compile="1" resource="0"
               file="Source/ModulatedComponent.cpp"/>
         <FILE id="LDNbwX" name="ModulatedComponent.h" compile="0" resource="0"
