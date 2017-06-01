@@ -18,7 +18,7 @@ ModulationMatrix::ModulationMatrix()
 
 void ModulationMatrix::process()
 {
-    for (auto row : mmRows)
+    for (auto row : data->getRows())
     {
         destinations[row.destinationIndex] += sources[row.sourceIndex] * row.modulationAmount;
     }
@@ -26,7 +26,7 @@ void ModulationMatrix::process()
 
 void ModulationMatrix::clear()
 {
-    for (auto row : mmRows)
+    for (auto row : data->getRows())
     {
         destinations[row.destinationIndex] = 0;
         sources[row.sourceIndex] = 0;
