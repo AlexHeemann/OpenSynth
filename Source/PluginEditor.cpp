@@ -7,6 +7,7 @@
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
 #include "ParameterSlider.h"
+#include "FilterComponent.h"
 
 //==============================================================================
 OpenSynthAudioProcessorEditor::OpenSynthAudioProcessorEditor (OpenSynthAudioProcessor& owner)
@@ -19,7 +20,7 @@ OpenSynthAudioProcessorEditor::OpenSynthAudioProcessorEditor (OpenSynthAudioProc
 	envDecayLabel(String::empty, "Decay:")
 {
     addAndMakeVisible(ampComponent = new AmpComponent(owner));
-    addAndMakeVisible(filterComponent = new FilterComponent(owner));
+    addAndMakeVisible(filterComponent = new FilterComponent(*this));
     addAndMakeVisible(oscillatorComponent = new OscillatorComponent(owner.getOscillatorParameterContainer()));
     addAndMakeVisible(delayComponent = new DelayComponent(owner.getDelayParameterContainer()));
     addAndMakeVisible(reverbComponent = new ReverbComponent(owner.getReverbParameterContainer()));

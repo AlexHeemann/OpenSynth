@@ -11,7 +11,6 @@
 #include "PluginProcessor.h"
 #include "ModulationConnector.h"
 #include "AmpComponent.h"
-#include "FilterComponent.h"
 #include "OscillatorComponent.h"
 #include "DelayComponent.h"
 #include "ReverbComponent.h"
@@ -19,6 +18,7 @@
 #include "EnvelopeComponent.h"
 
 class ParameterSlider;
+class FilterComponent;
 
 //==============================================================================
 /**
@@ -35,11 +35,16 @@ public:
 
 	virtual int dragOperationStarted();
 	virtual int dragOperationEnded();
+    
+    OpenSynthAudioProcessor& getProcessor() const
+    {
+        return static_cast<OpenSynthAudioProcessor&> (processor);
+    }
 
 private:
     // This reference is provided as a quick way for your editor to
     // access the processor object that created it.
-
+    
     OpenSynthAudioProcessor& processor;
 	MidiKeyboardComponent keyboardComponent;
 
@@ -59,10 +64,6 @@ private:
 	ComponentBoundsConstrainer resizeLimits;
 
 	//==============================================================================
-	OpenSynthAudioProcessor& getProcessor() const
-	{
-		return static_cast<OpenSynthAudioProcessor&> (processor);
-	}
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (OpenSynthAudioProcessorEditor)
 };
