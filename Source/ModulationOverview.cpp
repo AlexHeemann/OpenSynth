@@ -44,6 +44,7 @@ void ModulationOverview::update()
 {
     for (auto& popover : modulationPopovers)
     {
+        popover->removeListener(this);
         removeChildComponent(&*popover);
     }
     modulationPopovers.clear();
@@ -54,11 +55,14 @@ void ModulationOverview::update()
         {
             std::unique_ptr<ModulationPopover> p(new ModulationPopover());
             p->setSourceID(*iterator);
+            p->setSliderValue(processor.getModulationMatrix()->getModulationAmount(*iterator, destinationID));
+            p->addListener(this);
             addAndMakeVisible(*p);
             
             modulationPopovers.push_back(std::move(p));
         }
     }
+    resized();
 }
 
 void ModulationOverview::resized()
@@ -70,3 +74,9 @@ void ModulationOverview::resized()
         modulationPopovers[index]->setTopLeftPosition(0, index * modulationPopovers[index]->getHeight() + 5);
     }
 }
+
+void ModulationOverview::modulationPopoverValueChanged(ModulationPopover* modulationPopover)
+{
+    processor.updateModulationAmount(modulationPopover->getSourceID(), destinationID, modulationPopover->getModulationAmount());
+}
+

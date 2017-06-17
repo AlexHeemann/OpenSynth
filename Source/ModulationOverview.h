@@ -20,7 +20,7 @@ class ModulationMatrix;
 //==============================================================================
 /*
 */
-class ModulationOverview    : public Component
+class ModulationOverview    : public Component, public ModulationPopover::Listener
 {
 public:
     ModulationOverview(int destinationID, OpenSynthAudioProcessor& processor);
@@ -29,6 +29,9 @@ public:
     void paint (Graphics&) override;
     void resized() override;
     void update();
+    
+    // ModulationPopover::Listener
+    void modulationPopoverValueChanged(ModulationPopover* modulationPopover) override;
 
 private:
     int destinationID;
