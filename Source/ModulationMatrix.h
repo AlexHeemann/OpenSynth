@@ -27,6 +27,11 @@ public:
         sources[sourceID] = value;
     }
     
+    double getValueForSourceID(int sourceID)
+    {
+        return sources[sourceID];
+    }
+    
     void setValueForDestinationID(int destinationID, double value)
     {
         destinations[destinationID] = value;
@@ -40,6 +45,11 @@ public:
     void updateModulationAmount(int sourceID, int destinationID, double modulationAmount)
     {
         data->updateModulationAmount(sourceID, destinationID, modulationAmount);
+    }
+    
+    double getModulationAmount(int sourceID, int destinationID)
+    {
+        return data->getModulationAmount(sourceID, destinationID);
     }
     
     void addRow(int sourceID, int destinationID, double modulationAmount)

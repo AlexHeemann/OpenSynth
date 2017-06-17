@@ -62,6 +62,12 @@ public:
         mmRows[index].modulationAmount = modulationAmount;
     }
     
+    double getModulationAmount(int sourceID, int destinationID)
+    {
+        int index = mmRowsMap[keyFromIDs(sourceID, destinationID)];
+        return mmRows[index].modulationAmount;
+    }
+    
     void addRow(int sourceID, int destinationID, double modulationAmount)
     {
         ModulationMatrixRow row = ModulationMatrixRow(sourceID, destinationID, modulationAmount);
