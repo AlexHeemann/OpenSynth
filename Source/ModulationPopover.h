@@ -56,6 +56,7 @@ public:
     void resized() override;
     void sliderValueChanged (Slider* sliderThatWasMoved) override;
     void setSourceID(int sourceID) { this->sourceID = sourceID; }
+    void setSliderValue(double value) { this->modulationAmountSlider->setValue(value); }
     int getSourceID() const { return sourceID; }
     float getModulationAmount() const { return modulationAmountSlider->getValue(); }
     
