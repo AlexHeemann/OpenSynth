@@ -16,7 +16,6 @@
 #include "PluginProcessor.h"
 #include "ModulationPopover.h"
 #include "ModulatedComponent.h"
-#include "ModulationOverview.h"
 
 //==============================================================================
 /*
@@ -24,7 +23,7 @@
 class FilterComponent    : public Component, public ComboBoxListener, public ModulationPopover::Listener, public DragAndDropListener
 {
 public:
-    FilterComponent(OpenSynthAudioProcessor& processor);
+    FilterComponent(OpenSynthAudioProcessorEditor& editor);
     ~FilterComponent();
 
     void paint (Graphics&) override;
@@ -35,6 +34,7 @@ public:
     void mouseDown(const MouseEvent& event) override;
 
 private:
+    OpenSynthAudioProcessorEditor& editor;
     OpenSynthAudioProcessor& processor;
     
     ScopedPointer<ModulatedComponent> frequencyKnob;
@@ -42,7 +42,6 @@ private:
     ScopedPointer<ComboBox> filterTypeComboBox;
     ScopedPointer<ModulationPopover> frequencyModulationPopover;
     ScopedPointer<Label> frequencyLabel, resonanceLabel;
-    ScopedPointer<ModulationOverview> modulationOverview;
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (FilterComponent)
 };

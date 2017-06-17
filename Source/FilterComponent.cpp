@@ -16,12 +16,12 @@
 #include "DragAndDropListener.h"
 
 //==============================================================================
-FilterComponent::FilterComponent(OpenSynthAudioProcessor &processor) : processor(processor),
+FilterComponent::FilterComponent(OpenSynthAudioProcessorEditor &editor) : editor(editor), processor(editor.getProcessor()),
 frequencyLabel(new Label(String::empty, "Frequency")),
 resonanceLabel(new Label(String::empty, "Resonance"))
 {
     FilterParameterContainer& filterParameterContainer = processor.getFilterParameterContainer();
-    addAndMakeVisible(frequencyKnob = new ModulatedComponent(*filterParameterContainer.getFilterFrequencyParameter(), ParameterIDFilterCutoff));
+    addAndMakeVisible(frequencyKnob = new ModulatedComponent(editor, *filterParameterContainer.getFilterFrequencyParameter(), ParameterIDFilterCutoff));
     frequencyKnob->getSlider()->setSliderStyle(Slider::Rotary);
     frequencyKnob->setTextBoxStyle(juce::Slider::TextEntryBoxPosition::TextBoxBelow, false, 60, 15);
     frequencyKnob->getSlider()->setColour(Slider::textBoxBackgroundColourId, Colours::midnightblue);
@@ -30,7 +30,7 @@ resonanceLabel(new Label(String::empty, "Resonance"))
     frequencyKnob->setListener(this);
     addAndMakeVisible(frequencyLabel);
     
-    addAndMakeVisible(resonanceKnob = new ModulatedComponent(*filterParameterContainer.getFilterResonanceParameter(), ParameterIDFilterResonance));
+    addAndMakeVisible(resonanceKnob = new ModulatedComponent(editor, *filterParameterContainer.getFilterResonanceParameter(), ParameterIDFilterResonance));
     resonanceKnob->getSlider()->setSliderStyle(Slider::Rotary);
     resonanceKnob->setTextBoxStyle(juce::Slider::TextEntryBoxPosition::NoTextBox, false, 0, 0);
     resonanceLabel->setColour (Label::textColourId, Colours::black);
@@ -52,9 +52,6 @@ resonanceLabel(new Label(String::empty, "Resonance"))
     
     frequencyModulationPopover = new ModulationPopover();
     frequencyModulationPopover->addListener(this);
-    
-    modulationOverview = new ModulationOverview(ParameterIDFilterCutoff, processor);
-    addChildComponent(modulationOverview);
     
     setSize(150, 180);
 }
@@ -84,6 +81,7 @@ void FilterComponent::itemDropped(const int sourceID, const int destinationID)
             resized();
         }
         frequencyModulationPopover->setSourceID(sourceID);
+        frequencyKnob->update();
     }
 }
 
