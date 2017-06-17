@@ -12,9 +12,9 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "ParameterSlider.h"
-#include "ModulationSink.h"
 #include "ModulationPopover.h"
 #include "Module.h"
+#include "ModulationSink.h"
 
 //==============================================================================
 /*
@@ -22,13 +22,14 @@
 class ModulatedComponent    : public Component, public Module, public DragAndDropTarget
 {
 public:    
-    ModulatedComponent(AudioProcessorParameter& p, int ID);
+    ModulatedComponent(OpenSynthAudioProcessorEditor& editor, AudioProcessorParameter& p, int ID);
     ~ModulatedComponent();
 
     ParameterSlider* getSlider() const { return slider; }
     
     void paint (Graphics&) override;
     void resized() override;
+    void update();
     
     void setHighlighted(bool highlighted)
     {

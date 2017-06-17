@@ -12,12 +12,12 @@
 #include "ModulatedComponent.h"
 
 //==============================================================================
-ModulatedComponent::ModulatedComponent(AudioProcessorParameter& p, int ID) : Module(ID)
+ModulatedComponent::ModulatedComponent(OpenSynthAudioProcessorEditor& editor, AudioProcessorParameter& p, int ID) : Module(ID)
 {
     // In your constructor, you should add any child components, and
     // initialise any special settings that your component needs.
     addAndMakeVisible(slider = new ParameterSlider(p, ID));
-    addAndMakeVisible(modulationSink = new ModulationSink());
+    addAndMakeVisible(modulationSink = new ModulationSink(editor, ID));
 }
 
 ModulatedComponent::~ModulatedComponent()
@@ -27,6 +27,11 @@ ModulatedComponent::~ModulatedComponent()
 void ModulatedComponent::paint (Graphics& g)
 {
 //    g.drawRect (getLocalBounds(), 1);   // draw an outline around the component
+}
+
+void ModulatedComponent::update()
+{
+    modulationSink->update();
 }
 
 void ModulatedComponent::resized()
