@@ -18,6 +18,8 @@
 */
 
 //[Headers] You can add your own extra header files here...
+#include "ModulationSink.h"
+#include "ModulationOverview.h"
 //[/Headers]
 
 #include "ModulationSink.h"
@@ -27,7 +29,8 @@
 //[/MiscUserDefs]
 
 //==============================================================================
-ModulationSink::ModulationSink ()
+ModulationSink::ModulationSink (OpenSynthAudioProcessorEditor& editor, int destinationID)
+    : editor(editor), destinationID(destinationID)
 {
     //[Constructor_pre] You can add your own custom stuff here..
     //[/Constructor_pre]
@@ -43,6 +46,11 @@ ModulationSink::ModulationSink ()
 
 
     //[UserPreSize]
+    button = new DrawableButton("Modulaton sink button", DrawableButton::ImageRaw);
+    addAndMakeVisible(button);
+    button->setColour(0, Colour());
+    button->addListener(this);
+    modulationOverview = new ModulationOverview(destinationID, editor.getProcessor());
     //[/UserPreSize]
 
     setSize (20, 20);
@@ -50,12 +58,6 @@ ModulationSink::ModulationSink ()
 
     //[Constructor] You can add your own custom stuff here..
     //[/Constructor]
-}
-
-void ModulationSink::setHighlighted(bool highlighted)
-{
-    isHighlighted = highlighted;
-    repaint();
 }
 
 ModulationSink::~ModulationSink()
@@ -76,14 +78,7 @@ void ModulationSink::paint (Graphics& g)
     //[UserPrePaint] Add your own custom painting code here..
     //[/UserPrePaint]
 
-    if (isHighlighted)
-    {
-        g.setColour(Colour(0, 200, 23));
-    }
-    else
-    {
-        g.setColour (Colour (0xff2aa5a5));
-    }
+    g.setColour (Colour (0xff2aa5a5));
     g.fillRoundedRectangle (0.0f, 0.0f, 20.0f, 20.0f, 10.000f);
 
     //[UserPaint] Add your own custom painting code here..
@@ -97,12 +92,58 @@ void ModulationSink::resized()
 
     titleLabel->setBounds (-1, 2, 24, 16);
     //[UserResized] Add your own custom resize handling here..
+    button->setBounds(getLocalBounds());
+    Rectangle<int> overviewBounds = getBoundsInComponent(&editor);
+    modulationOverview->setTopLeftPosition(overviewBounds.getX(), overviewBounds.getY());
     //[/UserResized]
 }
 
-
-
 //[MiscUserCode] You can add your own definitions of your custom methods or any other code here...
+void ModulationSink::buttonClicked(Button* button)
+{
+    isOverviewVisible = !isOverviewVisible;
+    if (isOverviewVisible)
+    {
+        modulationOverview->update();
+        editor.addChildComponent(modulationOverview);
+    }
+    else
+    {
+        editor.removeChildComponent(modulationOverview);
+    }
+
+    modulationOverview->setVisible(isOverviewVisible);
+    resized();
+}
+
+void ModulationSink::setHighlighted(bool highlighted)
+{
+    isHighlighted = highlighted;
+    repaint();
+}
+
+void ModulationSink::update()
+{
+    modulationOverview->update();
+}
+
+Rectangle<int> ModulationSink::getBoundsInComponent(Component* component)
+{
+    int x = 0, y = 0;
+    Component* curComponent = this;
+    
+    while (curComponent != nullptr && curComponent != component)
+    {
+        Component* parent = curComponent->getParentComponent();
+        if (parent != nullptr)
+        {
+            x += curComponent->getBoundsInParent().getX();
+            y += curComponent->getBoundsInParent().getY();
+        }
+        curComponent = parent;
+    }
+    return Rectangle<int>(x, y, getWidth(), getHeight());
+}
 //[/MiscUserCode]
 
 
@@ -116,7 +157,8 @@ void ModulationSink::resized()
 BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="ModulationSink" componentName=""
-                 parentClasses="public Component" constructorParams="" variableInitialisers=""
+                 parentClasses="public Component, public Button::Listener" constructorParams="OpenSynthAudioProcessorEditor&amp; editor, int destinationID"
+                 variableInitialisers="editor(editor), destinationID(destinationID)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="1" initialWidth="20" initialHeight="20">
   <BACKGROUND backgroundColour="ffffff">

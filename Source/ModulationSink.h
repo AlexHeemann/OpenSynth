@@ -21,6 +21,9 @@
 
 //[Headers]     -- You can add your own extra header files here --
 #include "../JuceLibraryCode/JuceHeader.h"
+#include "PluginEditor.h"
+
+class ModulationOverview;
 //[/Headers]
 
 
@@ -33,25 +36,46 @@
     Describe your class and how it works here!
                                                                     //[/Comments]
 */
-class ModulationSink  : public Component
+class ModulationSink  : public Component,
+                        public Button::Listener
 {
 public:
     //==============================================================================
-    ModulationSink ();
+    ModulationSink (OpenSynthAudioProcessorEditor& editor, int destinationID);
     ~ModulationSink();
 
     //==============================================================================
     //[UserMethods]     -- You can add your own custom methods in this section.
+    class Listener
+    {
+    public:
+        virtual ~Listener() {}
+        virtual void modulationSinkButtonPressed(ModulationSink* modulationSink) = 0;
+    };
+
+    void setHighlighted(bool highlighted);
+    void buttonClicked(Button* button) override;
+
+    void addListener (Listener *const listener);
+    void removeListener (Listener *const listener);
+    void update();
+    Rectangle<int> getBoundsInComponent(Component* component);
     //[/UserMethods]
 
     void paint (Graphics& g) override;
     void resized() override;
-    void setHighlighted(bool highlighted);
+
 
 
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
     bool isHighlighted = false;
+    bool isOverviewVisible = false;
+    ScopedPointer<Button> button;
+    ScopedPointer<ModulationOverview> modulationOverview;
+    ListenerList<ModulationSink::Listener> listeners;
+    OpenSynthAudioProcessorEditor& editor;
+    int destinationID;
     //[/UserVariables]
 
     //==============================================================================
