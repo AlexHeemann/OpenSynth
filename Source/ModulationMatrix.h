@@ -82,6 +82,16 @@ public:
         this->data = data;
     }
     
+    void setSourceName(int source, std::string name)
+    {
+        data->setSourceName(source, name);
+    }
+    
+    std::string& getSourceName(int source)
+    {
+        return data->getSourceName(source);
+    }
+    
     ModulationMatrixData* getData() const
     {
         return data;

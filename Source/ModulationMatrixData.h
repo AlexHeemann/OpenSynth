@@ -132,7 +132,18 @@ public:
         return mmRows;
     }
     
+    void setSourceName(int source, std::string name)
+    {
+        sourceNames[source] = name;
+    }
+    
+    std::string& getSourceName(int source)
+    {
+        return sourceNames[source];
+    }
+    
 private:
+    std::unordered_map<int, std::string> sourceNames;
     std::vector<ModulationMatrixRow> mmRows;
     std::unordered_map<int, int> mmRowsMap;
     std::unordered_map<int, std::unique_ptr<std::list<int>>> destinationToModMap; // Maps to list of modulation source IDs from destination ID
