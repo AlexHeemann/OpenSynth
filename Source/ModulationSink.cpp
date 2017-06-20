@@ -129,7 +129,7 @@ void ModulationSink::update()
 
 Rectangle<int> ModulationSink::getBoundsInComponent(Component* component)
 {
-    int x = 0, y = 0;
+    int x = -modulationOverview->getWidth() - 3, y = -(modulationOverview->getHeight() / 2.0);
     Component* curComponent = this;
     
     while (curComponent != nullptr && curComponent != component)
