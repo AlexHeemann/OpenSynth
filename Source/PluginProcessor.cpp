@@ -206,6 +206,7 @@ void OpenSynthAudioProcessor::changeProgramName (int index, const String& newNam
 
 void OpenSynthAudioProcessor::setupModulation(ModulationMatrix* modulationMatrix)
 {
+    modulationMatrix->setSourceName(ParameterIDLFO1Output, "LFO 1");
 //    modulationMatrix->addRow(ParameterIDLFO1Output, ParameterIDFilterCutoff, 1.0);
 //    modulationMatrix->addRow(ParameterIDEnvelope2Output, ParameterIDFilterCutoff, 1.0);
 //    modulationMatrix->addRow(ParameterIDLFO1Output, ParameterIDOscillator1Semi, 0.1);
