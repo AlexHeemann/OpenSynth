@@ -20,7 +20,7 @@ class ModulationMatrix;
 //==============================================================================
 /*
 */
-class ModulationOverview    : public Component, public ModulationPopover::Listener
+class ModulationOverview    : public Component, public ModulationPopover::Listener, public Button::Listener
 {
 public:
     ModulationOverview(int destinationID, OpenSynthAudioProcessor& processor);
@@ -32,10 +32,18 @@ public:
     
     // ModulationPopover::Listener
     void modulationPopoverValueChanged(ModulationPopover* modulationPopover) override;
+    
+    // Button::Listener
+    void buttonClicked(juce::Button* button) override;
 
 private:
     int destinationID;
     OpenSynthAudioProcessor& processor;
     std::vector<std::unique_ptr<ModulationPopover>> modulationPopovers;
+    std::vector<std::unique_ptr<Label>> sourceNameLabels;
+    std::vector<std::unique_ptr<Button>> removeButtons;
+    std::unordered_map<Button*, int> buttonToSourceMap;
+    
+    void clear();
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ModulationOverview)
 };

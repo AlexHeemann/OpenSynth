@@ -15,10 +15,8 @@
 //==============================================================================
 ModulationOverview::ModulationOverview(int destinationID, OpenSynthAudioProcessor& processor) : destinationID(destinationID), processor(processor)
 {
-    // In your constructor, you should add any child components, and
-    // initialise any special settings that your component needs.
     update();
-    setSize(80, 180);
+    setSize(100, 180);
 }
 
 ModulationOverview::~ModulationOverview()
@@ -27,17 +25,18 @@ ModulationOverview::~ModulationOverview()
 
 void ModulationOverview::paint (Graphics& g)
 {
-    /* This demo code just fills the component's background and
-       draws some placeholder text to get you started.
-
-       You should replace everything in this method with your own
-       drawing code..
-    */
-
     g.fillAll (getLookAndFeel().findColour (ResizableWindow::backgroundColourId));   // clear the background
 
     g.setColour (Colours::grey);
     g.drawRect (getLocalBounds(), 1);   // draw an outline around the component
+}
+
+void ModulationOverview::clear()
+{
+    modulationPopovers.clear();
+    sourceNameLabels.clear();
+    removeButtons.clear();
+    buttonToSourceMap.clear();
 }
 
 void ModulationOverview::update()
@@ -47,7 +46,16 @@ void ModulationOverview::update()
         popover->removeListener(this);
         removeChildComponent(&*popover);
     }
-    modulationPopovers.clear();
+    for (auto& label : sourceNameLabels)
+    {
+        removeChildComponent(&*label);
+    }
+    for (auto& button : removeButtons)
+    {
+        removeChildComponent(&*button);
+    }
+    clear();
+    
     std::list<int>* sources = processor.getModulationMatrix()->getSourcesForDestination(destinationID);
     if (sources != nullptr)
     {
@@ -58,20 +66,48 @@ void ModulationOverview::update()
             p->setSliderValue(processor.getModulationMatrix()->getModulationAmount(*iterator, destinationID));
             p->addListener(this);
             addAndMakeVisible(*p);
-            
             modulationPopovers.push_back(std::move(p));
+            
+            std::unique_ptr<Label> l(new Label());
+            l->setText(String(processor.getModulationMatrix()->getSourceName(*iterator)), NotificationType::dontSendNotification);
+            l->setBounds(0, 0, 50, 20);
+            l->setColour(Label::ColourIds::textColourId, Colours::white);
+            addAndMakeVisible(*l);
+            sourceNameLabels.push_back(std::move(l));
+            
+            std::unique_ptr<DrawableButton> b(new DrawableButton("remove modulation button", DrawableButton::ImageRaw));
+            b->setColour(DrawableButton::backgroundColourId, Colours::red);
+            b->setBounds(0, 0, 10, 10);
+            addAndMakeVisible(*b);
+            b->addListener(this);
+            buttonToSourceMap[b.get()] = *iterator;
+            removeButtons.push_back(std::move(b));
         }
     }
     resized();
+}
+
+void ModulationOverview::buttonClicked(juce::Button* button)
+{
+    if (buttonToSourceMap.find(button) != buttonToSourceMap.end())
+    {
+        processor.getModulationMatrix()->removeRow(buttonToSourceMap[button], destinationID);
+        update();
+    }
 }
 
 void ModulationOverview::resized()
 {
     // This method is where you should set the bounds of any child
     // components that your component contains..
+    
     for (int index = 0; index < modulationPopovers.size(); ++index)
     {
-        modulationPopovers[index]->setTopLeftPosition(0, index * modulationPopovers[index]->getHeight() + 5);
+        int popoverWidth = modulationPopovers[index]->getWidth();
+        int popoverHeight = modulationPopovers[index]->getHeight();
+        modulationPopovers[index]->setTopLeftPosition(5, index * popoverHeight + 10);
+        sourceNameLabels[index]->setTopLeftPosition(popoverWidth + 5, index * popoverHeight + 15);
+        removeButtons[index]->setTopLeftPosition(popoverWidth + 30, index * popoverHeight + 10);
     }
 }
 
