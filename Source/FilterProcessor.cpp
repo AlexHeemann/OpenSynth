@@ -13,12 +13,18 @@
 #include "ModulationMatrix.h"
 #include "PluginProcessor.h"
 
-FilterProcessor::FilterProcessor(ModulationMatrix* modulationMatrix) : Processor(modulationMatrix)
+FilterProcessor::FilterProcessor(ModulationMatrix* modulationMatrix, int bufferSize) : Processor(modulationMatrix, bufferSize)
 {
     initialiseLowPassFilter(20000);
     initialiseHighPassFilter(20000);
     initialiseBandPassFilter(20000);
     initialiseAllPassFilter(20000);
+}
+
+void FilterProcessor::renderNextBlock()
+{
+    Processor::aggregateInputs(audioBuffer);
+    renderNextBlock(audioBuffer, 0, audioBuffer.getNumSamples());
 }
 
 template <typename FloatType, typename DspFilterType>

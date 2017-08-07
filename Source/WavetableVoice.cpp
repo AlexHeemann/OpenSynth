@@ -14,7 +14,7 @@
 
 WavetableVoice::WavetableVoice(Wavetable* wavetable) : phaseIncrement1(0.0), phaseIncrement2(0.0), osc1Wavetable(wavetable), osc2Wavetable(wavetable)
 {
-    filterProcessor = new FilterProcessor(modulationMatrix);
+    filterProcessor = new FilterProcessor(modulationMatrix, );
     ampProcessor = new AmpProcessor(modulationMatrix);
 }
 
@@ -136,13 +136,17 @@ double getFrequencyFromFloatNote(float note)
 template <typename FloatType>
 void WavetableVoice::processBlock(AudioBuffer<FloatType>& outputBuffer, int startSample, int numSamples)
 {
-    modulationMatrix->clear();
-    
     ampEnvelopeGenerator->calculateEnvelopeBuffer(numSamples);
     filterEnvelopeGenerator->calculateEnvelopeBuffer(numSamples);
     envelopeGenerator1->calculateEnvelopeBuffer(numSamples);
     envelopeGenerator2->calculateEnvelopeBuffer(numSamples);
     lfo1->oscillate(numSamples);
+    
+    modulationMatrix->clear();
+    
+    lfo1->writeModulationValue();
+    envelopeGenerator1->writeModulationValue();
+    envelopeGenerator2->writeModulationValue();
     
     modulationMatrix->process();
     

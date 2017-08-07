@@ -27,7 +27,7 @@ public:
         AllPass = 4
     } FilterType;
     
-    FilterProcessor(ModulationMatrix* modulationMatrix);
+    FilterProcessor(ModulationMatrix* modulationMatrix, int bufferSize);
     virtual ~FilterProcessor() {};
     
     void renderNextBlock(AudioBuffer<float>& outputBuffer, int startSample, int numSamples) override
@@ -38,6 +38,7 @@ public:
     {
         processBuffer(outputBuffer, startSample, numSamples);
     }
+    void renderNextBlock() override;
     
     void resetFilter();
     void setActiveFilter(FilterType activeFilter);

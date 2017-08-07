@@ -18,7 +18,7 @@ class DelayParameterContainer;
 class DelayProcessor : public Processor
 {
 public:
-    DelayProcessor(ModulationMatrix* modulationMatrix);
+    DelayProcessor(ModulationMatrix* modulationMatrix, int bufferSize);
     virtual ~DelayProcessor();
     
     void renderNextBlock(AudioBuffer<float>& outputBuffer, int startSample, int numSamples) override

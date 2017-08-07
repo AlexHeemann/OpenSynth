@@ -14,24 +14,84 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "EnvelopeGenerator.h"
 #include "Module.h"
+#include <set>
 
 class Processor
 {
 public:
-    Processor(ModulationMatrix *modulationMatrix) : modulationMatrix(modulationMatrix) {};
+    Processor(ModulationMatrix *modulationMatrix, int bufferSize) :
+    modulationMatrix(modulationMatrix),
+    audioBuffer(AudioBuffer<float>(2, bufferSize))
+    {
+        audioBuffer.clear();
+    };
     virtual ~Processor() {};
     
     virtual void renderNextBlock(AudioBuffer<float>& outputBuffer, int startSample, int numSamples) = 0;
     virtual void renderNextBlock(AudioBuffer<double>& outputBuffer, int startSample, int numSamples) = 0;
+    virtual void renderNextBlock() = 0;
     
     virtual void setEnvelopeGenerator(EnvelopeGenerator* envelopeGenerator) { this->envelopeGenerator = envelopeGenerator; };
     virtual EnvelopeGenerator* getEnvelopeGenerator() const { return envelopeGenerator; };
     void setModulationMatrix(ModulationMatrix* modulationMatrix) { this->modulationMatrix = modulationMatrix; }
     ModulationMatrix* getModulationMatrix() { return modulationMatrix; }
     
+    AudioBuffer<float>& getAudioBuffer() { return audioBuffer; }
+    
+    void addInput(Processor* processor)
+    {
+        inputs.insert(processor);
+    }
+    void removeInput(Processor* processor)
+    {
+        inputs.erase(processor);
+    }
+    
+    void addOutput(Processor* processor)
+    {
+        outputs.insert(processor);
+    }
+    void removeOutput(Processor* processor)
+    {
+        outputs.erase(processor);
+    }
+    
+    std::set<Processor*>& getInputs() { return inputs; }
+    std::set<Processor*>& getOutputs() { return outputs; }
+    void setID(int ID) { this->ID = ID; }
+    int getID() const { return ID; }
+    
+    void setBufferSize(int bufferSize)
+    {
+        audioBuffer.setSize(2, bufferSize);
+    }
+    
 protected:
+    int ID;
     EnvelopeGenerator* envelopeGenerator;
     ModulationMatrix* modulationMatrix;
+    AudioBuffer<float> audioBuffer;
+    std::set<Processor*> inputs;
+    std::set<Processor*> outputs;
+    
+    template <typename FloatType>
+    void aggregateInputs(AudioBuffer<FloatType>& buffer)
+    {
+        for (auto input : inputs)
+        {
+            input->renderNextBlock();
+            AudioBuffer<float> inputBuffer = input->getAudioBuffer();
+            for (int channel = 0; channel < inputBuffer.getNumChannels(); ++channel)
+            {
+                for (int sample = 0; sample < inputBuffer.getNumSamples(); ++sample)
+                {
+                    const float* const inputChannelData = inputBuffer.getReadPointer(channel);
+                    FloatType* const outputChannelData = buffer.getWritePointer(channel);
+                    outputChannelData[sample] += inputChannelData[sample];
+                }
+            }
+        }
+    }
 };
 
 

@@ -1,23 +1,24 @@
 /*
   ==============================================================================
 
-    AmpProcessor.h
-    Created: 6 Oct 2016 2:33:19pm
+    OscillatorProcessor.h
+    Created: 7 Aug 2017 6:58:17pm
     Author:  Alexander Heemann
 
   ==============================================================================
 */
 
-#ifndef AMPPROCESSOR_H_INCLUDED
-#define AMPPROCESSOR_H_INCLUDED
+#pragma once
 
 #include "Processor.h"
 
-class AmpProcessor : public Processor
+class OscillatorParameterContainer;
+
+class OscillatorProcessor : public Processor
 {
 public:
-    AmpProcessor(ModulationMatrix* modulationMatrix, int bufferSize);
-    virtual ~AmpProcessor() {};
+    OscillatorProcessor(ModulationMatrix* modulationMatrix, int bufferSize);
+    virtual ~OscillatorProcessor() {};
     
     void renderNextBlock(AudioBuffer<float>& outputBuffer, int startSample, int numSamples) override
     {
@@ -29,13 +30,11 @@ public:
     }
     void renderNextBlock() override {};
     
-    AudioParameterFloat* level;
+    void setParameterContainer(OscillatorParameterContainer* parameterContainer) { this->parameterContainer = parameterContainer; };
     
 private:
     template <typename FloatType>
     void processBuffer(AudioBuffer<FloatType>& buffer, int startSample, int numSamples);
+    
+    OscillatorParameterContainer* parameterContainer;
 };
-
-
-
-#endif  // AMPPROCESSOR_H_INCLUDED

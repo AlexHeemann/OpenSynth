@@ -10,16 +10,18 @@
 
 #include "AmpProcessor.h"
 
-AmpProcessor::AmpProcessor(ModulationMatrix* modulationMatrix) : Processor(modulationMatrix)
+AmpProcessor::AmpProcessor(ModulationMatrix* modulationMatrix, int bufferSize) : Processor(modulationMatrix, bufferSize)
 {
 }
 
 template <typename FloatType>
 void AmpProcessor::processBuffer(AudioBuffer<FloatType> &buffer, int startSample, int numSamples)
 {
+    Processor::aggregateInputs(buffer);
+    
     bool isModulated = envelopeGenerator != nullptr && envelopeGenerator->envelopeBuffer.size() >= numSamples;
     
-    for (int channel = 0; channel < buffer.getNumChannels(); channel++)
+    for (int channel = 0; channel < buffer.getNumChannels(); ++channel)
     {
         FloatType* const channelData = buffer.getWritePointer(channel);
         const float localLevel = level->get();

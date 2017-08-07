@@ -11,7 +11,7 @@
 #include "DelayProcessor.h"
 #include "DelayParameterContainer.h"
 
-DelayProcessor::DelayProcessor(ModulationMatrix* modulationMatrix) : Processor(modulationMatrix), maxDelayLength(5.0f), isUsingDoublePrecision(true)
+DelayProcessor::DelayProcessor(ModulationMatrix* modulationMatrix, int bufferSize) : Processor(modulationMatrix, bufferSize), maxDelayLength(5.0f), isUsingDoublePrecision(true)
 {
 }
 
