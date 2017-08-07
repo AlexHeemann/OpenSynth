@@ -44,8 +44,7 @@ public:
     
 private:
     std::set<int> targets;
-    double currentValue = 0;
-    double currentPhase = 0;
+    double currentPhase = 0.0;
     double phaseIncrement;
     double frqRad;
     int sampleRate;

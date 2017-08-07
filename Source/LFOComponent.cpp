@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 5.0.0
+  Created with Projucer version: 5.1.1
 
   ------------------------------------------------------------------------------
 
@@ -18,6 +18,7 @@
 */
 
 //[Headers] You can add your own extra header files here...
+#include "LFOParameterContainer.h"
 //[/Headers]
 
 #include "LFOComponent.h"
@@ -27,11 +28,10 @@
 //[/MiscUserDefs]
 
 //==============================================================================
-LFOComponent::LFOComponent (LFOParameterContainer& parameterContainer)
-    : parameterContainer(parameterContainer)
+LFOComponent::LFOComponent (OpenSynthAudioProcessorEditor &editor)
+    : editor(editor), processor(editor.getProcessor())
 {
     //[Constructor_pre] You can add your own custom stuff here..
-    addAndMakeVisible (frequencySlider = new ParameterSlider (*parameterContainer.getFrequencyParameter(), ParameterIDLFO1Frequency));
     //[/Constructor_pre]
 
     addAndMakeVisible (lfoTitleLabel = new Label ("LFO Title Label",
@@ -42,10 +42,6 @@ LFOComponent::LFOComponent (LFOParameterContainer& parameterContainer)
     lfoTitleLabel->setColour (Label::backgroundColourId, Colour (0xffd05555));
     lfoTitleLabel->setColour (TextEditor::textColourId, Colours::black);
     lfoTitleLabel->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
-    
-    frequencySlider->setRange (0, 1, 0);
-    frequencySlider->setSliderStyle (Slider::Rotary);
-    frequencySlider->setTextBoxStyle (Slider::NoTextBox, false, 80, 20);
 
     addAndMakeVisible (label = new Label ("new label",
                                           TRANS("Frequency\n")));
@@ -70,8 +66,15 @@ LFOComponent::LFOComponent (LFOParameterContainer& parameterContainer)
     addAndMakeVisible (modulationPlug = new ModulationPlug());
     modulationPlug->setName ("Modulation Plug");
 
+    addAndMakeVisible (frequencyKnob = new ModulatedComponent (editor, *processor.getLFOParameterContainer().getFrequencyParameter(), ParameterIDLFO1Frequency));
+    frequencyKnob->setName ("Frequency Knob");
+
 
     //[UserPreSize]
+    frequencyKnob->getSlider()->setSliderStyle(Slider::Rotary);
+    frequencyKnob->setTextBoxStyle(juce::Slider::TextEntryBoxPosition::NoTextBox, false, 60, 15);
+    frequencyKnob->getSlider()->setColour(Slider::textBoxBackgroundColourId, Colours::midnightblue);
+    frequencyKnob->setListener(this);
     //[/UserPreSize]
 
     setSize (180, 100);
@@ -79,7 +82,7 @@ LFOComponent::LFOComponent (LFOParameterContainer& parameterContainer)
 
     //[Constructor] You can add your own custom stuff here..
     waveformComboBox->setSelectedId(1);
-    modulationPlug->setID(parameterContainer.getID());
+    modulationPlug->setID(processor.getLFOParameterContainer().getID());
     //[/Constructor]
 }
 
@@ -89,10 +92,10 @@ LFOComponent::~LFOComponent()
     //[/Destructor_pre]
 
     lfoTitleLabel = nullptr;
-    frequencySlider = nullptr;
     label = nullptr;
     waveformComboBox = nullptr;
     modulationPlug = nullptr;
+    frequencyKnob = nullptr;
 
 
     //[Destructor]. You can add your own custom destruction code here..
@@ -117,10 +120,10 @@ void LFOComponent::resized()
     //[/UserPreResize]
 
     lfoTitleLabel->setBounds (0, 0, 184, 24);
-    frequencySlider->setBounds (1, 26, 55, 56);
     label->setBounds (0, 72, 72, 24);
     waveformComboBox->setBounds (80, 64, 88, 24);
     modulationPlug->setBounds (144, 32, 23, 24);
+    frequencyKnob->setBounds (8, 32, 47, 48);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -136,16 +139,16 @@ void LFOComponent::comboBoxChanged (ComboBox* comboBoxThatHasChanged)
         switch (waveformComboBox->getSelectedId() - 1)
         {
             case WaveformSine:
-                parameterContainer.setWaveform(WaveformSine);
+                processor.getLFOParameterContainer().setWaveform(WaveformSine);
                 break;
             case WaveformSawtooth:
-                parameterContainer.setWaveform(WaveformSawtooth);
+                processor.getLFOParameterContainer().setWaveform(WaveformSawtooth);
                 break;
             case WaveformSquare:
-                parameterContainer.setWaveform(WaveformSquare);
+                processor.getLFOParameterContainer().setWaveform(WaveformSquare);
                 break;
             case WaveformTriangle:
-                parameterContainer.setWaveform(WaveformTriangle);
+                processor.getLFOParameterContainer().setWaveform(WaveformTriangle);
                 break;
             default:
                 break;
@@ -160,6 +163,31 @@ void LFOComponent::comboBoxChanged (ComboBox* comboBoxThatHasChanged)
 
 
 //[MiscUserCode] You can add your own definitions of your custom methods or any other code here...
+void LFOComponent::modulationPopoverValueChanged(ModulationPopover* modulationPopover)
+{
+    if (modulationPopover == lfoFrequencyModulationPopover)
+    {
+        processor.updateModulationAmount(modulationPopover->getSourceID(), ParameterIDFilterCutoff, modulationPopover->getModulationAmount());
+    }
+}
+
+void LFOComponent::itemDropped(const int sourceID, const int destinationID)
+{
+    processor.connect(sourceID, destinationID);
+    if (destinationID == ParameterIDFilterCutoff)
+    {
+        Component* parent = getParentComponent();
+        if (parent != nullptr)
+        {
+            parent->addAndMakeVisible(lfoFrequencyModulationPopover);
+            resized();
+        }
+        lfoFrequencyModulationPopover->setSourceID(sourceID);
+        frequencyKnob->addSource(sourceID);
+        frequencyKnob->update();
+    }
+}
+
 //[/MiscUserCode]
 
 
@@ -173,8 +201,9 @@ void LFOComponent::comboBoxChanged (ComboBox* comboBoxThatHasChanged)
 BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="LFOComponent" componentName=""
-                 parentClasses="public Component" constructorParams="LFOParameterContainer&amp; parameterContainer"
-                 variableInitialisers="parameterContainer(parameterContainer)"
+                 parentClasses="public Component, public ModulationPopover::Listener, public DragAndDropListener"
+                 constructorParams="OpenSynthAudioProcessorEditor &amp;editor"
+                 variableInitialisers="editor(editor), processor(editor.getProcessor())"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="1" initialWidth="180" initialHeight="100">
   <BACKGROUND backgroundColour="ffffffff"/>
@@ -183,11 +212,6 @@ BEGIN_JUCER_METADATA
          edTextCol="ff000000" edBkgCol="0" labelText="LFO" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="18" kerning="0" bold="0" italic="0" justification="33"/>
-  <SLIDER name="LFO Frequency Slider" id="11528b7f3ccd952" memberName="frequencySlider"
-          virtualName="ParameterSlider" explicitFocusOrder="0" pos="1 26 55 56"
-          min="0" max="1" int="0" style="Rotary" textBoxPos="NoTextBox"
-          textBoxEditable="1" textBoxWidth="80" textBoxHeight="20" skewFactor="1"
-          needsCallback="0"/>
   <LABEL name="new label" id="d745b67132d73127" memberName="label" virtualName=""
          explicitFocusOrder="0" pos="0 72 72 24" textCol="ff000000" edTextCol="ff000000"
          edBkgCol="0" labelText="Frequency&#10;" editableSingleClick="0"
@@ -200,6 +224,9 @@ BEGIN_JUCER_METADATA
   <GENERICCOMPONENT name="Modulation Plug" id="27df8c89727bce37" memberName="modulationPlug"
                     virtualName="ModulationPlug" explicitFocusOrder="0" pos="144 32 23 24"
                     class="Component" params=""/>
+  <GENERICCOMPONENT name="Frequency Knob" id="57a53678bfa6f42f" memberName="frequencyKnob"
+                    virtualName="ModulatedComponent" explicitFocusOrder="0" pos="8 32 47 48"
+                    class="Component" params="editor, processor.getLFOParameterContainer.getFrequencyParameter(), ParameterIDLFO1Frequency"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

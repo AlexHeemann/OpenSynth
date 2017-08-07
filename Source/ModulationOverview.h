@@ -35,9 +35,12 @@ public:
     
     // Button::Listener
     void buttonClicked(juce::Button* button) override;
-
+    
+    void addSource(int sourceID);
+    
 private:
     int destinationID;
+    std::list<int> sources;
     OpenSynthAudioProcessor& processor;
     std::vector<std::unique_ptr<ModulationPopover>> modulationPopovers;
     std::vector<std::unique_ptr<Label>> sourceNameLabels;

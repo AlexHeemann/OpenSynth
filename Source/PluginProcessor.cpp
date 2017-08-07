@@ -8,6 +8,7 @@
 #include "OscillatorParameterContainer.h"
 #include "FilterParameterContainer.h"
 #include "DelayParameterContainer.h"
+#include "LFOParameterContainer.h"
 
 //==============================================================================
 OpenSynthAudioProcessor::OpenSynthAudioProcessor() :
@@ -215,7 +216,7 @@ void OpenSynthAudioProcessor::setupModulation(ModulationMatrix* modulationMatrix
 
 void OpenSynthAudioProcessor::connect(int sourceID, int destinationID)
 {
-    modulationMatrix->addRow(sourceID, destinationID, 0.5);
+    modulationMatrix->connect(sourceID, destinationID);
 }
 
 void OpenSynthAudioProcessor::updateModulationAmount(int sourceID, int destinationID, float amount)
@@ -317,7 +318,7 @@ void OpenSynthAudioProcessor::process(AudioBuffer<FloatType>& buffer,
 	// add messages to the buffer if the user is clicking on the on-screen keys
 	keyboardState.processNextMidiBuffer(midiMessages, 0, numSamples, true);
 
-	// and now get our synth to process these midi events and generate its output.
+    modulationMatrix->getData()->processModulationChanges();
 	synth.renderNextBlock(buffer, midiMessages, 0, numSamples);
     
     if (delayParameterContainer->getDelayEnabledParameter()->get())

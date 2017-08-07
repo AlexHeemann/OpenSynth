@@ -33,8 +33,11 @@ public:
         return modulationMatrix;
     }
     
+    void writeModulationValue();
+    
 protected:
     int ID;
+    double currentValue = 0.0;
     ModulationMatrix* modulationMatrix;
 };
 

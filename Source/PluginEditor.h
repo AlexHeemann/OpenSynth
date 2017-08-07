@@ -14,9 +14,9 @@
 #include "OscillatorComponent.h"
 #include "DelayComponent.h"
 #include "ReverbComponent.h"
-#include "LFOComponent.h"
 #include "EnvelopeComponent.h"
 
+class LFOComponent;
 class ParameterSlider;
 class FilterComponent;
 

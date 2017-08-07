@@ -8,11 +8,18 @@
               pluginCode="OSYN" pluginChannelConfigs="" pluginIsSynth="1" pluginWantsMidiIn="1"
               pluginProducesMidiOut="1" pluginIsMidiEffectPlugin="0" pluginEditorRequiresKeys="1"
               pluginAUExportPrefix="OpenSynthAU" pluginRTASCategory="" aaxIdentifier="com.alexheemann.opensynth"
-              pluginAAXCategory="AAX_ePlugInCategory_Dynamics" jucerVersion="5.0.1"
+              pluginAAXCategory="AAX_ePlugInCategory_Dynamics" jucerVersion="5.1.1"
               companyName="Alexander Heemann" displaySplashScreen="1" reportAppUsage="1"
-              splashScreenColour="Dark" buildStandalone="1" enableIAA="0">
+              splashScreenColour="Dark" buildStandalone="1" enableIAA="0" cppLanguageStandard="11">
   <MAINGROUP id="A4iQ36" name="Open Synth">
     <GROUP id="{115CB73A-FD2A-ACC8-26C7-8F73C7C67676}" name="Source">
+      <FILE id="q4JT1K" name="ProcessorManager.cpp" compile="1" resource="0"
+            file="Source/ProcessorManager.cpp"/>
+      <FILE id="DmyRcd" name="ProcessorManager.h" compile="0" resource="0"
+            file="Source/ProcessorManager.h"/>
+      <GROUP id="{AE8F486B-E7A4-3376-596B-053F86F62ABF}" name="Utility">
+        <FILE id="Bnvd3f" name="RingBuffer.h" compile="0" resource="0" file="Source/RingBuffer.h"/>
+      </GROUP>
       <FILE id="z73M64" name="ModulationMatrixData.cpp" compile="1" resource="0"
             file="Source/ModulationMatrixData.cpp"/>
       <FILE id="beHaen" name="ModulationMatrixData.h" compile="0" resource="0"
@@ -48,6 +55,14 @@
               file="Source/ReverbParameterContainer.h"/>
       </GROUP>
       <GROUP id="{F2629644-6CD5-863D-1B69-9DB32FF9D900}" name="Processors">
+        <FILE id="TkZjxH" name="OscillatorProcessor.cpp" compile="1" resource="0"
+              file="Source/OscillatorProcessor.cpp"/>
+        <FILE id="XK8uBT" name="OscillatorProcessor.h" compile="0" resource="0"
+              file="Source/OscillatorProcessor.h"/>
+        <FILE id="ZrFvkm" name="OutputProcessor.cpp" compile="1" resource="0"
+              file="Source/OutputProcessor.cpp"/>
+        <FILE id="H9EzZh" name="OutputProcessor.h" compile="0" resource="0"
+              file="Source/OutputProcessor.h"/>
         <FILE id="HbSOEp" name="Processor.h" compile="0" resource="0" file="Source/Processor.h"/>
         <FILE id="h6HzZR" name="AmpProcessor.cpp" compile="1" resource="0"
               file="Source/AmpProcessor.cpp"/>

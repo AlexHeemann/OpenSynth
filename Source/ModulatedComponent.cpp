@@ -10,6 +10,7 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "ModulatedComponent.h"
+#include "ModulationOverview.h"
 
 //==============================================================================
 ModulatedComponent::ModulatedComponent(OpenSynthAudioProcessorEditor& editor, AudioProcessorParameter& p, int ID) : Module(ID)
@@ -48,4 +49,9 @@ void ModulatedComponent::setTextBoxStyle(const Slider::TextEntryBoxPosition newP
 {
     slider->setTextBoxStyle(newPosition, isReadOnly, textEntryBoxWidth, textEntryBoxHeight);
     resized();
+}
+
+void ModulatedComponent::addSource(int sourceID)
+{
+    modulationSink->getModulationOverview()->addSource(sourceID);
 }

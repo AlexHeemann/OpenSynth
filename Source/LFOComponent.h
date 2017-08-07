@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 5.0.0
+  Created with Projucer version: 5.1.1
 
   ------------------------------------------------------------------------------
 
@@ -21,9 +21,11 @@
 
 //[Headers]     -- You can add your own extra header files here --
 #include "../JuceLibraryCode/JuceHeader.h"
-#include "LFOParameterContainer.h"
+#include "PluginProcessor.h"
 #include "ParameterSlider.h"
 #include "ModulationPlug.h"
+#include "ModulatedComponent.h"
+#include "PluginEditor.h"
 //[/Headers]
 
 
@@ -37,15 +39,19 @@
                                                                     //[/Comments]
 */
 class LFOComponent  : public Component,
+                      public ModulationPopover::Listener,
+                      public DragAndDropListener,
                       public ComboBoxListener
 {
 public:
     //==============================================================================
-    LFOComponent (LFOParameterContainer& parameterContainer);
+    LFOComponent (OpenSynthAudioProcessorEditor &editor);
     ~LFOComponent();
 
     //==============================================================================
     //[UserMethods]     -- You can add your own custom methods in this section.
+    void modulationPopoverValueChanged(ModulationPopover* modulationPopover) override;
+    void itemDropped(const int sourceID, const int destinationID) override;
     //[/UserMethods]
 
     void paint (Graphics& g) override;
@@ -56,15 +62,17 @@ public:
 
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
-    LFOParameterContainer& parameterContainer;
+    OpenSynthAudioProcessorEditor& editor;
+    OpenSynthAudioProcessor& processor;
+    ScopedPointer<ModulationPopover> lfoFrequencyModulationPopover;
     //[/UserVariables]
 
     //==============================================================================
     ScopedPointer<Label> lfoTitleLabel;
-    ScopedPointer<ParameterSlider> frequencySlider;
     ScopedPointer<Label> label;
     ScopedPointer<ComboBox> waveformComboBox;
     ScopedPointer<ModulationPlug> modulationPlug;
+    ScopedPointer<ModulatedComponent> frequencyKnob;
 
 
     //==============================================================================

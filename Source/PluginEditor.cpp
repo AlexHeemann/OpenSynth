@@ -8,6 +8,7 @@
 #include "PluginEditor.h"
 #include "ParameterSlider.h"
 #include "FilterComponent.h"
+#include "LFOComponent.h"
 
 //==============================================================================
 OpenSynthAudioProcessorEditor::OpenSynthAudioProcessorEditor (OpenSynthAudioProcessor& owner)
@@ -24,7 +25,7 @@ OpenSynthAudioProcessorEditor::OpenSynthAudioProcessorEditor (OpenSynthAudioProc
     addAndMakeVisible(oscillatorComponent = new OscillatorComponent(owner.getOscillatorParameterContainer()));
     addAndMakeVisible(delayComponent = new DelayComponent(owner.getDelayParameterContainer()));
     addAndMakeVisible(reverbComponent = new ReverbComponent(owner.getReverbParameterContainer()));
-    addAndMakeVisible(lfoComponent = new LFOComponent(owner.getLFOParameterContainer()));
+    addAndMakeVisible(lfoComponent = new LFOComponent(*this));
     addAndMakeVisible(envelope1Component = new EnvelopeComponent(owner.getEnvelope1ParameterContainer()));
     addAndMakeVisible(envelope2Component = new EnvelopeComponent(owner.getEnvelope2ParameterContainer()));
 

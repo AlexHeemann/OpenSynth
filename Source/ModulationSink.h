@@ -60,6 +60,7 @@ public:
     void removeListener (Listener *const listener);
     void update();
     Rectangle<int> getBoundsInComponent(Component* component);
+    ModulationOverview* getModulationOverview() { return modulationOverview; }
     //[/UserMethods]
 
     void paint (Graphics& g) override;

@@ -24,9 +24,7 @@ FilterProcessor::FilterProcessor(ModulationMatrix* modulationMatrix) : Processor
 template <typename FloatType, typename DspFilterType>
 void FilterProcessor::processBufferWithFilter(AudioBuffer<FloatType> &buffer, int startSample, int numSamples, std::vector<DspFilterType>& filters)
 {
-    bool isModulated = envelopeGenerator != nullptr && envelopeGenerator->envelopeBuffer.size() >= numSamples && numSamples > 0;
-    float filterModulation = isModulated ? envelopeGenerator->envelopeBuffer[0] : 1.0;
-    filterModulation = modulationMatrix->getValueForDestinationID(ParameterIDFilterCutoff);
+    float filterModulation = modulationMatrix->getValueForDestinationID(ParameterIDFilterCutoff);
     AudioParameterFloat* frequency = parameterContainer->getFilterFrequencyParameter();
     AudioParameterFloat* resonance = parameterContainer->getFilterResonanceParameter();
     

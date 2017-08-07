@@ -52,19 +52,14 @@ public:
         return data->getModulationAmount(sourceID, destinationID);
     }
     
-    void addRow(int sourceID, int destinationID, double modulationAmount)
+    void connect(int sourceID, int destinationID)
     {
-        data->addRow(sourceID, destinationID, modulationAmount);
+        data->connect(sourceID, destinationID);
     }
     
-    void addRow(int sourceID, int destinationID)
+    void disconnect(int sourceID, int destinationID)
     {
-        addRow(sourceID, destinationID, 1.0);
-    }
-    
-    void removeRow(int sourceID, int destinationID)
-    {
-        data->removeRow(sourceID, destinationID);
+        data->disconnect(sourceID, destinationID);
     }
     
     std::unordered_map<int, std::unique_ptr<std::list<int>>>& getDestinationToModMap()

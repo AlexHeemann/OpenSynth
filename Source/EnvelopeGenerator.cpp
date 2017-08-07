@@ -10,9 +10,8 @@
 
 #include "EnvelopeGenerator.h"
 #include "EnvelopeParameterContainer.h"
-#include "ModulationMatrix.h"
 
-EnvelopeGenerator::EnvelopeGenerator(int ID) : Module(ID), currentAmp(0.0), sampleRate(0.0), durationInSec(2.0), envInc(0.0)
+EnvelopeGenerator::EnvelopeGenerator(int ID) : Module(ID), sampleRate(0.0), durationInSec(2.0), envInc(0.0)
 {
 	attackSegment.setCurvature(EnvelopeSegment::EnvelopeCurvatureExponential);
 	decaySegment.setCurvature(EnvelopeSegment::EnvelopeCurvatureExponential);
@@ -32,12 +31,12 @@ void EnvelopeGenerator::calculateEnvelopeBuffer(int numSamples)
 		case EnvelopeStateAttack:
 			if (--envCount > 0)
 			{
-				currentAmp = attackSegment.getCurrentAmp();
+				currentValue = attackSegment.getCurrentAmp();
 				attackSegment.calculateNextAmp();
 			}
 			else
 			{
-				currentAmp = attackSegment.getFinalAmp();
+				currentValue = attackSegment.getFinalAmp();
 				state = EnvelopeStateDecay;
 				envCount = decaySegment.getDurationInSamples();
 				attackSegment.resetSegment();
@@ -46,36 +45,34 @@ void EnvelopeGenerator::calculateEnvelopeBuffer(int numSamples)
 		case EnvelopeStateDecay:
 			if (--envCount > 0)
 			{
-				currentAmp = decaySegment.getCurrentAmp();
+				currentValue = decaySegment.getCurrentAmp();
 				decaySegment.calculateNextAmp();
 			}
 			else
 			{
-				currentAmp = decaySegment.getFinalAmp();
+				currentValue = decaySegment.getFinalAmp();
 				state = EnvelopeStateSustain;
 				decaySegment.resetSegment();
 			}
 			break;
 		case EnvelopeStateSustain:
-			currentAmp = decaySegment.getFinalAmp();
+			currentValue = decaySegment.getFinalAmp();
 			break;
 		case EnvelopeStateRelease:
 			if (--envCount > 0)
             {
-                currentAmp = releaseSegment.getCurrentAmp();
+                currentValue = releaseSegment.getCurrentAmp();
                 releaseSegment.calculateNextAmp();
             }
             else
             {
-                currentAmp = 0.0;
+                currentValue = 0.0;
             }
 			break;
 		}
 
-		envelopeBuffer[sampleIdx] = currentAmp;
+		envelopeBuffer[sampleIdx] = currentValue;
 	}
-    
-    modulationMatrix->setValueForSourceID(ID, currentAmp);
 }
 
 void EnvelopeGenerator::setEnvelopeState(EnvelopeState state)
@@ -84,7 +81,7 @@ void EnvelopeGenerator::setEnvelopeState(EnvelopeState state)
     if (state == EnvelopeStateRelease)
     {
         envCount = releaseDuration;
-        releaseSegment.setStartAmp(currentAmp);
+        releaseSegment.setStartAmp(currentValue);
     }
 };
 
@@ -104,7 +101,7 @@ void EnvelopeGenerator::resetEnvelope()
 	attackSegment.resetSegment();
 	decaySegment.resetSegment();
     releaseSegment.resetSegment();
-	currentAmp = attackSegment.getStartAmp();
+	currentValue = attackSegment.getStartAmp();
 	envCount = attackSegment.getDurationInSamples();
     
     calculateDurations();

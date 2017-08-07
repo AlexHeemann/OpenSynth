@@ -59,7 +59,6 @@ public:
     }
     
 private:
-	double currentAmp = 0;
 	double startingAmp = 0;
 	int sampleRate;
 	double durationInSec;

@@ -56,42 +56,46 @@ void ModulationOverview::update()
     }
     clear();
     
-    std::list<int>* sources = processor.getModulationMatrix()->getSourcesForDestination(destinationID);
-    if (sources != nullptr)
+    for (std::list<int>::const_iterator iterator = sources.begin(), end = sources.end(); iterator != end; ++iterator)
     {
-        for (std::list<int>::const_iterator iterator = sources->begin(), end = sources->end(); iterator != end; ++iterator)
-        {
-            std::unique_ptr<ModulationPopover> p(new ModulationPopover());
-            p->setSourceID(*iterator);
-            p->setSliderValue(processor.getModulationMatrix()->getModulationAmount(*iterator, destinationID));
-            p->addListener(this);
-            addAndMakeVisible(*p);
-            modulationPopovers.push_back(std::move(p));
-            
-            std::unique_ptr<Label> l(new Label());
-            l->setText(String(processor.getModulationMatrix()->getSourceName(*iterator)), NotificationType::dontSendNotification);
-            l->setBounds(0, 0, 50, 20);
-            l->setColour(Label::ColourIds::textColourId, Colours::white);
-            addAndMakeVisible(*l);
-            sourceNameLabels.push_back(std::move(l));
-            
-            std::unique_ptr<DrawableButton> b(new DrawableButton("remove modulation button", DrawableButton::ImageRaw));
-            b->setColour(DrawableButton::backgroundColourId, Colours::red);
-            b->setBounds(0, 0, 10, 10);
-            addAndMakeVisible(*b);
-            b->addListener(this);
-            buttonToSourceMap[b.get()] = *iterator;
-            removeButtons.push_back(std::move(b));
-        }
+        std::unique_ptr<ModulationPopover> p(new ModulationPopover());
+        p->setSourceID(*iterator);
+        p->setSliderValue(processor.getModulationMatrix()->getModulationAmount(*iterator, destinationID));
+        p->addListener(this);
+        addAndMakeVisible(*p);
+        modulationPopovers.push_back(std::move(p));
+        
+        std::unique_ptr<Label> l(new Label());
+        l->setText(String(processor.getModulationMatrix()->getSourceName(*iterator)), NotificationType::dontSendNotification);
+        l->setBounds(0, 0, 50, 20);
+        l->setColour(Label::ColourIds::textColourId, Colours::white);
+        addAndMakeVisible(*l);
+        sourceNameLabels.push_back(std::move(l));
+        
+        std::unique_ptr<DrawableButton> b(new DrawableButton("remove modulation button", DrawableButton::ImageRaw));
+        b->setColour(DrawableButton::backgroundColourId, Colours::red);
+        b->setBounds(0, 0, 10, 10);
+        addAndMakeVisible(*b);
+        b->addListener(this);
+        buttonToSourceMap[b.get()] = *iterator;
+        removeButtons.push_back(std::move(b));
     }
+    
     resized();
+}
+
+void ModulationOverview::addSource(int sourceID)
+{
+    sources.push_back(sourceID);
+    update();
 }
 
 void ModulationOverview::buttonClicked(juce::Button* button)
 {
     if (buttonToSourceMap.find(button) != buttonToSourceMap.end())
     {
-        processor.getModulationMatrix()->removeRow(buttonToSourceMap[button], destinationID);
+        sources.remove(buttonToSourceMap[button]);
+        processor.getModulationMatrix()->disconnect(buttonToSourceMap[button], destinationID);
         update();
     }
 }

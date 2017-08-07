@@ -14,7 +14,12 @@
 
 void LFO::calculatePhaseIncrement()
 {
-    phaseIncrement = parameterContainer->getFrequencyParameter()->get() * frqRad;
+    double modulation = modulationMatrix->getValueForDestinationID(ParameterIDLFO1Frequency);
+    AudioParameterFloat* frequencyParameter = parameterContainer->getFrequencyParameter();
+    float newKnobValue = std::fmin(1.0f, frequencyParameter->range.convertTo0to1(frequencyParameter->get()) + modulation);
+    float newFrequency = std::fmax(0.0f, std::fmin(frequencyParameter->range.end, frequencyParameter->range.convertFrom0to1(newKnobValue)));
+    
+    phaseIncrement = newFrequency * frqRad;
 }
 
 void LFO::reset()
@@ -63,18 +68,4 @@ void LFO::oscillate(int numSamples)
             currentValue = 0;
             break;
     }
-    
-    modulationMatrix->setValueForSourceID(ID, currentValue);
-}
-
-void LFO::addTarget(int targetID)
-{
-    modulationMatrix->addRow(ID, targetID);
-    targets.insert(targetID);
-}
-
-void LFO::removeTarget(int targetID)
-{
-    modulationMatrix->removeRow(ID, targetID);
-    targets.erase(targetID);
 }

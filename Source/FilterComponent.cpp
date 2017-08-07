@@ -81,6 +81,7 @@ void FilterComponent::itemDropped(const int sourceID, const int destinationID)
             resized();
         }
         frequencyModulationPopover->setSourceID(sourceID);
+        frequencyKnob->addSource(sourceID);
         frequencyKnob->update();
     }
 }

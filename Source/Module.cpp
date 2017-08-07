@@ -9,3 +9,9 @@
 */
 
 #include "Module.h"
+#include "ModulationMatrix.h"
+
+void Module::writeModulationValue()
+{
+    modulationMatrix->setValueForSourceID(ID, currentValue);
+}
