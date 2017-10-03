@@ -19,7 +19,7 @@ class ReverbParameterContainer;
 class ReverbProcessor : public Processor
 {
 public:
-    ReverbProcessor(ModulationMatrix* modulationMatrix);
+    ReverbProcessor(ModulationMatrix* modulationMatrix, int bufferSize);
     virtual ~ReverbProcessor() {};
     
     void renderNextBlock(AudioBuffer<float>& outputBuffer, int startSample, int numSamples) override
@@ -33,7 +33,7 @@ public:
     
     void setSampleRate(const int sampleRate);
     const int getSampleRate() const { return sampleRate; };
-    void reset();
+    void reset() override;
     void setReverbParameterContainer(ReverbParameterContainer* reverbParameterContainer)
     {
         this->reverbParameterContainer = reverbParameterContainer;

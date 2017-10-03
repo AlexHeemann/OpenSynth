@@ -18,26 +18,30 @@ class OscillatorParameterContainer: public ParameterContainer
 {
 public:
     
-    OscillatorParameterContainer(OpenSynthAudioProcessor& processor) : processor(processor)
+    OscillatorParameterContainer(int ID, OpenSynthAudioProcessor& processor) : ParameterContainer(ID, processor)
     {
-        processor.addParameter(osc1Semi = new AudioParameterInt("osc1semi", "Osc 1 Semi", -36, 36, 0));
-        processor.addParameter(osc2Semi = new AudioParameterInt("osc2semi", "Osc 2 Semi", -36, 36, 0));
-        processor.addParameter(osc1Cents = new AudioParameterInt("osc1cents", "Osc 1 Cents", -30, 30, 0));
-        processor.addParameter(osc2Cents = new AudioParameterInt("osc2cents", "Osc 2 Cents", -30, 30, 0));
-        processor.addParameter(oscMix = new AudioParameterFloat("oscMix", "Osc Mix", 0.0f, 1.0f, 0.0f));
-        processor.addParameter(osc1Waveform = new AudioParameterChoice("osc1Waveform", "Osc 1 Waveform", waveforms, WaveformSawtooth));
-        processor.addParameter(osc2Waveform = new AudioParameterChoice("osc2Waveform", "Osc 2 Waveform", waveforms, WaveformSawtooth));
+        gainParameterID = processor.getIDManager().getNewID();
+        semiParameterID = processor.getIDManager().getNewID();
+        centsParameterID = processor.getIDManager().getNewID();
+        waveformParameterID = processor.getIDManager().getNewID();
+        
+        processor.addParameter(semi = new AudioParameterInt("oscSemi", "Osc Semi", -36, 36, 0));
+        processor.addParameter(cents = new AudioParameterInt("oscCents", "Osc Cents", -30, 30, 0));
+        processor.addParameter(gain = new AudioParameterFloat("oscGain", "Osc Gain", 0.0f, 1.0f, 0.6f));
+        processor.addParameter(waveform = new AudioParameterChoice("oscWaveform", "Osc Waveform", waveforms, WaveformSawtooth));
     }
     
     virtual ~OscillatorParameterContainer() {}
     
-    AudioParameterFloat* getOscMixParameter() const { return oscMix; }
-    AudioParameterInt* getOsc1SemiParameter() const { return osc1Semi; }
-    AudioParameterInt* getOsc2SemiParameter() const { return osc2Semi; }
-    AudioParameterInt* getOsc1Cents() const { return osc1Cents; }
-    AudioParameterInt* getOsc2Cents() const { return osc2Cents; }
-    AudioParameterChoice* getOsc1Waveform() const { return osc1Waveform; }
-    AudioParameterChoice* getOsc2Waveform() const { return osc2Waveform; }
+    int getGainParameterID() const { return gainParameterID; }
+    int getSemiParameterID() const { return semiParameterID; }
+    int getCentsParameterID() const { return centsParameterID; }
+    int getWaveformParameterID() const { return waveformParameterID; }
+    
+    AudioParameterFloat* getGainParameter() const { return gain; }
+    AudioParameterInt* getSemiParameter() const { return semi; }
+    AudioParameterInt* getCentsParameter() const { return cents; }
+    AudioParameterChoice* getWaveformParameter() const { return waveform; }
     
     OpenSynthAudioProcessor& getProcessor() { return processor; }
     
@@ -46,16 +50,18 @@ public:
         processor.setWaveformForOscillator(waveform, oscillator);
     }
     
-private:
-    OpenSynthAudioProcessor& processor;
     
-    AudioParameterFloat* oscMix;
-    AudioParameterInt* osc1Semi;
-    AudioParameterInt* osc2Semi;
-    AudioParameterInt* osc1Cents;
-    AudioParameterInt* osc2Cents;
-    AudioParameterChoice* osc1Waveform;
-    AudioParameterChoice* osc2Waveform;
+    
+private:
+    int gainParameterID;
+    int semiParameterID;
+    int centsParameterID;
+    int waveformParameterID;
+    
+    AudioParameterFloat* gain;
+    AudioParameterInt* semi;
+    AudioParameterInt* cents;
+    AudioParameterChoice* waveform;
     StringArray waveforms = {"Sine", "Sawtooth", "Square", "Triangle"};
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(OscillatorParameterContainer)

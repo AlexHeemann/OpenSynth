@@ -26,6 +26,9 @@
 #include "ModulationPlug.h"
 #include "ModulatedComponent.h"
 #include "PluginEditor.h"
+
+class LFOParameterContainer;
+class ModulationMatrix;
 //[/Headers]
 
 
@@ -45,7 +48,7 @@ class LFOComponent  : public Component,
 {
 public:
     //==============================================================================
-    LFOComponent (OpenSynthAudioProcessorEditor &editor);
+    LFOComponent (OpenSynthAudioProcessorEditor &editor, LFOParameterContainer* parameterContainer, ModulationMatrix* modulationMatrix);
     ~LFOComponent();
 
     //==============================================================================
@@ -63,8 +66,9 @@ public:
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
     OpenSynthAudioProcessorEditor& editor;
-    OpenSynthAudioProcessor& processor;
+    LFOParameterContainer* parameterContainer;
     ScopedPointer<ModulationPopover> lfoFrequencyModulationPopover;
+    ModulationMatrix* modulationMatrix;
     //[/UserVariables]
 
     //==============================================================================

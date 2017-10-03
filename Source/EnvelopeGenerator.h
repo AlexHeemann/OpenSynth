@@ -14,6 +14,7 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "EnvelopeSegment.h"
 #include "Module.h"
+#include "EnvelopeState.h"
 
 class EnvelopeParameterContainer;
 
@@ -32,30 +33,22 @@ public:
 class EnvelopeGenerator : public Module
 {
 public:
-	typedef enum
-	{
-		EnvelopeStateAttack,
-		EnvelopeStateDecay,
-		EnvelopeStateSustain,
-		EnvelopeStateRelease
-	} EnvelopeState;
-
-	EnvelopeGenerator(int ID);
+	EnvelopeGenerator(EnvelopeParameterContainer* parameterContainer);
 	virtual ~EnvelopeGenerator();
 	// Contains the values for the current buffer
 	std::vector<double> envelopeBuffer;
     std::vector<double> releaseBuffer;
 
-	void calculateEnvelopeBuffer(int numSamples);
-	void resetEnvelope();
+    void setSampleRate(int sampleRate) override;
+	void calculateModulation(int numSamples) override;
+	void reset() override;
     float getReleaseRate() const;
     
-	void setSampleRate(int sampleRate);
 	void setDurationInSec(double durationInSec);
     void setEnvelopeState(EnvelopeState state);
-    void setEnvelopeParameterContainer(EnvelopeParameterContainer* envelopeParameterContainer)
+    void setParameterContainer(EnvelopeParameterContainer* parameterContainer)
     {
-        this->envelopeParameterContainer = envelopeParameterContainer;
+        this->parameterContainer = parameterContainer;
     }
     
 private:
@@ -71,7 +64,7 @@ private:
 	EnvelopeSegmentAttack attackSegment;
 	EnvelopeSegmentDecay decaySegment;
     EnvelopeSegmentRelease releaseSegment;
-    EnvelopeParameterContainer* envelopeParameterContainer;
+    EnvelopeParameterContainer* parameterContainer;
 
 	double envInc;
 	double envCount;

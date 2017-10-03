@@ -30,7 +30,7 @@ void FilterProcessor::renderNextBlock()
 template <typename FloatType, typename DspFilterType>
 void FilterProcessor::processBufferWithFilter(AudioBuffer<FloatType> &buffer, int startSample, int numSamples, std::vector<DspFilterType>& filters)
 {
-    float filterModulation = modulationMatrix->getValueForDestinationID(ParameterIDFilterCutoff);
+    float filterModulation = modulationMatrix->getValueForDestinationID(parameterContainer->getFrequencyParameterID());
     AudioParameterFloat* frequency = parameterContainer->getFilterFrequencyParameter();
     AudioParameterFloat* resonance = parameterContainer->getFilterResonanceParameter();
     
@@ -69,7 +69,7 @@ void FilterProcessor::processBuffer(AudioBuffer<FloatType> &buffer, int startSam
     }
 }
 
-void FilterProcessor::resetFilter()
+void FilterProcessor::reset()
 {
     initialiseLowPassFilter(parameterContainer->getFilterFrequencyParameter()->get());
     initialiseHighPassFilter(parameterContainer->getFilterFrequencyParameter()->get());

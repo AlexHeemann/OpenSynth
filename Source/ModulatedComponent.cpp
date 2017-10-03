@@ -13,11 +13,11 @@
 #include "ModulationOverview.h"
 
 //==============================================================================
-ModulatedComponent::ModulatedComponent(OpenSynthAudioProcessorEditor& editor, AudioProcessorParameter& p, int ID) : Module(ID)
+ModulatedComponent::ModulatedComponent(OpenSynthAudioProcessorEditor& editor, AudioProcessorParameter& p, int ID) : ID(ID)
 {
     // In your constructor, you should add any child components, and
     // initialise any special settings that your component needs.
-    addAndMakeVisible(slider = new ParameterSlider(p, ID));
+    addAndMakeVisible(slider = new ParameterSlider(p));
     addAndMakeVisible(modulationSink = new ModulationSink(editor, ID));
 }
 

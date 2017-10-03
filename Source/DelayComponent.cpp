@@ -31,10 +31,10 @@ DelayComponent::DelayComponent (DelayParameterContainer& parameterContainer)
     : parameterContainer(parameterContainer)
 {
     //[Constructor_pre] You can add your own custom stuff here..
-    addAndMakeVisible(timeKnob = new ParameterSlider(*parameterContainer.getDelayTimeParameter(), ParameterIDDelayTime));
-    addAndMakeVisible (feedKnob = new ParameterSlider (*parameterContainer.getDelayFeedbackParameter(), ParameterIDDelayFeedback));
-    addAndMakeVisible (spreadKnob = new ParameterSlider (*parameterContainer.getDelaySpreadParameter(), ParameterIDDelayFeedback));
-    addAndMakeVisible (mixKnob = new ParameterSlider (*parameterContainer.getDelayMixParameter(), ParameterIDDelayFeedback));
+    addAndMakeVisible(timeKnob = new ParameterSlider(*parameterContainer.getDelayTimeParameter()));
+    addAndMakeVisible (feedKnob = new ParameterSlider (*parameterContainer.getDelayFeedbackParameter()));
+    addAndMakeVisible (spreadKnob = new ParameterSlider (*parameterContainer.getDelaySpreadParameter()));
+    addAndMakeVisible (mixKnob = new ParameterSlider (*parameterContainer.getDelayMixParameter()));
     //[/Constructor_pre]
 
     timeKnob->setRange (0, 1, 0);

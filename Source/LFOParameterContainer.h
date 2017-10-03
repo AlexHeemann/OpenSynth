@@ -12,19 +12,22 @@
 #define LFOPARAMETERCONTAINER_H_INCLUDED
 
 #include "ModulationParameterContainer.h"
-#include "PluginProcessor.h"
 
 class LFOParameterContainer : public ModulationParameterContainer
 {
 public:
-    LFOParameterContainer(AudioProcessor& processor, String name) : ModulationParameterContainer(processor, name)
+    LFOParameterContainer(int ID, OpenSynthAudioProcessor& processor) : ModulationParameterContainer(ID, processor)
     {
-        processor.addParameter(phaseOffsetParameter = new AudioParameterFloat("LFO_phaseOffset", "Phase Offset", 0.0f, 1.0f, 0.0f));
-        processor.addParameter(frequencyParameter = new AudioParameterFloat("LFO_frequency", "Frequency", 0.0f, 20.0f, 5.0f));
-        processor.addParameter(waveformParameter = new AudioParameterChoice("LFO_waveform", "Waveform", waveforms, WaveformSine));
+        frequencyParameterID = processor.getIDManager().getNewID();
+        
+        processor.addParameter(phaseOffsetParameter = new AudioParameterFloat("LFO_" + String(ID) + "_phaseOffset", "LFO " + String(ID) + " Phase Offset", 0.0f, 1.0f, 0.0f));
+        processor.addParameter(frequencyParameter = new AudioParameterFloat("LFO_" + String(ID) + "_frequency", "LFO " + String(ID) + " Frequency", 0.0f, 20.0f, 5.0f));
+        processor.addParameter(waveformParameter = new AudioParameterChoice("LFO_" + String(ID) + "_waveform", "LFO " + String(ID) + " Waveform", waveforms, WaveformSine));
     };
     
     virtual ~LFOParameterContainer() {};
+    
+    const int getFrequencyParameterID() const { return frequencyParameterID; }
     
     AudioParameterFloat* getPhaseOffsetParameter() const { return phaseOffsetParameter; }
     AudioParameterFloat* getFrequencyParameter() const { return frequencyParameter; }
@@ -35,6 +38,8 @@ public:
     }
     
 private:
+    int frequencyParameterID = 0;
+    
     AudioParameterFloat* phaseOffsetParameter;
     AudioParameterFloat* frequencyParameter;
     AudioParameterChoice* waveformParameter;

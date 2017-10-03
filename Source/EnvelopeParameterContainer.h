@@ -16,15 +16,20 @@
 class EnvelopeParameterContainer: public ModulationParameterContainer
 {
 public:
-    EnvelopeParameterContainer(AudioProcessor& processor, String name) : ModulationParameterContainer(processor, name)
+    EnvelopeParameterContainer(int ID, OpenSynthAudioProcessor& processor) : ModulationParameterContainer(ID, processor)
     {
-        processor.addParameter(attackRate = new AudioParameterFloat(name + " attack", name + " Attack", 0.0f, 3.0f, 0.0f));
+        attackParameterID = processor.getIDManager().getNewID();
+        decayParameterID = processor.getIDManager().getNewID();
+        sustainParameterID = processor.getIDManager().getNewID();
+        releaseParameterID = processor.getIDManager().getNewID();
+        
+        processor.addParameter(attackRate = new AudioParameterFloat("Envelope " + String(ID) + " attack",  "Envelope " + String(ID) + " Attack", 0.0f, 3.0f, 0.0f));
         attackRate->range.skew = 0.5;
-        processor.addParameter(decayRate = new AudioParameterFloat(name + " decay", name + " Decay", 0.0f, 3.0f, 3.0f));
+        processor.addParameter(decayRate = new AudioParameterFloat("Envelope " + String(ID) + " decay", "Envelope " + String(ID) + " Decay", 0.0f, 3.0f, 3.0f));
         decayRate->range.skew = 0.5;
-        processor.addParameter(releaseRate = new AudioParameterFloat(name + " release", name + " Release", 0.0f, 3.0f, 1.0f));
+        processor.addParameter(releaseRate = new AudioParameterFloat("Envelope " + String(ID) + " release", "Envelope " + String(ID) + " Release", 0.0f, 3.0f, 1.0f));
         releaseRate->range.skew = 0.5;
-        processor.addParameter(sustainLevel = new AudioParameterFloat(name + " sustain", name + " Sustain", 0.0f, 1.0f, 1.0f));
+        processor.addParameter(sustainLevel = new AudioParameterFloat("Envelope " + String(ID) + " sustain", "Envelope " + String(ID) + " Sustain", 0.0f, 1.0f, 1.0f));
     }
     
     virtual ~EnvelopeParameterContainer() {}
@@ -34,11 +39,21 @@ public:
     AudioParameterFloat* getReleaseRateParameter() const { return releaseRate; }
     AudioParameterFloat* getSustainLevelParameter() const { return sustainLevel; }
     
+    const int getAttackParameterID() const { return attackParameterID; }
+    const int getDecayParameterID() const { return decayParameterID; }
+    const int getSustainParameterID() const { return sustainParameterID; }
+    const int getReleaseParameterID() const { return releaseParameterID; }
+    
 private:
     AudioParameterFloat* attackRate;
     AudioParameterFloat* decayRate;
     AudioParameterFloat* releaseRate;
     AudioParameterFloat* sustainLevel;
+    
+    int attackParameterID = 0;
+    int decayParameterID = 0;
+    int sustainParameterID = 0;
+    int releaseParameterID = 0;
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(EnvelopeParameterContainer)
 };

@@ -20,8 +20,8 @@ FilterComponent::FilterComponent(OpenSynthAudioProcessorEditor &editor) : editor
 frequencyLabel(new Label(String::empty, "Frequency")),
 resonanceLabel(new Label(String::empty, "Resonance"))
 {
-    FilterParameterContainer& filterParameterContainer = processor.getFilterParameterContainer();
-    addAndMakeVisible(frequencyKnob = new ModulatedComponent(editor, *filterParameterContainer.getFilterFrequencyParameter(), ParameterIDFilterCutoff));
+//    FilterParameterContainer& filterParameterContainer = processor.getFilterParameterContainer();
+//    addAndMakeVisible(frequencyKnob = new ModulatedComponent(editor, *filterParameterContainer.getFilterFrequencyParameter(), ParameterIDFilterCutoff));
     frequencyKnob->getSlider()->setSliderStyle(Slider::Rotary);
     frequencyKnob->setTextBoxStyle(juce::Slider::TextEntryBoxPosition::TextBoxBelow, false, 60, 15);
     frequencyKnob->getSlider()->setColour(Slider::textBoxBackgroundColourId, Colours::midnightblue);
@@ -30,7 +30,7 @@ resonanceLabel(new Label(String::empty, "Resonance"))
     frequencyKnob->setListener(this);
     addAndMakeVisible(frequencyLabel);
     
-    addAndMakeVisible(resonanceKnob = new ModulatedComponent(editor, *filterParameterContainer.getFilterResonanceParameter(), ParameterIDFilterResonance));
+//    addAndMakeVisible(resonanceKnob = new ModulatedComponent(editor, *filterParameterContainer.getFilterResonanceParameter(), ParameterIDFilterResonance));
     resonanceKnob->getSlider()->setSliderStyle(Slider::Rotary);
     resonanceKnob->setTextBoxStyle(juce::Slider::TextEntryBoxPosition::NoTextBox, false, 0, 0);
     resonanceLabel->setColour (Label::textColourId, Colours::black);

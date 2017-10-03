@@ -19,7 +19,7 @@
 //==============================================================================
 /*
 */
-class ModulatedComponent    : public Component, public Module, public DragAndDropTarget
+class ModulatedComponent    : public Component, public DragAndDropTarget
 {
 public:    
     ModulatedComponent(OpenSynthAudioProcessorEditor& editor, AudioProcessorParameter& p, int ID);
@@ -70,7 +70,21 @@ public:
     void setListener(DragAndDropListener* listener) { this->listener = listener; }
     DragAndDropListener* getListener() { return listener; }
     
-private:
+    void setModulationMatrix(ModulationMatrix* modulationMatrix)
+    {
+        this->modulationMatrix = modulationMatrix;
+    }
+    
+    ModulationMatrix* getModulationMatrix()
+    {
+        return modulationMatrix;
+    }
+    
+protected:
+    int ID;
+
+    ModulationMatrix* modulationMatrix;
+    
     ScopedPointer<ParameterSlider> slider;
     ScopedPointer<ModulationSink> modulationSink;
     ScopedPointer<ModulationPopover> modulationPopover;

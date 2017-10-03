@@ -38,7 +38,7 @@ public:
     const int getDelayTimeInSeconds() const { return delayTimeInSeconds; };
     void setSampleRate(int sampleRate);
     const int getSampleRate() const { return sampleRate; };
-    void reset();
+    void reset() override;
     void setParameterContainer(DelayParameterContainer* parameterContainer) { this->parameterContainer = parameterContainer; };
     
 private:

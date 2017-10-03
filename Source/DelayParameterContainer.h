@@ -16,7 +16,7 @@
 class DelayParameterContainer: public ParameterContainer
 {
 public:
-    DelayParameterContainer(AudioProcessor& processor) : processor(processor)
+    DelayParameterContainer(int ID, OpenSynthAudioProcessor& processor) : ParameterContainer(ID, processor)
     {
         processor.addParameter(delayTime = new AudioParameterFloat("delayTime", "Delay Time", 0.0f, 1.0f, 0.5f));
         processor.addParameter(delayFeedback = new AudioParameterFloat("delayFeedback", "Delay Feedback", 0.0f, 1.0f, 0.5f));
@@ -34,8 +34,6 @@ public:
     AudioParameterBool* getDelayEnabledParameter() const { return delayEnabled; };
     
 private:
-    AudioProcessor& processor;
-    
     AudioParameterFloat* delayTime;
     AudioParameterFloat* delayFeedback;
     AudioParameterFloat* delaySpread;

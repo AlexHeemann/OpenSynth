@@ -12,6 +12,11 @@
 #include "ModulationMatrix.h"
 #include "LFOParameterContainer.h"
 
+LFO::LFO(LFOParameterContainer* parameterContainer) : Module(parameterContainer->getID()), parameterContainer(parameterContainer)
+{
+    
+}
+
 void LFO::calculatePhaseIncrement()
 {
     double modulation = modulationMatrix->getValueForDestinationID(ParameterIDLFO1Frequency);
@@ -27,7 +32,7 @@ void LFO::reset()
     currentPhase = parameterContainer->getPhaseOffsetParameter()->get() * 2.0 * double_Pi;
 }
 
-void LFO::oscillate(int numSamples)
+void LFO::calculateModulation(int numSamples)
 {
     calculatePhaseIncrement();
     double twoPi = 2.0 * double_Pi;

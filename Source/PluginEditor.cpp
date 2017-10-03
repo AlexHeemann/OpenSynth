@@ -20,14 +20,23 @@ OpenSynthAudioProcessorEditor::OpenSynthAudioProcessorEditor (OpenSynthAudioProc
 	envAttackLabel(String::empty, "Attack:"),
 	envDecayLabel(String::empty, "Decay:")
 {
-    addAndMakeVisible(ampComponent = new AmpComponent(owner));
-    addAndMakeVisible(filterComponent = new FilterComponent(*this));
-    addAndMakeVisible(oscillatorComponent = new OscillatorComponent(owner.getOscillatorParameterContainer()));
-    addAndMakeVisible(delayComponent = new DelayComponent(owner.getDelayParameterContainer()));
-    addAndMakeVisible(reverbComponent = new ReverbComponent(owner.getReverbParameterContainer()));
-    addAndMakeVisible(lfoComponent = new LFOComponent(*this));
-    addAndMakeVisible(envelope1Component = new EnvelopeComponent(owner.getEnvelope1ParameterContainer()));
-    addAndMakeVisible(envelope2Component = new EnvelopeComponent(owner.getEnvelope2ParameterContainer()));
+    processor.addAmp(0);
+    processor.addOscillator(1);
+    processor.connectProcessors(1, 0);
+    processor.addEnvelope(2);
+    processor.connect(2, static_cast<AmpParameterContainer*>(processor.getParameterContainer(0))->getGainParameterID());
+    processor.setAmpEnvelope(2);
+    
+    addAndMakeVisible(ampComponent = new AmpComponent(*static_cast<AmpParameterContainer*>(processor.getParameterContainer(0))));
+    addAndMakeVisible(oscillatorComponent = new OscillatorComponent(*static_cast<OscillatorParameterContainer*>(processor.getParameterContainer(1))));
+    
+//    addAndMakeVisible(filterComponent = new FilterComponent(*this));
+    
+//    addAndMakeVisible(delayComponent = new DelayComponent(owner.getDelayParameterContainer()));
+//    addAndMakeVisible(reverbComponent = new ReverbComponent(owner.getReverbParameterContainer()));
+//    addAndMakeVisible(lfoComponent = new LFOComponent(*this));
+    addAndMakeVisible(envelope1Component = new EnvelopeComponent(*static_cast<EnvelopeParameterContainer*>(processor.getParameterContainer(2))));
+//    addAndMakeVisible(envelope2Component = new EnvelopeComponent(owner.getEnvelope2ParameterContainer()));
 
 	// add the midi keyboard component..
 	addAndMakeVisible(keyboardComponent);
@@ -58,13 +67,13 @@ void OpenSynthAudioProcessorEditor::resized()
 	keyboardComponent.setBounds(r.removeFromBottom(70));
     
     oscillatorComponent->setTopLeftPosition(r.getX(), r.getY());
-    filterComponent->setTopLeftPosition(oscillatorComponent->getX() + oscillatorComponent->getWidth() + 10, oscillatorComponent->getY());
-    delayComponent->setTopRightPosition(filterComponent->getX() + filterComponent->getWidth(), filterComponent->getY() + filterComponent->getHeight() + 10);
-    ampComponent->setTopLeftPosition(filterComponent->getX() + filterComponent->getWidth() + 10, filterComponent->getY());
-    reverbComponent->setTopLeftPosition(ampComponent->getX(), ampComponent->getY() + ampComponent->getHeight() + 10);
-    lfoComponent->setTopLeftPosition(oscillatorComponent->getX(), oscillatorComponent->getY() + oscillatorComponent->getHeight() + 70);
-    envelope1Component->setTopLeftPosition(lfoComponent->getX() + lfoComponent->getWidth() + 10, lfoComponent->getY());
-    envelope2Component->setTopLeftPosition(envelope1Component->getX() + envelope1Component->getWidth() + 10, envelope1Component->getY());
+//    filterComponent->setTopLeftPosition(oscillatorComponent->getX() + oscillatorComponent->getWidth() + 10, oscillatorComponent->getY());
+//    delayComponent->setTopRightPosition(filterComponent->getX() + filterComponent->getWidth(), filterComponent->getY() + filterComponent->getHeight() + 10);
+    ampComponent->setTopLeftPosition(oscillatorComponent->getX() + oscillatorComponent->getWidth() + 10, oscillatorComponent->getY());
+//    reverbComponent->setTopLeftPosition(ampComponent->getX(), ampComponent->getY() + ampComponent->getHeight() + 10);
+//    lfoComponent->setTopLeftPosition(oscillatorComponent->getX(), oscillatorComponent->getY() + oscillatorComponent->getHeight() + 70);
+    envelope1Component->setTopLeftPosition(ampComponent->getX() + ampComponent->getWidth() + 10, ampComponent->getY());
+//    envelope2Component->setTopLeftPosition(envelope1Component->getX() + envelope1Component->getWidth() + 10, envelope1Component->getY());
 }
 
 //==============================================================================

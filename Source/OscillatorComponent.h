@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 5.0.0
+  Created with Projucer version: 5.1.1
 
   ------------------------------------------------------------------------------
 
@@ -46,7 +46,7 @@ public:
 
     //==============================================================================
     //[UserMethods]     -- You can add your own custom methods in this section.
-    void itemDropped(const int sourceID, const int destinationID);
+    void itemDropped(const int sourceID, const int destinationID) override;
     //[/UserMethods]
 
     void paint (Graphics& g) override;
@@ -62,19 +62,14 @@ private:
     //[/UserVariables]
 
     //==============================================================================
-    ScopedPointer<ComboBox> osc1ComboBox;
-    ScopedPointer<ParameterSlider> oscMixSlider;
-    ScopedPointer<ComboBox> osc2ComboBox;
-    ScopedPointer<Label> mixLabel;
+    ScopedPointer<ComboBox> oscComboBox;
+    ScopedPointer<ParameterSlider> oscGainSlider;
+    ScopedPointer<Label> gainLabel;
     ScopedPointer<Label> titleLabel;
-    ScopedPointer<ParameterSlider> osc1SemiSlider;
-    ScopedPointer<ParameterSlider> osc2SemiSlider;
-    ScopedPointer<ParameterSlider> osc1CentSlider;
-    ScopedPointer<ParameterSlider> osc2CentSlider;
+    ScopedPointer<ParameterSlider> oscSemiSlider;
+    ScopedPointer<ParameterSlider> oscCentSlider;
     ScopedPointer<Label> osc1SemiLabel;
     ScopedPointer<Label> osc1CentsLabel;
-    ScopedPointer<Label> osc2SemiLabel;
-    ScopedPointer<Label> osc2CentsLabel;
 
 
     //==============================================================================

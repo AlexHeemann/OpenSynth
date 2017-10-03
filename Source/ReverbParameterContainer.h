@@ -16,7 +16,7 @@
 class ReverbParameterContainer: public ParameterContainer
 {
 public:
-    ReverbParameterContainer(AudioProcessor& processor) : processor(processor)
+    ReverbParameterContainer(int ID, OpenSynthAudioProcessor& processor) : ParameterContainer(ID, processor)
     {
         reverbSize = new AudioParameterFloat("reverbSize", "Reverb Size", 0.0f, 1.0f, 0.5f);
         processor.addParameter(reverbSize);
@@ -42,8 +42,6 @@ public:
     AudioParameterBool* getReverbEnabledParameter() const { return reverbEnabled; }
     
 private:
-    AudioProcessor& processor;
-    
     AudioParameterFloat* reverbSize;
     AudioParameterFloat* reverbDamping;
     AudioParameterFloat* reverbWetLevel;

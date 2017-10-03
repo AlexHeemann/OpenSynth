@@ -17,15 +17,20 @@
 #include "DelayProcessor.h"
 #include "ReverbProcessor.h"
 #include "FilterProcessor.h"
-#include "ModulationMatrix.h"
 #include "LFO.h"
+#include "IDManager.h"
+#include "RingBuffer.h"
+#include <memory>
+#include <unordered_map>
 
+class ModulationMatrix;
 class ReverbParameterContainer;
 class EnvelopeParameterContainer;
 class OscillatorParameterContainer;
 class FilterParameterContainer;
 class DelayParameterContainer;
 class LFOParameterContainer;
+class ParameterContainer;
 
 typedef enum
 {
@@ -34,6 +39,11 @@ typedef enum
     WaveformSquare,
     WaveformTriangle,
 } Waveform;
+
+struct ProcessorGraphCommand
+{
+    
+};
 
 typedef enum
 {
@@ -128,60 +138,33 @@ public:
 	// this is kept up to date with the midi messages that arrive, and the UI component
 	// registers with it so it can represent the incoming messages
 	MidiKeyboardState keyboardState;
-
-	// Gain parameters
-    AudioParameterFloat* level;        
     
-    ReverbParameterContainer& getReverbParameterContainer()
-    {
-        return *reverbParameterContainer;
-    }
-    DelayParameterContainer& getDelayParameterContainer()
-    {
-        return *delayParameterContainer;
-    }
-    EnvelopeParameterContainer& getFilterEnvelopeParameterContainer()
-    {
-        return *filterEnvelopeParameterContainer;
-    }
-    EnvelopeParameterContainer& getAmpEnvelopeParameterContainer()
-    {
-        return *ampEnvelopeParameterContainer;
-    }
-    OscillatorParameterContainer& getOscillatorParameterContainer()
-    {
-        return *oscillatorParameterContainer;
-    }
-    FilterParameterContainer& getFilterParameterContainer()
-    {
-        return *filterParameterContainer;
-    }
-    LFOParameterContainer& getLFOParameterContainer()
-    {
-        return *lfoParameterContainer;
-    }
-    EnvelopeParameterContainer& getEnvelope1ParameterContainer()
-    {
-        return *envelope1ParameterContainer;
-    }
-    EnvelopeParameterContainer& getEnvelope2ParameterContainer()
-    {
-        return *envelope2ParameterContainer;
-    }
     ModulationMatrix* getModulationMatrix() const
     {
         return modulationMatrix;
     }
+    IDManager& getIDManager() { return idManager; }
+    
+    ParameterContainer* getParameterContainer(int ID);
     
     void connect(int sourceID, int destinationID);
     void updateModulationAmount(int sourceID, int destinationID, float amount);
     
+    void addEnvelope(int ID);
+    void setAmpEnvelope(int ID);
+    void addLFO(int ID);
+    void addOscillator(int ID);
+    void addFilter(int ID);
+    void addAmp(int ID);
+    
+    void connectProcessors(int sourceID, int destinationID);
+    void disconnectProcessors(int sourceID, int destinationID);
 
 private:
     //==============================================================================
 	template <typename FloatType>
 	void process(AudioBuffer<FloatType>& buffer, MidiBuffer& midiMessages);
-	
+    
 	double currentSampleRate = 0;
 
 	Synthesiser synth;
@@ -189,21 +172,8 @@ private:
     SquareWavetable squareWavetable;
     SineWavetable sineWavetable;
     
-    ScopedPointer<DelayProcessor> delayProcessor;
-    ScopedPointer<ReverbProcessor> reverbProcessor;
-    
-    ScopedPointer<ReverbParameterContainer> reverbParameterContainer;
-    ScopedPointer<EnvelopeParameterContainer> filterEnvelopeParameterContainer;
-    ScopedPointer<EnvelopeParameterContainer> ampEnvelopeParameterContainer;
-    ScopedPointer<OscillatorParameterContainer> oscillatorParameterContainer;
-    ScopedPointer<FilterParameterContainer> filterParameterContainer;
-    ScopedPointer<DelayParameterContainer> delayParameterContainer;
-    ScopedPointer<LFOParameterContainer> lfoParameterContainer;
-    ScopedPointer<EnvelopeParameterContainer> envelope1ParameterContainer;
-    ScopedPointer<EnvelopeParameterContainer> envelope2ParameterContainer;
-    
-    ScopedPointer<LFO> lfo1;
-    ScopedPointer<LFO> lfo2;
+    IDManager idManager;
+    std::unordered_map<int, std::unique_ptr<ParameterContainer>> parameterContainers;
     
     ScopedPointer<ModulationMatrix> modulationMatrix;
 

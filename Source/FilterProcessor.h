@@ -40,7 +40,7 @@ public:
     }
     void renderNextBlock() override;
     
-    void resetFilter();
+    void reset() override;
     void setActiveFilter(FilterType activeFilter);
     void setParameterContainer(FilterParameterContainer* parameterContainer);    
     

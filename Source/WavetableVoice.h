@@ -19,6 +19,7 @@
 #include "LFO.h"
 #include "ModulationMatrix.h"
 
+class ProcessorManager;
 class OscillatorParameterContainer;
 class FilterParameterContainer;
 
@@ -35,7 +36,7 @@ public:
 class WavetableVoice : public SynthesiserVoice
 {
 public:
-    WavetableVoice(Wavetable* wavetable);
+    WavetableVoice(int bufferSize);
     virtual ~WavetableVoice();
     
     bool canPlaySound(SynthesiserSound* sound) override
@@ -63,59 +64,11 @@ public:
         processBlock(outputBuffer, startSample, numSamples);
     }
     
-    void setAmpEnvelopeGenerator(EnvelopeGenerator* ampEnvelopeGenerator);
-    EnvelopeGenerator* getAmpEnvelopeGenerator() const { return ampEnvelopeGenerator; };
-    void setFilterEnvelopeGenerator(EnvelopeGenerator* filterEnvelopeGenerator);
-    EnvelopeGenerator* getFilterEnvelopeGenerator() const { return filterEnvelopeGenerator; };
-    void setOscillatorParameterContainer(OscillatorParameterContainer* oscillatorParameterContainer);
-    OscillatorParameterContainer* getOscillatorParameterContainer() const { return oscillatorParameterContainer; };
-    void setFilterParameterContainer(FilterParameterContainer* filterParameterContainer);
-    FilterParameterContainer* getFilterParameterContainer() const { return filterParameterContainer; };
-    void setEnvelopeGenerator1(EnvelopeGenerator* envelopeGenerator)
-    {
-        setupEnvelope(envelopeGenerator);
-        this->envelopeGenerator1 = envelopeGenerator;
-    }
-    EnvelopeGenerator* getEnvelopeGenerator1() const { return envelopeGenerator1; }
-    
-    void setEnvelopeGenerator2(EnvelopeGenerator* envelopeGenerator)
-    {
-        setupEnvelope(envelopeGenerator);
-        this->envelopeGenerator2 = envelopeGenerator;
-    }
-    EnvelopeGenerator* getEnvelopeGenerator2() const { return envelopeGenerator2; }
-    
-    /**
-     * Set the wavetable to use for the voice
-     */
-    void setOsc1Wavetable(Wavetable* wavetable);
-    void setOsc2Wavetable(Wavetable* wavetable);
-    
-    void setLFO1(LFO* lfo)
-    {
-        lfo1 = lfo;
-    }
-    
-    LFO* getLFO1()
-    {
-        return lfo1;
-    }
-    
-    LFO* getLFO2()
-    {
-        return lfo2;
-    }
-    
-    void setLFO2(LFO* lfo)
-    {
-        lfo2 = lfo;
-    }
+    void prepareToPlay (double sampleRate, int samplesPerBlock);
     
     void setModulationMatrix(ModulationMatrix* modulationMatrix)
     {
         this->modulationMatrix = modulationMatrix;
-        filterProcessor->setModulationMatrix(modulationMatrix);
-        ampProcessor->setModulationMatrix(modulationMatrix);
     }
     
     ModulationMatrix* getModulationMatrix()
@@ -123,27 +76,13 @@ public:
         return modulationMatrix;
     }
     
-    AmpProcessor* getAmpProcessor() { return ampProcessor; }
-    FilterProcessor* getFilterProcessor() { return filterProcessor; }
-    OscillatorParameterContainer* getParameterContainer() const { return oscillatorParameterContainer; };
+    ProcessorManager* getProcessorManager()
+    {
+        return processorManager;
+    }
     
 private:
-    double currentPhase1, currentPhase2, phaseIncrement1, phaseIncrement2, level, frequency1, frequency2, frqRad;
-    Wavetable* osc1Wavetable;
-    Wavetable* osc2Wavetable;
-    EnvelopeGenerator* ampEnvelopeGenerator;
-    EnvelopeGenerator* filterEnvelopeGenerator;
-    ScopedPointer<EnvelopeGenerator> envelopeGenerator1;
-    ScopedPointer<EnvelopeGenerator> envelopeGenerator2;
-    OscillatorParameterContainer* oscillatorParameterContainer;
-    FilterParameterContainer* filterParameterContainer;
-    
-    // Processors
-    ScopedPointer<AmpProcessor> ampProcessor;
-    ScopedPointer<FilterProcessor> filterProcessor;
-    
-    ScopedPointer<LFO> lfo1;
-    ScopedPointer<LFO> lfo2;
+    ScopedPointer<ProcessorManager> processorManager;
     ScopedPointer<ModulationMatrix> modulationMatrix;
     
     int releaseCounter;
@@ -151,9 +90,9 @@ private:
     template <typename FloatType>
     void processBlock(AudioBuffer<FloatType>& outputBuffer, int startSample, int numSamples);
     
-    void calculatePhaseIncrement();
-    void resetEnvelope(EnvelopeGenerator* envelopeGenerator);
     void setupEnvelope(EnvelopeGenerator* envelopeGenerator);
+    
+    AudioBuffer<float> audioBuffer;
 };
 
 

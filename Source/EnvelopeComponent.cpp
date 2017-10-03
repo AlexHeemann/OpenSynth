@@ -31,10 +31,10 @@ EnvelopeComponent::EnvelopeComponent (EnvelopeParameterContainer& parameterConta
     : parameterContainer(parameterContainer)
 {
     //[Constructor_pre] You can add your own custom stuff here..
-    addAndMakeVisible (attackSlider = new ParameterSlider (*parameterContainer.getAttackRateParameter(), ParameterIDEnvelope1Attack));
-    addAndMakeVisible (decaySlider = new ParameterSlider (*parameterContainer.getDecayRateParameter(), ParameterIDEnvelope1Decay));
-    addAndMakeVisible (sustainSlider = new ParameterSlider (*parameterContainer.getSustainLevelParameter(), ParameterIDEnvelope1Sustain));
-    addAndMakeVisible (releaseSlider = new ParameterSlider (*parameterContainer.getReleaseRateParameter(), ParameterIDEnvelope1Release));
+    addAndMakeVisible (attackSlider = new ParameterSlider (*parameterContainer.getAttackRateParameter()));
+    addAndMakeVisible (decaySlider = new ParameterSlider (*parameterContainer.getDecayRateParameter()));
+    addAndMakeVisible (sustainSlider = new ParameterSlider (*parameterContainer.getSustainLevelParameter()));
+    addAndMakeVisible (releaseSlider = new ParameterSlider (*parameterContainer.getReleaseRateParameter()));
     //[/Constructor_pre]
 
     addAndMakeVisible (envelopeTitleLabel = new Label ("Envelope Title Label",

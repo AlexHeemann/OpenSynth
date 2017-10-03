@@ -13,6 +13,7 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "ModulationPopover.h"
 #include "PluginProcessor.h"
+#include <list>
 
 class OpenSynthAudioProcessor;
 class ModulationMatrix;

@@ -16,8 +16,11 @@
 class FilterParameterContainer: public ParameterContainer
 {
 public:
-    FilterParameterContainer(AudioProcessor& processor) : processor(processor)
+    FilterParameterContainer(int ID, OpenSynthAudioProcessor& processor) : ParameterContainer(ID, processor)
     {
+        filterFrequencyParameterID = processor.getIDManager().getNewID();
+        filterResonanceParameterID = processor.getIDManager().getNewID();
+        
         processor.addParameter(filterFrequency = new AudioParameterFloat("filter_frequency", "Filter Frequency", 0.0f, 20000.0f, 10000.0f));
         filterFrequency->range.skew = 0.25;
         processor.addParameter(envelopeAmountFilter = new AudioParameterFloat("env_amount_filter", "Envelope Amount", 0.0f, 1.0f, 0.0f));
@@ -26,12 +29,16 @@ public:
     
     ~FilterParameterContainer() {}
     
+    const int getFrequencyParameterID() const { return filterFrequencyParameterID; }
+    const int getFilterResonaceParameterID() const { return filterResonanceParameterID; }
+    
     AudioParameterFloat* getEnvelopeAmountParameter() const { return envelopeAmountFilter; };
     AudioParameterFloat* getFilterFrequencyParameter() const { return filterFrequency; };
     AudioParameterFloat* getFilterResonanceParameter() const { return filterResonance; };
     
 private:
-    AudioProcessor& processor;
+    int filterFrequencyParameterID = 0;
+    int filterResonanceParameterID = 0;
     
     AudioParameterFloat* envelopeAmountFilter;
     AudioParameterFloat* filterFrequency;

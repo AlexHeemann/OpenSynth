@@ -13,12 +13,16 @@
               splashScreenColour="Dark" buildStandalone="1" enableIAA="0" cppLanguageStandard="11">
   <MAINGROUP id="A4iQ36" name="Open Synth">
     <GROUP id="{115CB73A-FD2A-ACC8-26C7-8F73C7C67676}" name="Source">
+      <FILE id="HS2wAJ" name="EnvelopeState.h" compile="0" resource="0" file="Source/EnvelopeState.h"/>
       <FILE id="q4JT1K" name="ProcessorManager.cpp" compile="1" resource="0"
             file="Source/ProcessorManager.cpp"/>
       <FILE id="DmyRcd" name="ProcessorManager.h" compile="0" resource="0"
             file="Source/ProcessorManager.h"/>
       <GROUP id="{AE8F486B-E7A4-3376-596B-053F86F62ABF}" name="Utility">
+        <FILE id="pHOcD2" name="IDManager.cpp" compile="1" resource="0" file="Source/IDManager.cpp"/>
+        <FILE id="RWc8Ao" name="IDManager.h" compile="0" resource="0" file="Source/IDManager.h"/>
         <FILE id="Bnvd3f" name="RingBuffer.h" compile="0" resource="0" file="Source/RingBuffer.h"/>
+        <FILE id="o5MocW" name="Utility.h" compile="0" resource="0" file="Source/Utility.h"/>
       </GROUP>
       <FILE id="z73M64" name="ModulationMatrixData.cpp" compile="1" resource="0"
             file="Source/ModulationMatrixData.cpp"/>

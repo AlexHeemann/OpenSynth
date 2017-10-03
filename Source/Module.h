@@ -19,7 +19,7 @@ class Module
 {
 public:
     Module(int ID) : ID(ID) {};
-    ~Module() {};
+    virtual ~Module() {};
     
     int getID() { return ID; };
     void setID(int ID) { this-> ID = ID; };
@@ -32,6 +32,10 @@ public:
     {
         return modulationMatrix;
     }
+    
+    virtual void calculateModulation(int numSamples) = 0;
+    virtual void reset() = 0;
+    virtual void setSampleRate(int sampleRate) = 0;
     
     void writeModulationValue();
     

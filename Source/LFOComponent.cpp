@@ -19,6 +19,7 @@
 
 //[Headers] You can add your own extra header files here...
 #include "LFOParameterContainer.h"
+#include "ModulationMatrix.h"
 //[/Headers]
 
 #include "LFOComponent.h"
@@ -28,8 +29,8 @@
 //[/MiscUserDefs]
 
 //==============================================================================
-LFOComponent::LFOComponent (OpenSynthAudioProcessorEditor &editor)
-    : editor(editor), processor(editor.getProcessor())
+LFOComponent::LFOComponent (OpenSynthAudioProcessorEditor &editor, LFOParameterContainer* parameterContainer, ModulationMatrix* modulationMatrix)
+    : editor(editor), parameterContainer(parameterContainer), modulationMatrix(modulationMatrix)
 {
     //[Constructor_pre] You can add your own custom stuff here..
     //[/Constructor_pre]
@@ -66,7 +67,7 @@ LFOComponent::LFOComponent (OpenSynthAudioProcessorEditor &editor)
     addAndMakeVisible (modulationPlug = new ModulationPlug());
     modulationPlug->setName ("Modulation Plug");
 
-    addAndMakeVisible (frequencyKnob = new ModulatedComponent (editor, *processor.getLFOParameterContainer().getFrequencyParameter(), ParameterIDLFO1Frequency));
+    addAndMakeVisible (frequencyKnob = new ModulatedComponent (editor, *parameterContainer->getFrequencyParameter(), parameterContainer->getID()));
     frequencyKnob->setName ("Frequency Knob");
 
 
@@ -82,7 +83,7 @@ LFOComponent::LFOComponent (OpenSynthAudioProcessorEditor &editor)
 
     //[Constructor] You can add your own custom stuff here..
     waveformComboBox->setSelectedId(1);
-    modulationPlug->setID(processor.getLFOParameterContainer().getID());
+    modulationPlug->setID(parameterContainer->getID());
     //[/Constructor]
 }
 
@@ -139,16 +140,16 @@ void LFOComponent::comboBoxChanged (ComboBox* comboBoxThatHasChanged)
         switch (waveformComboBox->getSelectedId() - 1)
         {
             case WaveformSine:
-                processor.getLFOParameterContainer().setWaveform(WaveformSine);
+                parameterContainer->setWaveform(WaveformSine);
                 break;
             case WaveformSawtooth:
-                processor.getLFOParameterContainer().setWaveform(WaveformSawtooth);
+                parameterContainer->setWaveform(WaveformSawtooth);
                 break;
             case WaveformSquare:
-                processor.getLFOParameterContainer().setWaveform(WaveformSquare);
+                parameterContainer->setWaveform(WaveformSquare);
                 break;
             case WaveformTriangle:
-                processor.getLFOParameterContainer().setWaveform(WaveformTriangle);
+                parameterContainer->setWaveform(WaveformTriangle);
                 break;
             default:
                 break;
@@ -167,13 +168,13 @@ void LFOComponent::modulationPopoverValueChanged(ModulationPopover* modulationPo
 {
     if (modulationPopover == lfoFrequencyModulationPopover)
     {
-        processor.updateModulationAmount(modulationPopover->getSourceID(), ParameterIDFilterCutoff, modulationPopover->getModulationAmount());
+        modulationMatrix->updateModulationAmount(modulationPopover->getSourceID(), parameterContainer->getFrequencyParameterID(), modulationPopover->getModulationAmount());
     }
 }
 
 void LFOComponent::itemDropped(const int sourceID, const int destinationID)
 {
-    processor.connect(sourceID, destinationID);
+    modulationMatrix->connect(sourceID, destinationID);
     if (destinationID == ParameterIDFilterCutoff)
     {
         Component* parent = getParentComponent();
@@ -202,8 +203,8 @@ BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="LFOComponent" componentName=""
                  parentClasses="public Component, public ModulationPopover::Listener, public DragAndDropListener"
-                 constructorParams="OpenSynthAudioProcessorEditor &amp;editor"
-                 variableInitialisers="editor(editor), processor(editor.getProcessor())"
+                 constructorParams="OpenSynthAudioProcessorEditor &amp;editor, LFOParameterContainer* parameterContainer, ModulationMatrix* modulationMatrix"
+                 variableInitialisers="editor(editor), parameterContainer(parameterContainer), modulationMatrix(modulationMatrix)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="1" initialWidth="180" initialHeight="100">
   <BACKGROUND backgroundColour="ffffffff"/>
@@ -226,7 +227,7 @@ BEGIN_JUCER_METADATA
                     class="Component" params=""/>
   <GENERICCOMPONENT name="Frequency Knob" id="57a53678bfa6f42f" memberName="frequencyKnob"
                     virtualName="ModulatedComponent" explicitFocusOrder="0" pos="8 32 47 48"
-                    class="Component" params="editor, processor.getLFOParameterContainer.getFrequencyParameter(), ParameterIDLFO1Frequency"/>
+                    class="Component" params="editor, *parameterContainer-&gt;getFrequencyParameter(), parameterContainer-&gt;getID()"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

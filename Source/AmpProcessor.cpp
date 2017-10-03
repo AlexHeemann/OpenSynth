@@ -9,6 +9,8 @@
 */
 
 #include "AmpProcessor.h"
+#include "AmpParameterContainer.h"
+#include "ModulationMatrix.h"
 
 AmpProcessor::AmpProcessor(ModulationMatrix* modulationMatrix, int bufferSize) : Processor(modulationMatrix, bufferSize)
 {
@@ -19,26 +21,16 @@ void AmpProcessor::processBuffer(AudioBuffer<FloatType> &buffer, int startSample
 {
     Processor::aggregateInputs(buffer);
     
-    bool isModulated = envelopeGenerator != nullptr && envelopeGenerator->envelopeBuffer.size() >= numSamples;
+    const float gainModulation = modulationMatrix->getValueForDestinationID(parameterContainer->getGainParameterID());
     
     for (int channel = 0; channel < buffer.getNumChannels(); ++channel)
     {
         FloatType* const channelData = buffer.getWritePointer(channel);
-        const float localLevel = level->get();
-        if (isModulated)
+        const float localLevel = parameterContainer->getGainParameter()->get() * gainModulation;
+        
+        for (int sample = 0; sample < numSamples; sample++)
         {
-            std::vector<double>& envelopeBuffer = envelopeGenerator->envelopeBuffer;
-            for (int sample = 0; sample < numSamples; sample++)
-            {
-                channelData[sample] *= localLevel * envelopeBuffer[sample];
-            }
-        }
-        else
-        {
-            for (int sample = 0; sample < numSamples; sample++)
-            {
-                channelData[sample] *= localLevel;
-            }
+            channelData[sample] *= localLevel;
         }
     }
 }

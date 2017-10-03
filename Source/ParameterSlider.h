@@ -13,14 +13,13 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "PluginProcessor.h"
-#include "Module.h"
 #include "DragAndDropListener.h"
 
-class ParameterSlider : public Module, public Slider, public DragAndDropTarget,
+class ParameterSlider : public Slider, public DragAndDropTarget,
 private Timer
 {
 public:
-    ParameterSlider(AudioProcessorParameter& p, int ID) : Module(ID), Slider(p.getName(256)), param(p)
+    ParameterSlider(AudioProcessorParameter& p) : Slider(p.getName(256)), param(p)
     {
         setRange(0.0, 1.0, 0.0);
         updateSliderPos();

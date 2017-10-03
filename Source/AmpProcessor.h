@@ -13,6 +13,8 @@
 
 #include "Processor.h"
 
+class AmpParameterContainer;
+
 class AmpProcessor : public Processor
 {
 public:
@@ -28,10 +30,14 @@ public:
         processBuffer(outputBuffer, startSample, numSamples);
     }
     void renderNextBlock() override {};
+    void reset() override {};
     
-    AudioParameterFloat* level;
+    void setParameterContainer(AmpParameterContainer* parameterContainer) { this->parameterContainer = parameterContainer; }
+    AmpParameterContainer* getParameterContainer() const { return parameterContainer; }
     
 private:
+    AmpParameterContainer* parameterContainer;
+    
     template <typename FloatType>
     void processBuffer(AudioBuffer<FloatType>& buffer, int startSample, int numSamples);
 };

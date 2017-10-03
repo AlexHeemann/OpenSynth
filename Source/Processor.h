@@ -12,9 +12,9 @@
 #define PROCESSOR_H_INCLUDED
 
 #include "../JuceLibraryCode/JuceHeader.h"
-#include "EnvelopeGenerator.h"
-#include "Module.h"
 #include <set>
+
+class ModulationMatrix;
 
 class Processor
 {
@@ -30,9 +30,8 @@ public:
     virtual void renderNextBlock(AudioBuffer<float>& outputBuffer, int startSample, int numSamples) = 0;
     virtual void renderNextBlock(AudioBuffer<double>& outputBuffer, int startSample, int numSamples) = 0;
     virtual void renderNextBlock() = 0;
+    virtual void reset() = 0;
     
-    virtual void setEnvelopeGenerator(EnvelopeGenerator* envelopeGenerator) { this->envelopeGenerator = envelopeGenerator; };
-    virtual EnvelopeGenerator* getEnvelopeGenerator() const { return envelopeGenerator; };
     void setModulationMatrix(ModulationMatrix* modulationMatrix) { this->modulationMatrix = modulationMatrix; }
     ModulationMatrix* getModulationMatrix() { return modulationMatrix; }
     
@@ -56,6 +55,15 @@ public:
         outputs.erase(processor);
     }
     
+    void prepare(int bufferSize)
+    {
+        if (audioBuffer.getNumSamples() != bufferSize)
+        {
+            audioBuffer.setSize(2, bufferSize);
+        }
+        hasProcessed = false;
+    }
+    
     std::set<Processor*>& getInputs() { return inputs; }
     std::set<Processor*>& getOutputs() { return outputs; }
     void setID(int ID) { this->ID = ID; }
@@ -68,15 +76,20 @@ public:
     
 protected:
     int ID;
-    EnvelopeGenerator* envelopeGenerator;
+    bool hasProcessed = false;
     ModulationMatrix* modulationMatrix;
     AudioBuffer<float> audioBuffer;
     std::set<Processor*> inputs;
     std::set<Processor*> outputs;
+    std::set<Processor*> dependants;
+    int feedbackCounter = 0;
     
     template <typename FloatType>
     void aggregateInputs(AudioBuffer<FloatType>& buffer)
     {
+        std::set<Processor*> nextDependants = dependants;
+        nextDependants.insert(this);
+        
         for (auto input : inputs)
         {
             input->renderNextBlock();

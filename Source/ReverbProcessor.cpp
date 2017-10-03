@@ -10,8 +10,9 @@
 
 #include "ReverbProcessor.h"
 #include "ReverbParameterContainer.h"
+#include "ModulationMatrix.h"
 
-ReverbProcessor::ReverbProcessor(ModulationMatrix* modulationMatrix) : Processor(modulationMatrix)
+ReverbProcessor::ReverbProcessor(ModulationMatrix* modulationMatrix, int bufferSize) : Processor(modulationMatrix, bufferSize)
 {
     
     

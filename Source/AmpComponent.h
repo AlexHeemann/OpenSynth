@@ -13,7 +13,8 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "ParameterSlider.h"
-#include "PluginProcessor.h"
+#include "AmpParameterContainer.h"
+
 
 //==============================================================================
 /*
@@ -21,7 +22,7 @@
 class AmpComponent    : public Component
 {
 public:
-    AmpComponent(OpenSynthAudioProcessor& processor);
+    AmpComponent(AmpParameterContainer& parameterContainer);
     ~AmpComponent();
 
     void paint (Graphics&) override;
@@ -30,14 +31,10 @@ public:
 private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AmpComponent)
     
-    OpenSynthAudioProcessor& processor;
+    AmpParameterContainer& parameterContainer;
     
     ScopedPointer<ParameterSlider> gainKnob;
-    ScopedPointer<ParameterSlider> attackSlider;
-    ScopedPointer<ParameterSlider> decaySlider;
-    ScopedPointer<ParameterSlider> sustainSlider;
-    ScopedPointer<ParameterSlider> releaseSlider;
-    Label attackLabel, decayLabel, sustainLabel, releaseLabel, ampLabel;
+    Label gainLabel;
 };
 
 

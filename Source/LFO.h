@@ -21,13 +21,11 @@ class LFO : public Module
 {
 public:
     
-    LFO(int ID, LFOParameterContainer* parameterContainer) : Module(ID), parameterContainer(parameterContainer)
-    {
-    };
+    LFO(LFOParameterContainer* parameterContainer);
     ~LFO() {};
     
     double getCurrentValue() const { return currentValue; }
-    void setSampleRate(int sampleRate)
+    void setSampleRate(int sampleRate) override
     {
         this->sampleRate = sampleRate;
         frqRad = (2.0 * double_Pi) / sampleRate;
@@ -36,8 +34,8 @@ public:
     LFOParameterContainer* getParameterContainer() const { return parameterContainer; }
     
     // Calculates the next values for the LFO
-    void oscillate(int numSamples);
-    void reset();
+    void calculateModulation(int numSamples) override;
+    void reset() override;
     
     void addTarget(int targetID);
     void removeTarget(int targetID);
