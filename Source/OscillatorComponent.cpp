@@ -188,6 +188,7 @@ void OscillatorComponent::comboBoxChanged (ComboBox* comboBoxThatHasChanged)
     if (comboBoxThatHasChanged == oscComboBox)
     {
         //[UserComboBoxCode_oscComboBox] -- add your combo box handling code here..
+        parameterContainer.setWaveform(waveformForId(oscComboBox->getSelectedId()));
         //[/UserComboBoxCode_oscComboBox]
     }
 

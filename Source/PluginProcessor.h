@@ -22,6 +22,7 @@
 #include "RingBuffer.h"
 #include <memory>
 #include <unordered_map>
+#include "Waveform.h"
 
 class ModulationMatrix;
 class ReverbParameterContainer;
@@ -31,14 +32,6 @@ class FilterParameterContainer;
 class DelayParameterContainer;
 class LFOParameterContainer;
 class ParameterContainer;
-
-typedef enum
-{
-    WaveformSine,
-    WaveformSawtooth,
-    WaveformSquare,
-    WaveformTriangle,
-} Waveform;
 
 struct ProcessorGraphCommand
 {
@@ -156,8 +149,10 @@ public:
     void addOscillator(int ID);
     void addFilter(int ID);
     void addAmp(int ID);
+    void setStartOscillator(int ID);
     
     void connectProcessors(int sourceID, int destinationID);
+    void connectProcessorsSerial(int sourceID, int destinationID);
     void disconnectProcessors(int sourceID, int destinationID);
 
 private:
@@ -171,6 +166,7 @@ private:
     SawtoothWavetable sawtoothWavetable;
     SquareWavetable squareWavetable;
     SineWavetable sineWavetable;
+    std::vector<Wavetable*> wavetables;
     
     IDManager idManager;
     std::unordered_map<int, std::unique_ptr<ParameterContainer>> parameterContainers;
@@ -178,6 +174,7 @@ private:
     ScopedPointer<ModulationMatrix> modulationMatrix;
 
 	void initialiseSynthForWaveform(const Waveform waveform, const int numVoices);
+    void setupWavetables();
     void setupModulation(ModulationMatrix* modulationMatrix);
     
 	virtual void handleNoteOn(MidiKeyboardState* source,

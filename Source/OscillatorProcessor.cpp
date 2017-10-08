@@ -15,9 +15,10 @@
 
 OscillatorProcessor::OscillatorProcessor(ModulationMatrix* modulationMatrix,
                                          int bufferSize,
-                                         int sampleRate) :
+                                         int sampleRate,
+                                         std::vector<Wavetable*>& wavetables) :
 Processor(modulationMatrix, bufferSize),
-sampleRate(sampleRate)
+sampleRate(sampleRate), wavetables(wavetables)
 {
     calculateFrqRad();
 }
@@ -45,6 +46,10 @@ void OscillatorProcessor::processBuffer(AudioBuffer<FloatType>& buffer, int star
     
     Range<int> centsRange = parameterContainer->getCentsParameter()->getRange();
     float centsModulation = centsRange.getEnd() * modulationMatrix->getValueForDestinationID(parameterContainer->getCentsParameterID());
+    
+    // Assumes wavetableIndex is within range of wavetables for speed
+    const int wavetableIndex = parameterContainer->getWaveform();
+    Wavetable* wavetable = wavetables[wavetableIndex];
     
     frequency = getFrequencyFromFloatNote(oscNote + semiModulation + ((parameterContainer->getCentsParameter()->get() + centsModulation)/100.0));
     calculatePhaseIncrement();
@@ -104,6 +109,11 @@ void OscillatorProcessor::processBuffer(AudioBuffer<FloatType>& buffer, int star
                 }
             }
         }
+    }
+    
+    if (output != nullptr)
+    {
+        output->renderNextBlock(buffer, startSample, numSamples);
     }
 }
 

@@ -32,14 +32,32 @@ AudioProcessor (BusesProperties()
     modulationMatrix = new ModulationMatrix();
     modulationMatrix->setData(new ModulationMatrixData());
     
+    setupWavetables();
 	initialiseSynthForWaveform(WaveformSawtooth, 8);
 	keyboardState.addListener(this);
     setupModulation(modulationMatrix);
+    
+    addAmp(0);
+    addOscillator(1);
+    setStartOscillator(1);
+    connectProcessorsSerial(1, 0);
+    addEnvelope(2);
+    connect(2, static_cast<AmpParameterContainer*>(getParameterContainer(0))->getGainParameterID());
+    setAmpEnvelope(2);
 }
 
 OpenSynthAudioProcessor::~OpenSynthAudioProcessor()
 {
     delete modulationMatrix->getData();
+}
+
+void OpenSynthAudioProcessor::setupWavetables()
+{
+    wavetables.push_back(&sineWavetable);
+    wavetables.push_back(&sawtoothWavetable);
+    wavetables.push_back(&squareWavetable);
+    // TODO: Replace with triangle wavetable
+    wavetables.push_back(&sineWavetable);
 }
 
 void OpenSynthAudioProcessor::initialiseSynthForWaveform(const Waveform waveform, const int numVoices)
@@ -372,10 +390,12 @@ void OpenSynthAudioProcessor::addOscillator(int ID)
     for (int voiceIdx = 0; voiceIdx < synth.getNumVoices(); ++voiceIdx)
     {
         WavetableVoice* voice = static_cast<WavetableVoice*>(synth.getVoice(voiceIdx));
-        std::shared_ptr<OscillatorProcessor> oscillator = std::shared_ptr<OscillatorProcessor>(new OscillatorProcessor(voice->getModulationMatrix(), getBlockSize(), getSampleRate()));
+        std::shared_ptr<OscillatorProcessor> oscillator = std::shared_ptr<OscillatorProcessor>(new OscillatorProcessor(voice->getModulationMatrix(),
+                                                                                                                       getBlockSize(),
+                                                                                                                       getSampleRate(),
+                                                                                                                       wavetables));
         oscillator->setID(ID);
         oscillator->setParameterContainer(static_cast<OscillatorParameterContainer*>(parameterContainers[ID].get()));
-        oscillator->setWavetable(&sawtoothWavetable);
         voice->getProcessorManager()->addOscillator(oscillator);
     }
 }
@@ -390,6 +410,16 @@ void OpenSynthAudioProcessor::addFilter(int ID)
         WavetableVoice* voice = static_cast<WavetableVoice*>(synth.getVoice(voiceIdx));
         std::shared_ptr<FilterProcessor> filter = std::shared_ptr<FilterProcessor>(new FilterProcessor(voice->getModulationMatrix(), getBlockSize()));
         voice->getProcessorManager()->addProcessor(filter);
+    }
+}
+
+void OpenSynthAudioProcessor::setStartOscillator(int ID)
+{
+    for (int voiceIdx = 0; voiceIdx < synth.getNumVoices(); ++voiceIdx)
+    {
+        WavetableVoice* voice = static_cast<WavetableVoice*>(synth.getVoice(voiceIdx));
+        std::shared_ptr<OscillatorProcessor> oscillator = voice->getProcessorManager()->getOscillators()[ID];
+        voice->getProcessorManager()->setStartOscillator(oscillator);
     }
 }
 
@@ -414,6 +444,15 @@ void OpenSynthAudioProcessor::connectProcessors(int sourceID, int destinationID)
     {
         WavetableVoice* voice = static_cast<WavetableVoice*>(synth.getVoice(voiceIdx));
         voice->getProcessorManager()->connect(sourceID, destinationID);
+    }
+}
+
+void OpenSynthAudioProcessor::connectProcessorsSerial(int sourceID, int destinationID)
+{
+    for (int voiceIdx = 0; voiceIdx < synth.getNumVoices(); ++voiceIdx)
+    {
+        WavetableVoice* voice = static_cast<WavetableVoice*>(synth.getVoice(voiceIdx));
+        voice->getProcessorManager()->connectSerial(sourceID, destinationID);
     }
 }
 

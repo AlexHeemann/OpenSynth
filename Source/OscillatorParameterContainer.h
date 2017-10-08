@@ -13,6 +13,7 @@
 
 #include "ParameterContainer.h"
 #include "PluginProcessor.h"
+#include "Waveform.h"
 
 class OscillatorParameterContainer: public ParameterContainer
 {
@@ -25,10 +26,10 @@ public:
         centsParameterID = processor.getIDManager().getNewID();
         waveformParameterID = processor.getIDManager().getNewID();
         
-        processor.addParameter(semi = new AudioParameterInt("oscSemi", "Osc Semi", -36, 36, 0));
-        processor.addParameter(cents = new AudioParameterInt("oscCents", "Osc Cents", -30, 30, 0));
-        processor.addParameter(gain = new AudioParameterFloat("oscGain", "Osc Gain", 0.0f, 1.0f, 0.6f));
-        processor.addParameter(waveform = new AudioParameterChoice("oscWaveform", "Osc Waveform", waveforms, WaveformSawtooth));
+        processor.addParameter(semi = new AudioParameterInt("oscSemi" + String(semiParameterID), "Osc Semi", -36, 36, 0));
+        processor.addParameter(cents = new AudioParameterInt("oscCents" + String(centsParameterID), "Osc Cents", -30, 30, 0));
+        processor.addParameter(gain = new AudioParameterFloat("oscGain" + String(gainParameterID), "Osc Gain", 0.0f, 1.0f, 0.6f));
+        processor.addParameter(waveformParameter = new AudioParameterChoice("oscWaveform" + String(waveformParameterID), "Osc Waveform", waveforms, WaveformSawtooth));
     }
     
     virtual ~OscillatorParameterContainer() {}
@@ -41,7 +42,10 @@ public:
     AudioParameterFloat* getGainParameter() const { return gain; }
     AudioParameterInt* getSemiParameter() const { return semi; }
     AudioParameterInt* getCentsParameter() const { return cents; }
-    AudioParameterChoice* getWaveformParameter() const { return waveform; }
+    AudioParameterChoice* getWaveformParameter() const { return waveformParameter; }
+    
+    Waveform getWaveform() const { return waveform; }
+    void setWaveform(Waveform waveform) { this->waveform = waveform; }
     
     OpenSynthAudioProcessor& getProcessor() { return processor; }
     
@@ -61,7 +65,8 @@ private:
     AudioParameterFloat* gain;
     AudioParameterInt* semi;
     AudioParameterInt* cents;
-    AudioParameterChoice* waveform;
+    AudioParameterChoice* waveformParameter;
+    Waveform waveform = WaveformSine;
     StringArray waveforms = {"Sine", "Sawtooth", "Square", "Triangle"};
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(OscillatorParameterContainer)

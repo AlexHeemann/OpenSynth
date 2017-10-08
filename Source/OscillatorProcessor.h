@@ -18,7 +18,10 @@ class OscillatorParameterContainer;
 class OscillatorProcessor : public Processor
 {
 public:
-    OscillatorProcessor(ModulationMatrix* modulationMatrix, int bufferSize, int sampleRate);
+    OscillatorProcessor(ModulationMatrix* modulationMatrix,
+                        int bufferSize,
+                        int sampleRate,
+                        std::vector<Wavetable*>& wavetables);
     virtual ~OscillatorProcessor() {};
     
     void renderNextBlock(AudioBuffer<float>& outputBuffer, int startSample, int numSamples) override
@@ -31,9 +34,9 @@ public:
     }
     void renderNextBlock() override;
     
-    void setWavetable(Wavetable* wavetable)
+    void setWavetables(std::vector<Wavetable*>& wavetables)
     {
-        this->wavetable = wavetable;
+        this->wavetables = wavetables;
     }
     
     void setNote(int note)
@@ -54,10 +57,10 @@ public:
     
 private:
     double currentPhase, phaseIncrement, level, frequency, frqRad = 0.0f;
-    Wavetable* wavetable;
     int releaseCounter = 0;
     int sampleRate = 0;
     int currentNote = -1;
+    std::vector<Wavetable*>& wavetables;
     
     template <typename FloatType>
     void processBuffer(AudioBuffer<FloatType>& buffer, int startSample, int numSamples);

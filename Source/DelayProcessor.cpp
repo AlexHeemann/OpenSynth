@@ -112,4 +112,9 @@ void DelayProcessor::processBuffer(AudioBuffer<FloatType> &buffer, AudioBuffer<F
     
     activeChannel = localActiveChannel;
     delayPosition = delayPos;
+    
+    if (output != nullptr)
+    {
+        output->renderNextBlock(buffer, startSample, numSamples);
+    }
 }

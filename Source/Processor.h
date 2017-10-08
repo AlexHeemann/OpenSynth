@@ -55,6 +55,9 @@ public:
         outputs.erase(processor);
     }
     
+    void setOutput(Processor* processor) { this->output = processor; }
+    Processor* getOutput() const { return this->output; }
+    
     void prepare(int bufferSize)
     {
         if (audioBuffer.getNumSamples() != bufferSize)
@@ -84,6 +87,9 @@ protected:
     std::set<Processor*> dependants;
     int feedbackCounter = 0;
     
+    Processor* output;
+    
+    // For parallel processing
     template <typename FloatType>
     void aggregateInputs(AudioBuffer<FloatType>& buffer)
     {

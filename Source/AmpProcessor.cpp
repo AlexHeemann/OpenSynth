@@ -19,8 +19,6 @@ AmpProcessor::AmpProcessor(ModulationMatrix* modulationMatrix, int bufferSize) :
 template <typename FloatType>
 void AmpProcessor::processBuffer(AudioBuffer<FloatType> &buffer, int startSample, int numSamples)
 {
-    Processor::aggregateInputs(buffer);
-    
     const float gainModulation = modulationMatrix->getValueForDestinationID(parameterContainer->getGainParameterID());
     
     for (int channel = 0; channel < buffer.getNumChannels(); ++channel)

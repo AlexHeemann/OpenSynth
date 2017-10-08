@@ -62,6 +62,15 @@ void WavetableVoice::stopNote(float velocity, bool allowTailOff)
     }
 }
 
+void WavetableVoice::resizeAndClearAudioBuffer(int numSamples)
+{
+    if (numSamples != audioBuffer.getNumSamples())
+    {
+        audioBuffer.setSize(2, numSamples);
+    }
+    audioBuffer.clear();
+}
+
 template <typename FloatType>
 void WavetableVoice::processBlock(AudioBuffer<FloatType>& outputBuffer, int startSample, int numSamples)
 {
@@ -69,13 +78,8 @@ void WavetableVoice::processBlock(AudioBuffer<FloatType>& outputBuffer, int star
     modulationMatrix->clear();
     modulationMatrix->writeModulation();
     modulationMatrix->process();
-    
-    if (numSamples != audioBuffer.getNumSamples())
-    {
-        audioBuffer.setSize(2, numSamples);
-    }
-    audioBuffer.clear();
  
+    resizeAndClearAudioBuffer(numSamples);
     processorManager->setNoteForOscillators(getCurrentlyPlayingNote());
     
     if (releaseCounter > 0)
@@ -90,11 +94,7 @@ void WavetableVoice::processBlock(AudioBuffer<FloatType>& outputBuffer, int star
         }
     }
 
-    std::shared_ptr<AmpProcessor> ampProcessor = processorManager->getAmpProcessor();
-    if (ampProcessor != nullptr)
-    {
-        ampProcessor->renderNextBlock(audioBuffer, startSample, numSamples);
-    }
+    processorManager->renderNextBlock(audioBuffer, startSample, numSamples);
     
     // Add samples from this voice to the output buffer
     for (int sampleIdx = 0; sampleIdx < numSamples; sampleIdx++)

@@ -20,13 +20,6 @@ OpenSynthAudioProcessorEditor::OpenSynthAudioProcessorEditor (OpenSynthAudioProc
 	envAttackLabel(String::empty, "Attack:"),
 	envDecayLabel(String::empty, "Decay:")
 {
-    processor.addAmp(0);
-    processor.addOscillator(1);
-    processor.connectProcessors(1, 0);
-    processor.addEnvelope(2);
-    processor.connect(2, static_cast<AmpParameterContainer*>(processor.getParameterContainer(0))->getGainParameterID());
-    processor.setAmpEnvelope(2);
-    
     addAndMakeVisible(ampComponent = new AmpComponent(*static_cast<AmpParameterContainer*>(processor.getParameterContainer(0))));
     addAndMakeVisible(oscillatorComponent = new OscillatorComponent(*static_cast<OscillatorParameterContainer*>(processor.getParameterContainer(1))));
     

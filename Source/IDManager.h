@@ -27,7 +27,7 @@ public:
     {
         if (!freeIDs.empty())
         {
-            int front =  freeIDs.front();
+            int front = freeIDs.front();
             freeIDs.pop();
             return front;
         }

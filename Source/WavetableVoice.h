@@ -91,6 +91,7 @@ private:
     void processBlock(AudioBuffer<FloatType>& outputBuffer, int startSample, int numSamples);
     
     void setupEnvelope(EnvelopeGenerator* envelopeGenerator);
+    void resizeAndClearAudioBuffer(int numSamples);
     
     AudioBuffer<float> audioBuffer;
 };

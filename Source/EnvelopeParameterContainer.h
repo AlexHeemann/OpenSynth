@@ -23,13 +23,13 @@ public:
         sustainParameterID = processor.getIDManager().getNewID();
         releaseParameterID = processor.getIDManager().getNewID();
         
-        processor.addParameter(attackRate = new AudioParameterFloat("Envelope " + String(ID) + " attack",  "Envelope " + String(ID) + " Attack", 0.0f, 3.0f, 0.0f));
+        processor.addParameter(attackRate = new AudioParameterFloat("envelope_" + String(ID) + "_attack",  "Envelope " + String(ID) + " Attack", 0.0f, 3.0f, 0.0f));
         attackRate->range.skew = 0.5;
-        processor.addParameter(decayRate = new AudioParameterFloat("Envelope " + String(ID) + " decay", "Envelope " + String(ID) + " Decay", 0.0f, 3.0f, 3.0f));
+        processor.addParameter(decayRate = new AudioParameterFloat("envelope_" + String(ID) + "_decay", "Envelope " + String(ID) + " Decay", 0.0f, 3.0f, 3.0f));
         decayRate->range.skew = 0.5;
-        processor.addParameter(releaseRate = new AudioParameterFloat("Envelope " + String(ID) + " release", "Envelope " + String(ID) + " Release", 0.0f, 3.0f, 1.0f));
+        processor.addParameter(releaseRate = new AudioParameterFloat("envelope_" + String(ID) + "_release", "Envelope " + String(ID) + " Release", 0.0f, 3.0f, 1.0f));
         releaseRate->range.skew = 0.5;
-        processor.addParameter(sustainLevel = new AudioParameterFloat("Envelope " + String(ID) + " sustain", "Envelope " + String(ID) + " Sustain", 0.0f, 1.0f, 1.0f));
+        processor.addParameter(sustainLevel = new AudioParameterFloat("envelope_" + String(ID) + "_sustain", "Envelope " + String(ID) + " Sustain", 0.0f, 1.0f, 1.0f));
     }
     
     virtual ~EnvelopeParameterContainer() {}

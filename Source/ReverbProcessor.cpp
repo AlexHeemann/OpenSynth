@@ -38,6 +38,11 @@ void ReverbProcessor::processBuffer(AudioBuffer<FloatType>& buffer, int startSam
     {
         reverb.processMono(buffer.getWritePointer(0), numSamples);
     }
+    
+    if (output != nullptr)
+    {
+        output->renderNextBlock(buffer, startSample, numSamples);
+    }
 }
 
 void ReverbProcessor::setSampleRate(const int sampleRate)

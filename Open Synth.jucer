@@ -8,7 +8,7 @@
               pluginCode="OSYN" pluginChannelConfigs="" pluginIsSynth="1" pluginWantsMidiIn="1"
               pluginProducesMidiOut="1" pluginIsMidiEffectPlugin="0" pluginEditorRequiresKeys="1"
               pluginAUExportPrefix="OpenSynthAU" pluginRTASCategory="" aaxIdentifier="com.alexheemann.opensynth"
-              pluginAAXCategory="AAX_ePlugInCategory_Dynamics" jucerVersion="5.1.1"
+              pluginAAXCategory="AAX_ePlugInCategory_Dynamics" jucerVersion="5.1.2"
               companyName="Alexander Heemann" displaySplashScreen="1" reportAppUsage="1"
               splashScreenColour="Dark" buildStandalone="1" enableIAA="0" cppLanguageStandard="11">
   <MAINGROUP id="A4iQ36" name="Open Synth">
@@ -136,6 +136,7 @@
       <FILE id="ULM7gt" name="ParameterSlider.h" compile="0" resource="0"
             file="Source/ParameterSlider.h"/>
       <GROUP id="{8C6B5EB4-14D6-B31F-0FAF-605FBB7D7ABC}" name="Wavetables">
+        <FILE id="ZHCz2L" name="Waveform.h" compile="0" resource="0" file="Source/Waveform.h"/>
         <FILE id="n6eNwb" name="SineWavetable.cpp" compile="1" resource="0"
               file="Source/SineWavetable.cpp"/>
         <FILE id="A1Bdty" name="SineWavetable.h" compile="0" resource="0" file="Source/SineWavetable.h"/>

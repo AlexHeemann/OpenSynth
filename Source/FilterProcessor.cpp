@@ -47,6 +47,11 @@ void FilterProcessor::processBufferWithFilter(AudioBuffer<FloatType> &buffer, in
         audioData[0] = writePointer;
         filters[channel].process(numSamples, audioData);
     }
+    
+    if (output != nullptr)
+    {
+        output->renderNextBlock(buffer, startSample, numSamples);
+    }
 }
 
 template <typename FloatType>

@@ -13,6 +13,26 @@
 #include "OscillatorProcessor.h"
 #include "AmpProcessor.h"
 
+void ProcessorManager::renderNextBlock(AudioBuffer<float>& outputBuffer,
+                                       int startSample,
+                                       int numSamples)
+{
+    if (startOscillator != nullptr)
+    {
+        startOscillator->renderNextBlock(outputBuffer, startSample, numSamples);
+    }
+}
+
+void ProcessorManager::renderNextBlock(AudioBuffer<double>& outputBuffer,
+                                       int startSample,
+                                       int numSamples)
+{
+    if (startOscillator != nullptr)
+    {
+        startOscillator->renderNextBlock(outputBuffer, startSample, numSamples);
+    }
+}
+
 void ProcessorManager::removeProcessor(int processorID)
 {
     if (processors.find(processorID) != processors.end())
@@ -38,6 +58,14 @@ void ProcessorManager::addOscillator(std::shared_ptr<OscillatorProcessor> oscill
 void ProcessorManager::addProcessor(std::shared_ptr<Processor> processor)
 {
     processors[processor->getID()] = processor;
+}
+
+void ProcessorManager::connectSerial(int sourceID, int destinationID)
+{
+    if (processors.find(sourceID) != processors.end() && processors.find(destinationID) != processors.end())
+    {
+        processors[sourceID]->setOutput(processors[destinationID].get());
+    }
 }
 
 void ProcessorManager::connect(int sourceID, int destinationID)
