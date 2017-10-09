@@ -50,7 +50,8 @@ public:
     
     virtual bool isInterestedInDragSource(const SourceDetails& dragSourceDetails) override
     {
-        return (int)dragSourceDetails.description != ID;
+        return true;
+//        return (int)dragSourceDetails.description != ID;
     }
     
     virtual void itemDropped(const SourceDetails& dragSourceDetails) override
@@ -61,8 +62,6 @@ public:
             listener->itemDropped(dragSourceDetails.description, ID);
         }
     }
-    
-    void addSource(int sourceID);
     
     void setTextBoxStyle (const Slider::TextEntryBoxPosition newPosition, const bool isReadOnly,
                            const int textEntryBoxWidth, const int textEntryBoxHeight);

@@ -37,10 +37,17 @@ void ModulatedComponent::update()
 
 void ModulatedComponent::resized()
 {
-    slider->setBounds(0, 0, getWidth(), getWidth());
-    int sinkY = slider->getY() + slider->getHeight() + 3;
+    slider->setBounds(0, 0, getWidth(), getHeight() - modulationSink->getHeight());
+    int sinkYOffset = slider->getSliderStyle() == Slider::Rotary ? 3 : 10;
+    int sinkY = slider->getY() + slider->getHeight() + sinkYOffset;
     sinkY = slider->getTextBoxPosition() == Slider::NoTextBox ? sinkY - 8 : sinkY;
-    modulationSink->setTopLeftPosition(slider->getX() + slider->getWidth() / 2.0 - modulationSink->getWidth() / 2.0,
+    int sinkX = slider->getX() + slider->getWidth() / 2.0 - modulationSink->getWidth() / 2.0;
+    if (slider->getSliderStyle() == Slider::LinearHorizontal && slider->getTextBoxPosition() == Slider::TextBoxBelow)
+    {
+        sinkY = sinkY - slider->getTextBoxHeight() - modulationSink->getHeight() / 2.0;
+        sinkX = sinkX - slider->getTextBoxWidth() / 2.0 - modulationSink->getWidth() / 2.0 - 5;
+    }
+    modulationSink->setTopLeftPosition(sinkX,
                                        sinkY);
 }
 

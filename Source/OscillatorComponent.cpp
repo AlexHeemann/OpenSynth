@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 5.1.1
+  Created with Projucer version: 5.1.2
 
   ------------------------------------------------------------------------------
 
@@ -18,6 +18,8 @@
 */
 
 //[Headers] You can add your own extra header files here...
+#include "ModulationMatrix.h"
+#include "OscillatorParameterContainer.h"
 //[/Headers]
 
 #include "OscillatorComponent.h"
@@ -27,15 +29,10 @@
 //[/MiscUserDefs]
 
 //==============================================================================
-OscillatorComponent::OscillatorComponent (OscillatorParameterContainer& parameterContainer)
-    : parameterContainer(parameterContainer)
+OscillatorComponent::OscillatorComponent (OpenSynthAudioProcessorEditor &editor, OscillatorParameterContainer* parameterContainer, ModulationMatrix* modulationMatrix)
+    : editor(editor), parameterContainer(parameterContainer), modulationMatrix(modulationMatrix)
 {
     //[Constructor_pre] You can add your own custom stuff here..
-    addAndMakeVisible (oscSemiSlider = new ParameterSlider (*parameterContainer.getSemiParameter()));
-    addAndMakeVisible (oscGainSlider = new ParameterSlider (*parameterContainer.getGainParameter()));
-    addAndMakeVisible (oscCentSlider = new ParameterSlider (*parameterContainer.getCentsParameter()));
-    oscSemiSlider->setListener(this);
-    oscCentSlider->setListener(this);
     //[/Constructor_pre]
 
     addAndMakeVisible (oscComboBox = new ComboBox ("Osc Combo Box"));
@@ -48,12 +45,6 @@ OscillatorComponent::OscillatorComponent (OscillatorParameterContainer& paramete
     oscComboBox->addItem (TRANS("Square"), 3);
     oscComboBox->addItem (TRANS("Triangle"), 4);
     oscComboBox->addListener (this);
-
-    oscGainSlider->setRange (0, 1, 0);
-    oscGainSlider->setSliderStyle (Slider::Rotary);
-    oscGainSlider->setTextBoxStyle (Slider::NoTextBox, false, 80, 20);
-    oscGainSlider->setColour (Slider::thumbColourId, Colour (0xff04042a));
-    oscGainSlider->setColour (Slider::rotarySliderFillColourId, Colour (0x7fc30d0d));
 
     addAndMakeVisible (gainLabel = new Label ("Gain Label",
                                               TRANS("Gain")));
@@ -73,16 +64,6 @@ OscillatorComponent::OscillatorComponent (OscillatorParameterContainer& paramete
     titleLabel->setColour (TextEditor::textColourId, Colours::black);
     titleLabel->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
-    oscSemiSlider->setRange (0, 1, 0);
-    oscSemiSlider->setSliderStyle (Slider::LinearHorizontal);
-    oscSemiSlider->setTextBoxStyle (Slider::TextBoxBelow, false, 80, 20);
-    oscSemiSlider->setColour (Slider::trackColourId, Colours::white);
-
-    oscCentSlider->setRange (0, 1, 0);
-    oscCentSlider->setSliderStyle (Slider::LinearHorizontal);
-    oscCentSlider->setTextBoxStyle (Slider::TextBoxBelow, false, 80, 20);
-    oscCentSlider->setColour (Slider::trackColourId, Colours::white);
-
     addAndMakeVisible (osc1SemiLabel = new Label ("Osc 1 Semi Label",
                                                   TRANS("Semi")));
     osc1SemiLabel->setFont (Font (15.00f, Font::plain).withTypefaceStyle ("Regular"));
@@ -99,16 +80,47 @@ OscillatorComponent::OscillatorComponent (OscillatorParameterContainer& paramete
     osc1CentsLabel->setColour (TextEditor::textColourId, Colours::black);
     osc1CentsLabel->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
+    addAndMakeVisible (oscGainSlider = new ModulatedComponent (editor, *parameterContainer->getGainParameter(), parameterContainer->getGainParameterID()));
+    oscGainSlider->setName ("Osc Gain Slider");
+
+    addAndMakeVisible (oscSemiSlider = new ModulatedComponent (editor, *parameterContainer->getSemiParameter(), parameterContainer->getSemiParameterID()));
+    oscSemiSlider->setName ("Osc Semi Slider");
+
+    addAndMakeVisible (oscCentSlider = new ModulatedComponent (editor, *parameterContainer->getCentsParameter(), parameterContainer->getCentsParameterID()));
+    oscCentSlider->setName ("Osc Cent Slider");
+
 
     //[UserPreSize]
+    oscGainSlider->getSlider()->setRange (0, 1, 0);
+    oscGainSlider->getSlider()->setSliderStyle (Slider::Rotary);
+    oscGainSlider->setTextBoxStyle (Slider::NoTextBox, false, 80, 20);
+    oscGainSlider->setColour (Slider::thumbColourId, Colour (0xff04042a));
+    oscGainSlider->setColour (Slider::rotarySliderFillColourId, Colour (0x7fc30d0d));
+    oscGainSlider->setListener(this);
+
+    oscSemiSlider->getSlider()->setRange (0, 1, 0);
+    oscSemiSlider->getSlider()->setSliderStyle (Slider::LinearHorizontal);
+    oscSemiSlider->setTextBoxStyle (Slider::TextBoxBelow, false, 40, 20);
+    oscSemiSlider->setColour (Slider::thumbColourId, Colour (0xff04042a));
+    oscSemiSlider->setColour (Slider::rotarySliderFillColourId, Colour (0x7fc30d0d));
+    oscSemiSlider->setListener(this);
+
+    oscCentSlider->getSlider()->setRange (0, 1, 0);
+    oscCentSlider->getSlider()->setSliderStyle (Slider::LinearHorizontal);
+    oscCentSlider->setTextBoxStyle (Slider::TextBoxBelow, false, 40, 20);
+    oscCentSlider->setColour (Slider::trackColourId, Colours::white);
+    oscCentSlider->setListener(this);
     //[/UserPreSize]
 
-    setSize (210, 140);
+    setSize (210, 200);
 
 
     //[Constructor] You can add your own custom stuff here..
     oscComboBox->setSelectedId(2);
-    oscComboBox->setSelectedId(2);
+
+    idToComponent[parameterContainer->getGainParameterID()] = oscGainSlider.get();
+    idToComponent[parameterContainer->getSemiParameterID()] = oscSemiSlider.get();
+    idToComponent[parameterContainer->getCentsParameterID()] = oscCentSlider.get();
     //[/Constructor]
 }
 
@@ -118,13 +130,13 @@ OscillatorComponent::~OscillatorComponent()
     //[/Destructor_pre]
 
     oscComboBox = nullptr;
-    oscGainSlider = nullptr;
     gainLabel = nullptr;
     titleLabel = nullptr;
-    oscSemiSlider = nullptr;
-    oscCentSlider = nullptr;
     osc1SemiLabel = nullptr;
     osc1CentsLabel = nullptr;
+    oscGainSlider = nullptr;
+    oscSemiSlider = nullptr;
+    oscCentSlider = nullptr;
 
 
     //[Destructor]. You can add your own custom destruction code here..
@@ -140,7 +152,7 @@ void OscillatorComponent::paint (Graphics& g)
     g.fillAll (Colours::white);
 
     {
-        int x = 2, y = 53, width = 150, height = 43;
+        int x = 0, y = 53, width = 155, height = 51;
         Colour fillColour = Colour (0xff39bccf);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -149,7 +161,7 @@ void OscillatorComponent::paint (Graphics& g)
     }
 
     {
-        int x = 2, y = 93, width = 150, height = 43;
+        int x = 0, y = 100, width = 155, height = 51;
         Colour fillColour = Colour (0xff10d2ee);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
@@ -169,13 +181,13 @@ void OscillatorComponent::resized()
     //[/UserPreResize]
 
     oscComboBox->setBounds (8, 24, 104, 24);
-    oscGainSlider->setBounds (160, 8, 48, 48);
-    gainLabel->setBounds (165, 48, 40, 24);
+    gainLabel->setBounds (168, 72, 40, 24);
     titleLabel->setBounds (24, 0, 79, 24);
-    oscSemiSlider->setBounds (8, 56, 104, 32);
-    oscCentSlider->setBounds (8, 96, 104, 32);
     osc1SemiLabel->setBounds (112, 56, 40, 24);
-    osc1CentsLabel->setBounds (112, 96, 40, 24);
+    osc1CentsLabel->setBounds (112, 104, 48, 24);
+    oscGainSlider->setBounds (160, 8, 48, 64);
+    oscSemiSlider->setBounds (8, 56, 112, 64);
+    oscCentSlider->setBounds (8, 104, 112, 64);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -188,7 +200,7 @@ void OscillatorComponent::comboBoxChanged (ComboBox* comboBoxThatHasChanged)
     if (comboBoxThatHasChanged == oscComboBox)
     {
         //[UserComboBoxCode_oscComboBox] -- add your combo box handling code here..
-        parameterContainer.setWaveform(waveformForId(oscComboBox->getSelectedId()));
+        parameterContainer->setWaveform(waveformForId(oscComboBox->getSelectedId()));
         //[/UserComboBoxCode_oscComboBox]
     }
 
@@ -199,6 +211,13 @@ void OscillatorComponent::comboBoxChanged (ComboBox* comboBoxThatHasChanged)
 
 
 //[MiscUserCode] You can add your own definitions of your custom methods or any other code here...
+
+void OscillatorComponent::itemDropped(const int sourceID, const int destinationID)
+{
+    modulationMatrix->connect(sourceID, destinationID);
+    idToComponent[destinationID]->update();
+}
+
 Waveform OscillatorComponent::waveformForId(int waveformId)
 {
     switch (waveformId) {
@@ -214,11 +233,6 @@ Waveform OscillatorComponent::waveformForId(int waveformId)
             return WaveformSine;
     }
 }
-
-void OscillatorComponent::itemDropped(const int sourceID, const int destinationID)
-{
-
-}
 //[/MiscUserCode]
 
 
@@ -233,25 +247,20 @@ BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="OscillatorComponent" componentName=""
                  parentClasses="public Component, public DragAndDropListener"
-                 constructorParams="OscillatorParameterContainer&amp; parameterContainer"
-                 variableInitialisers="parameterContainer(parameterContainer)"
+                 constructorParams="OpenSynthAudioProcessorEditor &amp;editor, OscillatorParameterContainer* parameterContainer, ModulationMatrix* modulationMatrix"
+                 variableInitialisers="editor(editor), parameterContainer(parameterContainer), modulationMatrix(modulationMatrix)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
-                 fixedSize="1" initialWidth="210" initialHeight="140">
+                 fixedSize="1" initialWidth="210" initialHeight="200">
   <BACKGROUND backgroundColour="ffffffff">
-    <RECT pos="2 53 150 43" fill="solid: ff39bccf" hasStroke="0"/>
-    <RECT pos="2 93 150 43" fill="solid: ff10d2ee" hasStroke="0"/>
+    <RECT pos="0 53 155 51" fill="solid: ff39bccf" hasStroke="0"/>
+    <RECT pos="0 100 155 51" fill="solid: ff10d2ee" hasStroke="0"/>
   </BACKGROUND>
   <COMBOBOX name="Osc Combo Box" id="b7704cccd5f9a10e" memberName="oscComboBox"
             virtualName="" explicitFocusOrder="0" pos="8 24 104 24" editable="0"
             layout="33" items="Sine&#10;Sawtooth&#10;Square&#10;Triangle"
             textWhenNonSelected="Waveform" textWhenNoItems="(no choices)"/>
-  <SLIDER name="Osc Gain Slider" id="368c17e28bf26c7e" memberName="oscGainSlider"
-          virtualName="ParameterSlider" explicitFocusOrder="0" pos="160 8 48 48"
-          thumbcol="ff04042a" rotarysliderfill="7fc30d0d" min="0" max="1"
-          int="0" style="Rotary" textBoxPos="NoTextBox" textBoxEditable="1"
-          textBoxWidth="80" textBoxHeight="20" skewFactor="1" needsCallback="0"/>
   <LABEL name="Gain Label" id="d01ee9ac72b6cecf" memberName="gainLabel"
-         virtualName="" explicitFocusOrder="0" pos="165 48 40 24" textCol="ff000000"
+         virtualName="" explicitFocusOrder="0" pos="168 72 40 24" textCol="ff000000"
          edTextCol="ff000000" edBkgCol="0" labelText="Gain" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="15" kerning="0" bold="0" italic="0" justification="33"/>
@@ -260,26 +269,25 @@ BEGIN_JUCER_METADATA
          edTextCol="ff000000" edBkgCol="0" labelText="Oscillator" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="15" kerning="0" bold="0" italic="0" justification="33"/>
-  <SLIDER name="Osc Semi Slider" id="f2161025490f057a" memberName="oscSemiSlider"
-          virtualName="ParameterSlider" explicitFocusOrder="0" pos="8 56 104 32"
-          trackcol="ffffffff" min="0" max="1" int="0" style="LinearHorizontal"
-          textBoxPos="TextBoxBelow" textBoxEditable="1" textBoxWidth="80"
-          textBoxHeight="20" skewFactor="1" needsCallback="0"/>
-  <SLIDER name="Osc  Cent Slider" id="85eb72c602140d33" memberName="oscCentSlider"
-          virtualName="ParameterSlider" explicitFocusOrder="0" pos="8 96 104 32"
-          trackcol="ffffffff" min="0" max="1" int="0" style="LinearHorizontal"
-          textBoxPos="TextBoxBelow" textBoxEditable="1" textBoxWidth="80"
-          textBoxHeight="20" skewFactor="1" needsCallback="0"/>
   <LABEL name="Osc 1 Semi Label" id="a15acc2dcec0c75d" memberName="osc1SemiLabel"
          virtualName="" explicitFocusOrder="0" pos="112 56 40 24" edTextCol="ff000000"
          edBkgCol="0" labelText="Semi" editableSingleClick="0" editableDoubleClick="0"
          focusDiscardsChanges="0" fontname="Default font" fontsize="15"
          kerning="0" bold="0" italic="0" justification="33"/>
   <LABEL name="Osc 1 Cents Label" id="4a616d42488b077f" memberName="osc1CentsLabel"
-         virtualName="" explicitFocusOrder="0" pos="112 96 40 24" edTextCol="ff000000"
+         virtualName="" explicitFocusOrder="0" pos="112 104 48 24" edTextCol="ff000000"
          edBkgCol="0" labelText="Cents" editableSingleClick="0" editableDoubleClick="0"
          focusDiscardsChanges="0" fontname="Default font" fontsize="15"
          kerning="0" bold="0" italic="0" justification="33"/>
+  <GENERICCOMPONENT name="Osc Gain Slider" id="55ba71ccbe11a612" memberName="oscGainSlider"
+                    virtualName="ModulatedComponent" explicitFocusOrder="0" pos="160 8 48 64"
+                    class="Component" params="editor, *parameterContainer-&gt;getGainParameter(), parameterContainer-&gt;getGainParameterID()"/>
+  <GENERICCOMPONENT name="Osc Semi Slider" id="429ec19e3dd99c8a" memberName="oscSemiSlider"
+                    virtualName="ModulatedComponent" explicitFocusOrder="0" pos="8 56 112 64"
+                    class="Component" params="editor, *parameterContainer-&gt;getSemiParameter(), parameterContainer-&gt;getSemiParameterID()"/>
+  <GENERICCOMPONENT name="Osc Cent Slider" id="d183e4205188de14" memberName="oscCentSlider"
+                    virtualName="ModulatedComponent" explicitFocusOrder="0" pos="8 104 112 64"
+                    class="Component" params="editor, *parameterContainer-&gt;getCentsParameter(), parameterContainer-&gt;getCentsParameterID()"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

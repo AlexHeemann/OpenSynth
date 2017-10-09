@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 5.1.1
+  Created with Projucer version: 5.1.2
 
   ------------------------------------------------------------------------------
 
@@ -22,7 +22,11 @@
 //[Headers]     -- You can add your own extra header files here --
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "ParameterSlider.h"
-#include "OscillatorParameterContainer.h"
+#include "PluginEditor.h"
+#include "ModulatedComponent.h"
+
+class OscillatorParameterContainer;
+class ModulationMatrix;
 //[/Headers]
 
 
@@ -37,11 +41,11 @@
 */
 class OscillatorComponent  : public Component,
                              public DragAndDropListener,
-                             public ComboBoxListener
+                             public ComboBox::Listener
 {
 public:
     //==============================================================================
-    OscillatorComponent (OscillatorParameterContainer& parameterContainer);
+    OscillatorComponent (OpenSynthAudioProcessorEditor &editor, OscillatorParameterContainer* parameterContainer, ModulationMatrix* modulationMatrix);
     ~OscillatorComponent();
 
     //==============================================================================
@@ -57,19 +61,22 @@ public:
 
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
-    OscillatorParameterContainer& parameterContainer;
+    OpenSynthAudioProcessorEditor& editor;
+    OscillatorParameterContainer* parameterContainer;
+    ModulationMatrix* modulationMatrix;
     Waveform waveformForId(int waveformId);
+    std::unordered_map<int, ModulatedComponent*> idToComponent;
     //[/UserVariables]
 
     //==============================================================================
     ScopedPointer<ComboBox> oscComboBox;
-    ScopedPointer<ParameterSlider> oscGainSlider;
     ScopedPointer<Label> gainLabel;
     ScopedPointer<Label> titleLabel;
-    ScopedPointer<ParameterSlider> oscSemiSlider;
-    ScopedPointer<ParameterSlider> oscCentSlider;
     ScopedPointer<Label> osc1SemiLabel;
     ScopedPointer<Label> osc1CentsLabel;
+    ScopedPointer<ModulatedComponent> oscGainSlider;
+    ScopedPointer<ModulatedComponent> oscSemiSlider;
+    ScopedPointer<ModulatedComponent> oscCentSlider;
 
 
     //==============================================================================
