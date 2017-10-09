@@ -26,6 +26,7 @@
 
 
 //[MiscUserDefs] You can add your own user definitions and misc code here...
+static float kMinMarginY = 3.0f;
 //[/MiscUserDefs]
 
 //==============================================================================
@@ -142,7 +143,12 @@ Rectangle<int> ModulationSink::getBoundsInComponent(Component* component)
         }
         curComponent = parent;
     }
-    return Rectangle<int>(x, y, getWidth(), getHeight());
+    if (x < 0)
+    {
+        x += modulationOverview->getWidth() + getWidth() + 6;
+    }
+    
+    return Rectangle<int>(x, fmax(y, kMinMarginY), getWidth(), getHeight());
 }
 //[/MiscUserCode]
 
