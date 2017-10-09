@@ -56,7 +56,10 @@ void ModulationOverview::update()
     }
     clear();
     
-    for (std::list<int>::const_iterator iterator = sources.begin(), end = sources.end(); iterator != end; ++iterator)
+    std::list<int>* sourcesForDestination = processor.getModulationMatrix()->getSourcesForDestination(destinationID);
+    if (sourcesForDestination == nullptr) return;
+    
+    for (std::list<int>::const_iterator iterator = sourcesForDestination->begin(), end = sourcesForDestination->end(); iterator != end; ++iterator)
     {
         std::unique_ptr<ModulationPopover> p(new ModulationPopover());
         p->setSourceID(*iterator);
@@ -84,17 +87,10 @@ void ModulationOverview::update()
     resized();
 }
 
-void ModulationOverview::addSource(int sourceID)
-{
-    sources.push_back(sourceID);
-    update();
-}
-
 void ModulationOverview::buttonClicked(juce::Button* button)
 {
     if (buttonToSourceMap.find(button) != buttonToSourceMap.end())
     {
-        sources.remove(buttonToSourceMap[button]);
         processor.getModulationMatrix()->disconnect(buttonToSourceMap[button], destinationID);
         update();
     }

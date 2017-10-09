@@ -184,7 +184,6 @@ void LFOComponent::itemDropped(const int sourceID, const int destinationID)
             resized();
         }
         lfoFrequencyModulationPopover->setSourceID(sourceID);
-        frequencyKnob->addSource(sourceID);
         frequencyKnob->update();
     }
 }

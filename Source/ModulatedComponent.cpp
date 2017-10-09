@@ -57,8 +57,3 @@ void ModulatedComponent::setTextBoxStyle(const Slider::TextEntryBoxPosition newP
     slider->setTextBoxStyle(newPosition, isReadOnly, textEntryBoxWidth, textEntryBoxHeight);
     resized();
 }
-
-void ModulatedComponent::addSource(int sourceID)
-{
-    modulationSink->getModulationOverview()->addSource(sourceID);
-}
