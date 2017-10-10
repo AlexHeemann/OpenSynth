@@ -28,10 +28,13 @@ void ModulationMatrix::process()
 
 void ModulationMatrix::clear()
 {
-    for (auto row : data->getRows())
+    for (auto& source : sources)
     {
-        destinations[row.destinationIndex] = 0;
-        sources[row.sourceIndex] = 0;
+        source.second = 0;
+    }
+    for (auto& destination : destinations)
+    {
+        destination.second = 0;
     }
 }
 
