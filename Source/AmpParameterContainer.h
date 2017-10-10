@@ -20,7 +20,7 @@ public:
     {
         gainParameterID = processor.getIDManager().getNewID();
         
-        processor.addParameter(gain = new AudioParameterFloat("amp_gain", "Amp Gain", 0.0, 1.0, 0.6));
+        processor.addParameter(gain = new AudioParameterFloat("amp_gain", "Amp Gain", 0.0, 1.0, 0.3));
     }
     
     ~AmpParameterContainer() {}
