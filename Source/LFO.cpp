@@ -19,7 +19,7 @@ LFO::LFO(LFOParameterContainer* parameterContainer) : Module(parameterContainer-
 
 void LFO::calculatePhaseIncrement()
 {
-    double modulation = modulationMatrix->getValueForDestinationID(ParameterIDLFO1Frequency);
+    double modulation = modulationMatrix->getValueForDestinationID(parameterContainer->getFrequencyParameterID());
     AudioParameterFloat* frequencyParameter = parameterContainer->getFrequencyParameter();
     float newKnobValue = std::fmin(1.0f, frequencyParameter->range.convertTo0to1(frequencyParameter->get()) + modulation);
     float newFrequency = std::fmax(0.0f, std::fmin(frequencyParameter->range.end, frequencyParameter->range.convertFrom0to1(newKnobValue)));
