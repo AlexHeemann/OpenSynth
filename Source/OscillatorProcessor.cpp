@@ -58,7 +58,11 @@ void OscillatorProcessor::processBuffer(AudioBuffer<FloatType>& buffer, int star
     {
         float* subtable = wavetable->getSubtableForFrequency(frequency);
         int tableSize = wavetable->getTableSize();
-        const float level = parameterContainer->getGainParameter()->get();
+        
+        AudioParameterFloat* gainParameter = parameterContainer->getGainParameter();
+        const float gainModulation = modulationMatrix->getValueForDestinationID(parameterContainer->getGainParameterID());
+        const float newKnobValue = std::max(std::min(1.0f, gainParameter->get() + gainModulation), 0.0f);
+        const float level = newKnobValue;
         
         double twoPi = 2.0 * double_Pi;
         if (releaseCounter > 0)
@@ -72,7 +76,7 @@ void OscillatorProcessor::processBuffer(AudioBuffer<FloatType>& buffer, int star
                 
                 for (int channel = 0; channel < buffer.getNumChannels(); channel++)
                 {
-                    buffer.setSample(channel, sampleIdx, currentSample);
+                    buffer.addSample(channel, sampleIdx, currentSample);
                 }
                 
                 currentPhase += phaseIncrement;
@@ -95,11 +99,13 @@ void OscillatorProcessor::processBuffer(AudioBuffer<FloatType>& buffer, int star
             for (int sampleIdx = 0; sampleIdx < numSamples; sampleIdx++)
             {
                 int index = (int)((currentPhase / twoPi) * tableSize);
-                FloatType currentSample = level * subtable[index];
+                // Interpolate for better accuracy
+                float indexFractional = ((currentPhase / twoPi) * tableSize) - index;
+                FloatType currentSample = level * (subtable[index] + ((subtable[(index + 1) % tableSize] - subtable[index]) * indexFractional));
                 
                 for (int channel = 0; channel < buffer.getNumChannels(); channel++)
                 {
-                    buffer.setSample(channel, sampleIdx, currentSample);
+                    buffer.addSample(channel, sampleIdx, currentSample);
                 }
                 
                 currentPhase += phaseIncrement;
