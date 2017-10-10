@@ -40,9 +40,12 @@ AudioProcessor (BusesProperties()
     addAmp(0);
     addOscillator(1);
     setStartOscillator(1);
-    connectProcessorsSerial(1, 0);
+    addOscillator(4);
+    connectProcessorsSerial(1, 4);
+    connectProcessorsSerial(4, 0);
     addEnvelope(2);
     connect(2, static_cast<AmpParameterContainer*>(getParameterContainer(0))->getGainParameterID());
+    addLFO(3);
     setAmpEnvelope(2);
 }
 

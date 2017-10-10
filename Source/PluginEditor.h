@@ -11,11 +11,11 @@
 #include "PluginProcessor.h"
 #include "ModulationConnector.h"
 #include "AmpComponent.h"
-#include "OscillatorComponent.h"
 #include "DelayComponent.h"
 #include "ReverbComponent.h"
 #include "EnvelopeComponent.h"
 
+class OscillatorComponent;
 class LFOComponent;
 class ParameterSlider;
 class FilterComponent;
@@ -56,6 +56,7 @@ private:
     ScopedPointer<AmpComponent> ampComponent;
     ScopedPointer<FilterComponent> filterComponent;
     ScopedPointer<OscillatorComponent> oscillatorComponent;
+    ScopedPointer<OscillatorComponent> oscillator2Component;
     ScopedPointer<DelayComponent> delayComponent;
     ScopedPointer<ReverbComponent> reverbComponent;
     ScopedPointer<LFOComponent> lfoComponent;
