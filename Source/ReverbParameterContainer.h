@@ -16,7 +16,11 @@
 class ReverbParameterContainer: public ParameterContainer
 {
 public:
-    ReverbParameterContainer(int ID, OpenSynthAudioProcessor& processor) : ParameterContainer(ID, processor)
+    ReverbParameterContainer(int ID,
+                             OpenSynth& synth,
+                             OpenSynthAudioProcessor& processor) : ParameterContainer(ID,
+                                                                                      synth,
+                                                                                      processor)
     {
         reverbSize = new AudioParameterFloat("reverbSize", "Reverb Size", 0.0f, 1.0f, 0.5f);
         processor.addParameter(reverbSize);

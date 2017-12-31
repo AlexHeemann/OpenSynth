@@ -19,7 +19,35 @@ class ReverbParameterContainer;
 class ReverbProcessor : public Processor
 {
 public:
-    ReverbProcessor(ModulationMatrix* modulationMatrix, int bufferSize);
+    
+    struct Constants
+    {
+        struct Identifiers
+        {
+            static const String Reverb;
+            static const String Size;
+            static const String Damping;
+            static const String DryLevel;
+            static const String WetLevel;
+            static const String Width;
+        };
+        struct Names
+        {
+            static const String Reverb;
+            static const String Size;
+            static const String Damping;
+            static const String DryLevel;
+            static const String WetLevel;
+            static const String Width;
+        };
+    };
+    
+    ReverbProcessor(int ID,
+                    ModulationMatrix* modulationMatrix,
+                    AudioProcessorValueTreeState& audioProcessorValueTreeState,
+                    IDManager& idManager,
+                    int bufferSize,
+                    int sampleRate);
     virtual ~ReverbProcessor() {};
     
     void renderNextBlock(AudioBuffer<float>& outputBuffer, int startSample, int numSamples) override
@@ -31,13 +59,9 @@ public:
         processBuffer(outputBuffer, startSample, numSamples);
     }
     
-    void setSampleRate(const int sampleRate);
+    void setSampleRate(const int sampleRate) override;
     const int getSampleRate() const { return sampleRate; };
     void reset() override;
-    void setReverbParameterContainer(ReverbParameterContainer* reverbParameterContainer)
-    {
-        this->reverbParameterContainer = reverbParameterContainer;
-    };
     
 private:
     template <typename FloatType>
@@ -45,9 +69,21 @@ private:
     
     int sampleRate = 0;
     
+    int reverbSizeParameterID;
+    int reverbDampingParameterID;
+    int reverbWetLevelParameterID;
+    int reverbDryLevelParameterID;
+    int reverbWidthParameterID;
+    
+    String stringIdentifier() const override;
+    String reverbSizeParameterStringID() const;
+    String reverbDampingParameterStringID() const;
+    String reverbWetLevelParameterStringID() const;
+    String reverbDryLevelParameterStringID() const;
+    String reverbWidthParameterStringID() const;
+    
     ReverbDouble reverb;
     ReverbDouble::Parameters reverbParameters;
-    ReverbParameterContainer* reverbParameterContainer;
 };
 
 #endif  // REVERBPROCESSOR_H_INCLUDED
