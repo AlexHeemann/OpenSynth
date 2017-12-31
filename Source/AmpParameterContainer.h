@@ -16,10 +16,13 @@
 class AmpParameterContainer: public ParameterContainer
 {
 public:
-    AmpParameterContainer(int ID, OpenSynthAudioProcessor& processor) : ParameterContainer(ID, processor)
+    AmpParameterContainer(int ID,
+                          OpenSynth& synth,
+                          OpenSynthAudioProcessor& processor): ParameterContainer(ID,
+                                                                                  synth,
+                                                                                  processor)
     {
-        gainParameterID = processor.getIDManager().getNewID();
-        
+        gainParameterID = synth.getIDManager().getNewID();
         processor.addParameter(gain = new AudioParameterFloat("amp_gain", "Amp Gain", 0.0, 1.0, 0.3));
     }
     

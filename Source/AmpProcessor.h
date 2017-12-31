@@ -18,7 +18,25 @@ class AmpParameterContainer;
 class AmpProcessor : public Processor
 {
 public:
-    AmpProcessor(ModulationMatrix* modulationMatrix, int bufferSize);
+    
+    struct Constants
+    {
+        struct Identifiers
+        {
+            static const String Amp;
+            static const String Gain;
+        };
+        struct Names
+        {
+            static const String Amp;
+            static const String Gain;
+        };
+    };
+    
+    AmpProcessor(int ID,
+                 ModulationMatrix* modulationMatrix, AudioProcessorValueTreeState& audioProcessorValueTreeState,
+                 IDManager& idManager,
+                 int bufferSize);
     virtual ~AmpProcessor() {};
     
     void renderNextBlock(AudioBuffer<float>& outputBuffer, int startSample, int numSamples) override
@@ -32,11 +50,13 @@ public:
     void renderNextBlock() override {};
     void reset() override {};
     
-    void setParameterContainer(AmpParameterContainer* parameterContainer) { this->parameterContainer = parameterContainer; }
-    AmpParameterContainer* getParameterContainer() const { return parameterContainer; }
+    String name() const override;
     
 private:
-    AmpParameterContainer* parameterContainer;
+    
+    int gainParameterID;
+    String gainParameterStringID() const;
+    String stringIdentifier() const override;
     
     template <typename FloatType>
     void processBuffer(AudioBuffer<FloatType>& buffer, int startSample, int numSamples);
