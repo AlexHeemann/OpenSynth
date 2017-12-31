@@ -19,12 +19,16 @@ class OscillatorParameterContainer: public ParameterContainer
 {
 public:
     
-    OscillatorParameterContainer(int ID, OpenSynthAudioProcessor& processor) : ParameterContainer(ID, processor)
+    OscillatorParameterContainer(int ID,
+                                 OpenSynth& synth,
+                                 OpenSynthAudioProcessor& processor) : ParameterContainer(ID,
+                                                                                          synth,
+                                                                                          processor)
     {
-        gainParameterID = processor.getIDManager().getNewID();
-        semiParameterID = processor.getIDManager().getNewID();
-        centsParameterID = processor.getIDManager().getNewID();
-        waveformParameterID = processor.getIDManager().getNewID();
+        gainParameterID = synth.getIDManager().getNewID();
+        semiParameterID = synth.getIDManager().getNewID();
+        centsParameterID = synth.getIDManager().getNewID();
+        waveformParameterID = synth.getIDManager().getNewID();
         
         processor.addParameter(semi = new AudioParameterInt("oscSemi" + String(semiParameterID), "Osc Semi", -36, 36, 0));
         processor.addParameter(cents = new AudioParameterInt("oscCents" + String(centsParameterID), "Osc Cents", -30, 30, 0));
@@ -47,14 +51,7 @@ public:
     Waveform getWaveform() const { return waveform; }
     void setWaveform(Waveform waveform) { this->waveform = waveform; }
     
-    OpenSynthAudioProcessor& getProcessor() { return processor; }
-    
-    void setWaveformForOscillator(Waveform waveform, int oscillator)
-    {
-        processor.setWaveformForOscillator(waveform, oscillator);
-    }
-    
-    
+    OpenSynthAudioProcessor& getProcessor() { return processor; }    
     
 private:
     int gainParameterID;

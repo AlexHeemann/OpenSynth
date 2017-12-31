@@ -13,14 +13,101 @@
 #include "Utility.h"
 #include "ModulationMatrix.h"
 
-OscillatorProcessor::OscillatorProcessor(ModulationMatrix* modulationMatrix,
+// Parameter Strings
+const String OscillatorProcessor::Constants::Identifiers::Semi = "semi";
+const String OscillatorProcessor::Constants::Identifiers::Cents = "cents";
+const String OscillatorProcessor::Constants::Identifiers::Gain = "gain";
+const String OscillatorProcessor::Constants::Identifiers::Waveform = "waveform";
+const String OscillatorProcessor::Constants::Identifiers::Oscillator = "oscillator";
+
+const String OscillatorProcessor::Constants::Names::Semi = "Semi";
+const String OscillatorProcessor::Constants::Names::Cents = "Cents";
+const String OscillatorProcessor::Constants::Names::Gain = "Gain";
+const String OscillatorProcessor::Constants::Names::Waveform = "Waveform";
+const String OscillatorProcessor::Constants::Names::Oscillator = "Oscillator";
+
+OscillatorProcessor::OscillatorProcessor(int ID,
+                                         ModulationMatrix* modulationMatrix,
+                                         AudioProcessorValueTreeState& audioProcessorValueTreeState,
+                                         IDManager& idManager,
                                          int bufferSize,
                                          int sampleRate,
                                          std::vector<Wavetable*>& wavetables) :
-Processor(modulationMatrix, bufferSize),
+Processor(ID,
+          modulationMatrix,
+          audioProcessorValueTreeState,
+          idManager,
+          bufferSize),
 sampleRate(sampleRate), wavetables(wavetables)
 {
+    audioProcessorValueTreeState.createAndAddParameter(semiParameterStringID(),
+                                                       Constants::Names::Semi,
+                                                       String(),
+                                                       NormalisableRange<float>(-36.0f, 36.0f, 1.0f),
+                                                       0.0f,
+                                                       nullptr,
+                                                       nullptr);
+    
+    audioProcessorValueTreeState.createAndAddParameter(centsParameterStringID(),
+                                                       Constants::Names::Cents,
+                                                       String(),
+                                                       NormalisableRange<float>(-100.0f, 100.0f, 1.0f),
+                                                       0.0f,
+                                                       nullptr,
+                                                       nullptr);
+    
+    audioProcessorValueTreeState.createAndAddParameter(gainParameterStringID(),
+                                                       Constants::Names::Gain,
+                                                       String(),
+                                                       NormalisableRange<float>(0.0f, 1.0f),
+                                                       0.8f,
+                                                       nullptr,
+                                                       nullptr);
+    
+    audioProcessorValueTreeState.createAndAddParameter(waveformParameterStringID(),
+                                                       Constants::Names::Waveform,
+                                                       String(),
+                                                       NormalisableRange<float>(0.0f, 3.0f, 1.0f),
+                                                       0.0f,
+                                                       nullptr,
+                                                       nullptr);
+    
+    gainParameterID = idManager.getNewID();
+    semiParameterID = idManager.getNewID();
+    centsParameterID = idManager.getNewID();
+    waveformParameterID = idManager.getNewID();
+    
     calculateFrqRad();
+}
+
+String OscillatorProcessor::semiParameterStringID() const
+{
+    return stringIdentifier() + "_" + Constants::Identifiers::Semi;
+}
+
+String OscillatorProcessor::centsParameterStringID() const
+{
+    return stringIdentifier() + "_" + Constants::Identifiers::Cents;
+}
+
+String OscillatorProcessor::gainParameterStringID() const
+{
+    return stringIdentifier() + "_" + Constants::Identifiers::Gain;
+}
+
+String OscillatorProcessor::waveformParameterStringID() const
+{
+    return stringIdentifier() + "_" + Constants::Identifiers::Waveform;
+}
+
+String OscillatorProcessor::stringIdentifier() const
+{
+    return Constants::Identifiers::Oscillator + String(ID);
+}
+
+String OscillatorProcessor::name() const
+{
+    return Constants::Names::Oscillator;
 }
 
 void OscillatorProcessor::calculateFrqRad()
@@ -37,31 +124,32 @@ void OscillatorProcessor::renderNextBlock()
 template <typename FloatType>
 void OscillatorProcessor::processBuffer(AudioBuffer<FloatType>& buffer, int startSample, int numSamples)
 {
-    if (hasProcessed || currentNote < 0) return;
+    if (hasProcessed) return;
     
-    Range<int> semiRange = parameterContainer->getSemiParameter()->getRange();
+    Range<float> semiRange = audioProcessorValueTreeState.getParameterRange(Constants::Identifiers::Semi).getRange();
     
-    float semiModulation = semiRange.getEnd() * modulationMatrix->getValueForDestinationID(parameterContainer->getSemiParameterID());
-    int oscNote = currentNote + parameterContainer->getSemiParameter()->get();
+    float semiModulation = semiRange.getEnd() * modulationMatrix->getValueForDestinationID(semiParameterID);
+    int oscNote = currentNote + *audioProcessorValueTreeState.getRawParameterValue(Constants::Identifiers::Semi);
     
-    Range<int> centsRange = parameterContainer->getCentsParameter()->getRange();
-    float centsModulation = centsRange.getEnd() * modulationMatrix->getValueForDestinationID(parameterContainer->getCentsParameterID());
+    Range<float> centsRange = audioProcessorValueTreeState.getParameterRange(Constants::Identifiers::Cents).getRange();
+    float centsModulation = centsRange.getEnd() * modulationMatrix->getValueForDestinationID(centsParameterID);
     
     // Assumes wavetableIndex is within range of wavetables for speed
-    const int wavetableIndex = parameterContainer->getWaveform();
+    const int wavetableIndex = (const int)*audioProcessorValueTreeState.getRawParameterValue(Constants::Identifiers::Waveform);
     Wavetable* wavetable = wavetables[wavetableIndex];
     
-    frequency = getFrequencyFromFloatNote(oscNote + semiModulation + ((parameterContainer->getCentsParameter()->get() + centsModulation)/100.0));
+    float cents = *audioProcessorValueTreeState.getRawParameterValue(Constants::Identifiers::Cents);
+    frequency = getFrequencyFromFloatNote(oscNote + semiModulation + (cents + centsModulation)/100.0);
     calculatePhaseIncrement();
     
-    if (phaseIncrement != 0.0)
+    if (phaseIncrement != 0.0 && currentNote >= 0)
     {
         float* subtable = wavetable->getSubtableForFrequency(frequency);
         int tableSize = wavetable->getTableSize();
         
-        AudioParameterFloat* gainParameter = parameterContainer->getGainParameter();
-        const float gainModulation = modulationMatrix->getValueForDestinationID(parameterContainer->getGainParameterID());
-        const float newKnobValue = std::max(std::min(1.0f, gainParameter->get() + gainModulation), 0.0f);
+        float gain = *audioProcessorValueTreeState.getRawParameterValue(Constants::Identifiers::Gain);
+        const float gainModulation = modulationMatrix->getValueForDestinationID(gainParameterID);
+        const float newKnobValue = std::max(std::min(1.0f, gain + gainModulation), 0.0f);
         const float level = newKnobValue;
         
         double twoPi = 2.0 * double_Pi;
