@@ -12,13 +12,22 @@
 #define MODULE_H_INCLUDED
 
 #include "JuceHeader.h"
+#include "IDManager.h"
 
 class ModulationMatrix;
 
 class Module
 {
 public:
-    Module(int ID) : ID(ID) {};
+    Module(int ID,
+           ModulationMatrix *modulationMatrix,
+           AudioProcessorValueTreeState& audioProcessorValueTreeState,
+           IDManager& idManager) :
+    ID(ID),
+    modulationMatrix(modulationMatrix),
+    audioProcessorValueTreeState(audioProcessorValueTreeState),
+    idManager(idManager) {};
+    
     virtual ~Module() {};
     
     int getID() { return ID; };
@@ -43,6 +52,10 @@ protected:
     int ID;
     double currentValue = 0.0;
     ModulationMatrix* modulationMatrix;
+    AudioProcessorValueTreeState& audioProcessorValueTreeState;
+    IDManager& idManager;
+    
+    virtual String stringIdentifier() const = 0;
 };
 
 
