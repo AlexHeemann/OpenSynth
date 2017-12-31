@@ -13,14 +13,22 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 #include <set>
+#include "IDManager.h"
 
 class ModulationMatrix;
 
 class Processor
 {
 public:
-    Processor(ModulationMatrix *modulationMatrix, int bufferSize) :
+    Processor(int ID,
+              ModulationMatrix *modulationMatrix,
+              AudioProcessorValueTreeState& audioProcessorValueTreeState,
+              IDManager& idManager,
+              int bufferSize) :
+    ID(ID),
     modulationMatrix(modulationMatrix),
+    audioProcessorValueTreeState(audioProcessorValueTreeState),
+    idManager(idManager),
     audioBuffer(AudioBuffer<float>(2, bufferSize))
     {
         audioBuffer.clear();
@@ -77,10 +85,20 @@ public:
         audioBuffer.setSize(2, bufferSize);
     }
     
+    virtual void setSampleRate(int sampleRate)
+    {
+        this->sampleRate = sampleRate;
+    }
+    
+    virtual String name() const = 0;
+    
 protected:
     int ID;
+    int sampleRate = 0;
     bool hasProcessed = false;
     ModulationMatrix* modulationMatrix;
+    AudioProcessorValueTreeState& audioProcessorValueTreeState;
+    IDManager& idManager;
     AudioBuffer<float> audioBuffer;
     std::set<Processor*> inputs;
     std::set<Processor*> outputs;
@@ -88,6 +106,8 @@ protected:
     int feedbackCounter = 0;
     
     Processor* output;
+    
+    virtual String stringIdentifier() const = 0;
     
     // For parallel processing
     template <typename FloatType>
