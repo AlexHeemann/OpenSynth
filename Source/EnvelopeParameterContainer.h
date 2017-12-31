@@ -16,12 +16,16 @@
 class EnvelopeParameterContainer: public ModulationParameterContainer
 {
 public:
-    EnvelopeParameterContainer(int ID, OpenSynthAudioProcessor& processor) : ModulationParameterContainer(ID, processor)
+    EnvelopeParameterContainer(int ID,
+                               OpenSynth& synth,
+                               OpenSynthAudioProcessor& processor) : ModulationParameterContainer(ID,
+                                                                                                  synth,
+                                                                                                  processor)
     {
-        attackParameterID = processor.getIDManager().getNewID();
-        decayParameterID = processor.getIDManager().getNewID();
-        sustainParameterID = processor.getIDManager().getNewID();
-        releaseParameterID = processor.getIDManager().getNewID();
+        attackParameterID = synth.getIDManager().getNewID();
+        decayParameterID = synth.getIDManager().getNewID();
+        sustainParameterID = synth.getIDManager().getNewID();
+        releaseParameterID = synth.getIDManager().getNewID();
         
         processor.addParameter(attackRate = new AudioParameterFloat("envelope_" + String(ID) + "_attack",  "Envelope " + String(ID) + " Attack", 0.0f, 3.0f, 0.0f));
         attackRate->range.skew = 0.5;

@@ -16,24 +16,35 @@
 #include "Module.h"
 #include "EnvelopeState.h"
 
-class EnvelopeParameterContainer;
-
-// Abstract base class for all things modulating
-class Modulator
-{
-public:
-	Modulator() {};
-	virtual ~Modulator() {};
-
-	virtual std::vector<double> getModulationBuffer() = 0;
-	virtual void calculateModulationBuffer(int numSamples) = 0;
-
-};
-
 class EnvelopeGenerator : public Module
 {
 public:
-	EnvelopeGenerator(EnvelopeParameterContainer* parameterContainer);
+    
+    struct Constants
+    {
+        struct Identifiers
+        {
+            static const String EnvelopeGenerator;
+            static const String Attack;
+            static const String Decay;
+            static const String Sustain;
+            static const String Release;
+        };
+        struct Names
+        {
+            static const String EnvelopeGenerator;
+            static const String Attack;
+            static const String Decay;
+            static const String Sustain;
+            static const String Release;
+        };
+    };
+    
+    EnvelopeGenerator(int ID,
+                      ModulationMatrix *modulationMatrix,
+                      AudioProcessorValueTreeState& audioProcessorValueTreeState,
+                      IDManager& idManager,
+                      int sampleRate);
 	virtual ~EnvelopeGenerator();
 	// Contains the values for the current buffer
 	std::vector<double> envelopeBuffer;
@@ -46,10 +57,6 @@ public:
     
 	void setDurationInSec(double durationInSec);
     void setEnvelopeState(EnvelopeState state);
-    void setParameterContainer(EnvelopeParameterContainer* parameterContainer)
-    {
-        this->parameterContainer = parameterContainer;
-    }
     
 private:
 	double startingAmp = 0;
@@ -64,8 +71,18 @@ private:
 	EnvelopeSegmentAttack attackSegment;
 	EnvelopeSegmentDecay decaySegment;
     EnvelopeSegmentRelease releaseSegment;
-    EnvelopeParameterContainer* parameterContainer;
 
+    int attackParameterID;
+    int decayParameterID;
+    int sustainParameterID;
+    int releaseParameterID;
+    
+    String stringIdentifier() const override;
+    String attackParameterStringID() const;
+    String decayParameterStringID() const;
+    String sustainParameterStringID() const;
+    String releaseParameterStringID() const;
+    
 	double envInc;
 	double envCount;
 
