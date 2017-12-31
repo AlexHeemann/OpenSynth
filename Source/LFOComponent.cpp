@@ -7,7 +7,7 @@
   the "//[xyz]" and "//[/xyz]" sections will be retained when the file is loaded
   and re-saved.
 
-  Created with Projucer version: 5.1.1
+  Created with Projucer version: 5.1.2
 
   ------------------------------------------------------------------------------
 
@@ -67,7 +67,7 @@ LFOComponent::LFOComponent (OpenSynthAudioProcessorEditor &editor, LFOParameterC
     addAndMakeVisible (modulationPlug = new ModulationPlug());
     modulationPlug->setName ("Modulation Plug");
 
-    addAndMakeVisible (frequencyKnob = new ModulatedComponent (editor, *parameterContainer->getFrequencyParameter(), parameterContainer->getID()));
+    addAndMakeVisible (frequencyKnob = new ModulatedComponent (editor, *parameterContainer->getFrequencyParameter(), parameterContainer->getFrequencyParameterID()));
     frequencyKnob->setName ("Frequency Knob");
 
 
@@ -84,6 +84,7 @@ LFOComponent::LFOComponent (OpenSynthAudioProcessorEditor &editor, LFOParameterC
     //[Constructor] You can add your own custom stuff here..
     waveformComboBox->setSelectedId(1);
     modulationPlug->setID(parameterContainer->getID());
+    idToComponent[parameterContainer->getFrequencyParameterID()] = frequencyKnob.get();
     //[/Constructor]
 }
 
@@ -121,10 +122,10 @@ void LFOComponent::resized()
     //[/UserPreResize]
 
     lfoTitleLabel->setBounds (0, 0, 184, 24);
-    label->setBounds (0, 72, 72, 24);
+    label->setBounds (0, 75, 72, 24);
     waveformComboBox->setBounds (80, 64, 88, 24);
     modulationPlug->setBounds (144, 32, 23, 24);
-    frequencyKnob->setBounds (8, 32, 47, 48);
+    frequencyKnob->setBounds (8, 19, 47, 64);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -175,17 +176,7 @@ void LFOComponent::modulationPopoverValueChanged(ModulationPopover* modulationPo
 void LFOComponent::itemDropped(const int sourceID, const int destinationID)
 {
     modulationMatrix->connect(sourceID, destinationID);
-    if (destinationID == ParameterIDFilterCutoff)
-    {
-        Component* parent = getParentComponent();
-        if (parent != nullptr)
-        {
-            parent->addAndMakeVisible(lfoFrequencyModulationPopover);
-            resized();
-        }
-        lfoFrequencyModulationPopover->setSourceID(sourceID);
-        frequencyKnob->update();
-    }
+    idToComponent[destinationID]->update();
 }
 
 //[/MiscUserCode]
@@ -213,7 +204,7 @@ BEGIN_JUCER_METADATA
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="18" kerning="0" bold="0" italic="0" justification="33"/>
   <LABEL name="new label" id="d745b67132d73127" memberName="label" virtualName=""
-         explicitFocusOrder="0" pos="0 72 72 24" textCol="ff000000" edTextCol="ff000000"
+         explicitFocusOrder="0" pos="0 75 72 24" textCol="ff000000" edTextCol="ff000000"
          edBkgCol="0" labelText="Frequency&#10;" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="13" kerning="0" bold="0" italic="0" justification="33"/>
@@ -225,7 +216,7 @@ BEGIN_JUCER_METADATA
                     virtualName="ModulationPlug" explicitFocusOrder="0" pos="144 32 23 24"
                     class="Component" params=""/>
   <GENERICCOMPONENT name="Frequency Knob" id="57a53678bfa6f42f" memberName="frequencyKnob"
-                    virtualName="ModulatedComponent" explicitFocusOrder="0" pos="8 32 47 48"
+                    virtualName="ModulatedComponent" explicitFocusOrder="0" pos="8 19 47 64"
                     class="Component" params="editor, *parameterContainer-&gt;getFrequencyParameter(), parameterContainer-&gt;getID()"/>
 </JUCER_COMPONENT>
 

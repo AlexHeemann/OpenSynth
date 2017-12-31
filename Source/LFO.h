@@ -21,7 +21,29 @@ class LFO : public Module
 {
 public:
     
-    LFO(LFOParameterContainer* parameterContainer);
+    struct Constants
+    {
+        struct Identifiers
+        {
+            static const String LFO;
+            static const String Frequency;
+            static const String PhaseOffset;
+            static const String Waveform;
+        };
+        struct Names
+        {
+            static const String LFO;
+            static const String Frequency;
+            static const String PhaseOffset;
+            static const String Waveform;
+        };
+    };
+    
+    LFO(int ID,
+        ModulationMatrix *modulationMatrix,
+        AudioProcessorValueTreeState& audioProcessorValueTreeState,
+        IDManager& idManager,
+        int sampleRate);
     ~LFO() {};
     
     double getCurrentValue() const { return currentValue; }
@@ -31,8 +53,6 @@ public:
         frqRad = (2.0 * double_Pi) / sampleRate;
     };
     
-    LFOParameterContainer* getParameterContainer() const { return parameterContainer; }
-    
     // Calculates the next values for the LFO
     void calculateModulation(int numSamples) override;
     void reset() override;
@@ -40,13 +60,25 @@ public:
     void addTarget(int targetID);
     void removeTarget(int targetID);
     
+    int getFrequencyParameterID() const { return frequencyParameterID; }
+    int getPhaseOffsetParameterID() const { return phaseOffsetParameterID; }
+    int getWaveformParameterID() const { return waveformParameterID; }
+    
 private:
     std::set<int> targets;
     double currentPhase = 0.0;
     double phaseIncrement;
     double frqRad;
     int sampleRate;
-    LFOParameterContainer* parameterContainer;
+    
+    String frequencyParameterStringID();
+    String phaseOffsetParameterStringID();
+    String waveformParameterStringID();
+    String stringIdentifier() const override;
+    
+    int frequencyParameterID;
+    int phaseOffsetParameterID;
+    int waveformParameterID;
     
     void calculatePhaseIncrement();
     
