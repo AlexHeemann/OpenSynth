@@ -11,11 +11,87 @@
 #include "DelayProcessor.h"
 #include "DelayParameterContainer.h"
 
-DelayProcessor::DelayProcessor(ModulationMatrix* modulationMatrix, int bufferSize) : Processor(modulationMatrix, bufferSize), maxDelayLength(5.0f), isUsingDoublePrecision(true)
+const String DelayProcessor::Constants::Identifiers::Delay = "delay";
+const String DelayProcessor::Constants::Identifiers::Time = "time";
+const String DelayProcessor::Constants::Identifiers::Feedback = "feedback";
+const String DelayProcessor::Constants::Identifiers::Mix = "mix";
+
+const String DelayProcessor::Constants::Names::Delay = "Delay";
+const String DelayProcessor::Constants::Names::Time = "Time";
+const String DelayProcessor::Constants::Names::Feedback = "Feedback";
+const String DelayProcessor::Constants::Names::Mix = "Mix";
+
+DelayProcessor::DelayProcessor(int ID,
+                               ModulationMatrix* modulationMatrix,
+                               AudioProcessorValueTreeState& audioProcessorValueTreeState,
+                               IDManager& idManager,
+                               int bufferSize,
+                               int sampleRate) :
+Processor(ID,
+          modulationMatrix,
+          audioProcessorValueTreeState,
+          idManager,
+          bufferSize),
+maxDelayLength(5.0f),
+isUsingDoublePrecision(true)
 {
+    delayTimeParameterID = idManager.getNewID();
+    delayFeedbackParameterID = idManager.getNewID();
+    delayMixParameterID = idManager.getNewID();
+    
+    setSampleRate(sampleRate);
+    
+    audioProcessorValueTreeState.createAndAddParameter(delayTimeParameterStringID(),
+                                                       Constants::Names::Time,
+                                                       String(),
+                                                       NormalisableRange<float>(0.0f, 1.0f),
+                                                       0.5,
+                                                       nullptr,
+                                                       nullptr);
+    
+    audioProcessorValueTreeState.createAndAddParameter(delayFeedbackParameterStringID(),
+                                                       Constants::Names::Feedback,
+                                                       String(),
+                                                       NormalisableRange<float>(0.0f, 1.0f),
+                                                       0.5,
+                                                       nullptr,
+                                                       nullptr);
+    
+    audioProcessorValueTreeState.createAndAddParameter(delayMixParameterStringID(),
+                                                       Constants::Names::Mix,
+                                                       String(),
+                                                       NormalisableRange<float>(0.0f, 1.0f),
+                                                       0.0,
+                                                       nullptr,
+                                                       nullptr);
 }
 
 DelayProcessor::~DelayProcessor() {}
+
+String DelayProcessor::name() const
+{
+    return Constants::Names::Delay;
+}
+
+String DelayProcessor::stringIdentifier() const
+{
+    return Constants::Identifiers::Delay + String(ID);
+}
+
+String DelayProcessor::delayTimeParameterStringID() const
+{
+    stringIdentifier() + "_" + Constants::Identifiers::Time;
+}
+
+String DelayProcessor::delayFeedbackParameterStringID() const
+{
+    stringIdentifier() + "_" + Constants::Identifiers::Feedback;
+}
+
+String DelayProcessor::delayMixParameterStringID() const
+{
+    stringIdentifier() + "_" + Constants::Identifiers::Mix;
+}
 
 void DelayProcessor::setIsUsingDoublePrecision(bool isUsingDoublePrecision)
 {
@@ -73,10 +149,10 @@ void DelayProcessor::reset()
 template <typename FloatType>
 void DelayProcessor::processBuffer(AudioBuffer<FloatType> &buffer, AudioBuffer<FloatType> &delayBuffer, int startSample, int numSamples)
 {
-    const float localDelayLevel = parameterContainer->getDelayFeedbackParameter()->get();
-    const float localMix = parameterContainer->getDelayMixParameter()->get();
-    const float spread = parameterContainer->getDelaySpreadParameter()->get();
-    setDelayTimeInSeconds(parameterContainer->getDelayTimeParameter()->get());
+    const float feedback = *audioProcessorValueTreeState.getRawParameterValue(Constants::Identifiers::Feedback);
+    const float mix = *audioProcessorValueTreeState.getRawParameterValue(Constants::Identifiers::Mix);
+    const float time = *audioProcessorValueTreeState.getRawParameterValue(Constants::Identifiers::Time);
+    setDelayTimeInSeconds(time);
     
     int delayPos = 0;
     int localActiveChannel = activeChannel;
@@ -91,14 +167,14 @@ void DelayProcessor::processBuffer(AudioBuffer<FloatType> &buffer, AudioBuffer<F
         for (int i = startSample; i < numSamples; ++i)
         {
             float delayChannelLevel = 1.0;
-            if (localActiveChannel != channel)
-            {
-                delayChannelLevel = 1.0 - spread;
-            }
+//            if (localActiveChannel != channel)
+//            {
+//                delayChannelLevel = 1.0 - spread;
+//            }
             
-            //const float dryMix = (1.0 - localMix);
-            //const float wetMix = localMix;
-            channelData[i] = channelData[i] + delayData[delayPos] * localDelayLevel;
+            const float dryMix = (1.0 - mix);
+            const float wetMix = mix;
+            channelData[i] = channelData[i] + delayData[delayPos] * feedback;
             delayData[delayPos] = channelData[i] * delayChannelLevel;
             
             delayPos++;

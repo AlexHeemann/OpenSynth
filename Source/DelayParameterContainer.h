@@ -16,8 +16,16 @@
 class DelayParameterContainer: public ParameterContainer
 {
 public:
-    DelayParameterContainer(int ID, OpenSynthAudioProcessor& processor) : ParameterContainer(ID, processor)
+    DelayParameterContainer(int ID,
+                            OpenSynth& openSynth,
+                            OpenSynthAudioProcessor& processor) : ParameterContainer(ID,
+                                                                                     synth,
+                                                                                     processor)
     {
+        delayTimeParameterID = synth.getIDManager().getNewID();
+        delayFeedbackParameterID = synth.getIDManager().getNewID();
+        delayMixParameterID = synth.getIDManager().getNewID();
+        
         processor.addParameter(delayTime = new AudioParameterFloat("delayTime", "Delay Time", 0.0f, 1.0f, 0.5f));
         processor.addParameter(delayFeedback = new AudioParameterFloat("delayFeedback", "Delay Feedback", 0.0f, 1.0f, 0.5f));
         processor.addParameter(delaySpread = new AudioParameterFloat("delaySpread", "Delay Spread", 0.0f, 1.0f, 0.0f));
@@ -27,6 +35,10 @@ public:
     
     virtual ~DelayParameterContainer() {};
     
+    int getDelayTimeParameterID() const { return delayTimeParameterID; }
+    int getDelayFeedbackParameterID() const { return delayFeedbackParameterID; }
+    int getDelayMixParameterID() const { return delayMixParameterID; }
+    
     AudioParameterFloat* getDelayTimeParameter() const { return delayTime; };
     AudioParameterFloat* getDelayFeedbackParameter() const { return delayFeedback; };
     AudioParameterFloat* getDelaySpreadParameter() const { return delaySpread; };
@@ -34,6 +46,10 @@ public:
     AudioParameterBool* getDelayEnabledParameter() const { return delayEnabled; };
     
 private:
+    int delayTimeParameterID;
+    int delayFeedbackParameterID;
+    int delayMixParameterID;
+    
     AudioParameterFloat* delayTime;
     AudioParameterFloat* delayFeedback;
     AudioParameterFloat* delaySpread;

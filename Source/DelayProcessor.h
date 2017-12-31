@@ -18,7 +18,31 @@ class DelayParameterContainer;
 class DelayProcessor : public Processor
 {
 public:
-    DelayProcessor(ModulationMatrix* modulationMatrix, int bufferSize);
+    
+    struct Constants
+    {
+        struct Identifiers
+        {
+            static const String Delay;
+            static const String Time;
+            static const String Feedback;
+            static const String Mix;
+        };
+        struct Names
+        {
+            static const String Delay;
+            static const String Time;
+            static const String Feedback;
+            static const String Mix;
+        };
+    };
+    
+    DelayProcessor(int ID,
+                   ModulationMatrix* modulationMatrix,
+                   AudioProcessorValueTreeState& audioProcessorValueTreeState,
+                   IDManager& idManager,
+                   int bufferSize,
+                   int sampleRate);
     virtual ~DelayProcessor();
     
     void renderNextBlock(AudioBuffer<float>& outputBuffer, int startSample, int numSamples) override
@@ -30,23 +54,27 @@ public:
         processBuffer(outputBuffer, delayBufferDouble, startSample, numSamples);
     }
     
+    void renderNextBlock() override
+    {
+        
+    }
+    
     void setIsUsingDoublePrecision(bool isUsingDoublePrecision);
     const bool getIsUsingDoublePrecision() const { return isUsingDoublePrecision; };
     void setDelayLengthInSeconds(float delayLength);
     const float getDelayLengthInSeconds() const { return delayLengthInSeconds; };
     void setDelayTimeInSeconds(float delayTime);
     const int getDelayTimeInSeconds() const { return delayTimeInSeconds; };
-    void setSampleRate(int sampleRate);
+    void setSampleRate(int sampleRate) override;
     const int getSampleRate() const { return sampleRate; };
     void reset() override;
-    void setParameterContainer(DelayParameterContainer* parameterContainer) { this->parameterContainer = parameterContainer; };
+    String name() const override;
     
 private:
     template <typename FloatType>
     void processBuffer(AudioBuffer<FloatType>& buffer, AudioBuffer<FloatType>& delayBuffer, int startSample, int numSamples);
     void resizeDelayBuffers(int size);
     
-    DelayParameterContainer* parameterContainer;
     AudioBuffer<float> delayBufferFloat;
     AudioBuffer<double> delayBufferDouble;
     int sampleRate = 0;
@@ -59,6 +87,17 @@ private:
     int delayLengthInSamples = 0;
     int activeChannel = 0;
     bool shouldChangeActiveChannel = false;
+    
+    // Parameters
+    int delayTimeParameterID;
+    int delayFeedbackParameterID;
+    int delayMixParameterID;
+    
+    String stringIdentifier() const override;
+    
+    String delayTimeParameterStringID() const;
+    String delayFeedbackParameterStringID() const;
+    String delayMixParameterStringID() const;
 };
 
 #endif  // DELAYPROCESSOR_H_INCLUDED
