@@ -13,12 +13,82 @@
 #include "ModulationMatrix.h"
 #include "PluginProcessor.h"
 
-FilterProcessor::FilterProcessor(ModulationMatrix* modulationMatrix, int bufferSize) : Processor(modulationMatrix, bufferSize)
+const String FilterProcessor::Constants::Identifiers::Filter = "filter";
+const String FilterProcessor::Constants::Identifiers::Frequency = "frequency";
+const String FilterProcessor::Constants::Identifiers::Resonance = "resonance";
+const String FilterProcessor::Constants::Identifiers::FilterType = "filter_type";
+
+const String FilterProcessor::Constants::Names::Filter = "Filter";
+const String FilterProcessor::Constants::Names::Frequency = "Frequency";
+const String FilterProcessor::Constants::Names::Resonance = "Resonance";
+const String FilterProcessor::Constants::Names::FilterType = "Filter Type";
+
+FilterProcessor::FilterProcessor(int ID,
+                                 ModulationMatrix* modulationMatrix,
+                                 AudioProcessorValueTreeState& audioProcessorValueTreeState,
+                                 IDManager& idManager,
+                                 int bufferSize) :
+Processor(ID,
+          modulationMatrix,
+          audioProcessorValueTreeState,
+          idManager,
+          bufferSize)
 {
     initialiseLowPassFilter(20000);
     initialiseHighPassFilter(20000);
     initialiseBandPassFilter(20000);
     initialiseAllPassFilter(20000);
+    
+    filterFrequencyParameterID = idManager.getNewID();
+    filterResonanceParameterID = idManager.getNewID();
+    audioProcessorValueTreeState.createAndAddParameter(filterFrequencyParameterStringID(),
+                                                       Constants::Names::Frequency,
+                                                       String(),
+                                                       NormalisableRange<float>(0.0f, 20000.0f, 0.0f, 0.25f),
+                                                       10000.0f,
+                                                       nullptr,
+                                                       nullptr);
+    
+    audioProcessorValueTreeState.createAndAddParameter(filterResonanceParameterStringID(),
+                                                       Constants::Names::Frequency,
+                                                       String(),
+                                                       NormalisableRange<float>(1.0f, 5.0f),
+                                                       1.0f,
+                                                       nullptr,
+                                                       nullptr);
+    
+    audioProcessorValueTreeState.createAndAddParameter(filterTypeParameterStringID(),
+                                                       Constants::Names::FilterType,
+                                                       String(),
+                                                       NormalisableRange<float>(0.0f, 3.0f, 1.0f),
+                                                       0.0f,
+                                                       nullptr,
+                                                       nullptr);
+}
+
+String FilterProcessor::stringIdentifier() const
+{
+    return Constants::Identifiers::Filter + String(ID);
+}
+
+String FilterProcessor::filterFrequencyParameterStringID() const
+{
+    return stringIdentifier() + "_" + Constants::Identifiers::Frequency;
+}
+
+String FilterProcessor::filterResonanceParameterStringID() const
+{
+    return stringIdentifier() + "_" + Constants::Identifiers::Resonance;
+}
+
+String FilterProcessor::filterTypeParameterStringID() const
+{
+    return stringIdentifier() + "_" + Constants::Identifiers::FilterType;
+}
+
+String FilterProcessor::name() const
+{
+    return Constants::Names::Filter;
 }
 
 void FilterProcessor::renderNextBlock()
@@ -30,15 +100,19 @@ void FilterProcessor::renderNextBlock()
 template <typename FloatType, typename DspFilterType>
 void FilterProcessor::processBufferWithFilter(AudioBuffer<FloatType> &buffer, int startSample, int numSamples, std::vector<DspFilterType>& filters)
 {
-    float filterModulation = modulationMatrix->getValueForDestinationID(parameterContainer->getFrequencyParameterID());
-    AudioParameterFloat* frequency = parameterContainer->getFilterFrequencyParameter();
-    AudioParameterFloat* resonance = parameterContainer->getFilterResonanceParameter();
+    float filterModulation = modulationMatrix->getValueForDestinationID(filterFrequencyParameterID);
+    float frequency = *audioProcessorValueTreeState.getRawParameterValue(Constants::Identifiers::Frequency);
+    float resonance = *audioProcessorValueTreeState.getRawParameterValue(Constants::Identifiers::Resonance);
+    NormalisableRange<float> frequencyRange = audioProcessorValueTreeState.getParameterRange(Constants::Identifiers::Frequency);
+    NormalisableRange<float> resonanceRange = audioProcessorValueTreeState.getParameterRange(Constants::Identifiers::Resonance);
     
     for (int filterIdx = 0; filterIdx < filters.size(); filterIdx++)
     {
-        float newKnobValue = std::min(1.0f, frequency->range.convertTo0to1(frequency->get()) + filterModulation);
-        filters[filterIdx].setParam(Dsp::ParamID::idFrequency, std::fmax(0.0f, std::fmin(frequency->range.end, frequency->range.convertFrom0to1(newKnobValue))));
-        filters[filterIdx].setParam(Dsp::ParamID::idQ, resonance->get());
+        float newKnobValue = std::min(1.0f, frequencyRange.convertTo0to1(frequency) + filterModulation);
+        filters[filterIdx].setParam(Dsp::ParamID::idFrequency, std::fmax(0.0f,
+                                                                         std::fmin(frequencyRange.end,
+                                                                                   frequencyRange.convertFrom0to1(newKnobValue))));
+        filters[filterIdx].setParam(Dsp::ParamID::idQ, resonance);
     }
     for (int channel = 0; channel < buffer.getNumChannels(); channel++)
     {
@@ -57,29 +131,36 @@ void FilterProcessor::processBufferWithFilter(AudioBuffer<FloatType> &buffer, in
 template <typename FloatType>
 void FilterProcessor::processBuffer(AudioBuffer<FloatType> &buffer, int startSample, int numSamples)
 {
-    switch (activeFilter)
+    float filterType = *audioProcessorValueTreeState.getRawParameterValue(Constants::Identifiers::FilterType);
+    if (filterType < 0.5)
     {
-        case LowPass:
-            processBufferWithFilter(buffer, startSample, numSamples, lowPassFilters);
-            break;
-        case HighPass:
-            processBufferWithFilter(buffer, startSample, numSamples, highPassFilters);
-            break;
-        case BandPass:
-            processBufferWithFilter(buffer, startSample, numSamples, bandPassFilters);
-            break;
-        case AllPass:
-            processBufferWithFilter(buffer, startSample, numSamples, allPassFilters);
-            break;
+        // Low Pass
+        processBufferWithFilter(buffer, startSample, numSamples, lowPassFilters);
+    }
+    else if (filterType < 1.5)
+    {
+        // High Pass
+        processBufferWithFilter(buffer, startSample, numSamples, highPassFilters);
+    }
+    else if (filterType < 2.5)
+    {
+        // Band Pass
+        processBufferWithFilter(buffer, startSample, numSamples, bandPassFilters);
+    }
+    else if (filterType < 3.5)
+    {
+        // All Pass
+        processBufferWithFilter(buffer, startSample, numSamples, allPassFilters);
     }
 }
 
 void FilterProcessor::reset()
 {
-    initialiseLowPassFilter(parameterContainer->getFilterFrequencyParameter()->get());
-    initialiseHighPassFilter(parameterContainer->getFilterFrequencyParameter()->get());
-    initialiseBandPassFilter(parameterContainer->getFilterFrequencyParameter()->get());
-    initialiseAllPassFilter(parameterContainer->getFilterFrequencyParameter()->get());
+    float frequency = *audioProcessorValueTreeState.getRawParameterValue(Constants::Identifiers::Frequency);
+    initialiseLowPassFilter(frequency);
+    initialiseHighPassFilter(frequency);
+    initialiseBandPassFilter(frequency);
+    initialiseAllPassFilter(frequency);
 }
 
 void FilterProcessor::initialiseLowPassFilter(double frequency)
@@ -141,14 +222,3 @@ void FilterProcessor::initialiseAllPassFilter(double frequency)
         allPassFilters.push_back(f);
     }
 }
-
-void FilterProcessor::setActiveFilter(FilterType activeFilter)
-{
-    this->activeFilter = activeFilter;
-}
-
-void FilterProcessor::setParameterContainer(FilterParameterContainer* parameterContainer)
-{
-    this->parameterContainer = parameterContainer;
-}
-

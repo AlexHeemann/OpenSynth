@@ -19,15 +19,34 @@ class ModulationMatrix;
 
 class FilterProcessor : public Processor
 {
-public:    
-    typedef enum {
-        HighPass = 1,
-        LowPass = 2,
-        BandPass = 3,
-        AllPass = 4
-    } FilterType;
+public:
     
-    FilterProcessor(ModulationMatrix* modulationMatrix, int bufferSize);
+    struct Constants
+    {
+        struct Identifiers
+        {
+            static const String Filter;
+            
+            static const String Frequency;
+            static const String Resonance;
+            static const String FilterType;
+        };
+        
+        struct Names
+        {
+            static const String Filter;
+            
+            static const String Frequency;
+            static const String Resonance;
+            static const String FilterType;
+        };
+    };
+    
+    FilterProcessor(int ID,
+                    ModulationMatrix* modulationMatrix,
+                    AudioProcessorValueTreeState& audioProcessorValueTreeState,
+                    IDManager& idManager,
+                    int bufferSize);
     virtual ~FilterProcessor() {};
     
     void renderNextBlock(AudioBuffer<float>& outputBuffer, int startSample, int numSamples) override
@@ -41,8 +60,7 @@ public:
     void renderNextBlock() override;
     
     void reset() override;
-    void setActiveFilter(FilterType activeFilter);
-    void setParameterContainer(FilterParameterContainer* parameterContainer);    
+    String name() const override;
     
 private:
     template <typename FloatType>
@@ -54,6 +72,15 @@ private:
     void initialiseBandPassFilter(double frequency);
     void initialiseAllPassFilter(double frequency);
     
+    int filterFrequencyParameterID;
+    int filterResonanceParameterID;
+    
+    String stringIdentifier() const override;
+    
+    String filterFrequencyParameterStringID() const;
+    String filterResonanceParameterStringID() const;
+    String filterTypeParameterStringID() const;
+    
     // Contains filters for left and right channel
     std::vector<Dsp::SmoothedFilterDesign<Dsp::RBJ::Design::LowPass, 1>> lowPassFilters;
     std::vector<Dsp::SmoothedFilterDesign<Dsp::RBJ::Design::HighPass, 1>> highPassFilters;
@@ -62,9 +89,6 @@ private:
     
     template <typename DspFilterType>
     std::vector<DspFilterType>& getActiveFilter();
-    
-    FilterType activeFilter;
-    FilterParameterContainer* parameterContainer;    
 };
 
 
